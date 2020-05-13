@@ -41,6 +41,15 @@ public class HexVector {
         return scale(-1);
     }
 
+    public int getCoordinate(Direction d) {
+        if(d == Direction.E)
+            return east;
+        else if(d == Direction.SE)
+            return southeast;
+        else
+            return east-southeast;
+    }
+
     @Override
     public String toString() {
         return "[" + east + ", "+southeast+"]";
@@ -59,7 +68,6 @@ public class HexVector {
     public int hashCode() {
         return east*31 + southeast;
     }
-
 
     private int east,southeast;
 
