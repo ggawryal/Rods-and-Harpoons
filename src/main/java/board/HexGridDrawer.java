@@ -26,7 +26,10 @@ public class HexGridDrawer {
         Polygon hex = createHexagonAt(x,y,SIZE);
         hex.setFill(color);
         pane.getChildren().add(hex);
+    }
 
+    public void clearHexes() {
+        pane.getChildren().clear();
     }
 
 }
