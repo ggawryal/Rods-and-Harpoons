@@ -15,8 +15,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BoardView {
-    public static final double SIZE = 40;
-    public static final double HEIGHT = SIZE*Math.sqrt(3)/2.0;
+    private static final double SIZE = 40;
+    private static final double HEIGHT = SIZE*Math.sqrt(3)/2.0;
 
     private Pane pane;
 
@@ -38,6 +38,7 @@ public class BoardView {
     public void setActionOnClick(Consumer<HexVector> onMouseClick) {
         this.onMouseClick = onMouseClick;
     }
+
     public void drawTile(Tile tile, HexVector position) {
         double x = position.getCoordinate(Direction.E)*HEIGHT*2 + position.getCoordinate(Direction.SE)*HEIGHT;
         double y = position.getCoordinate(Direction.SE)*1.5*SIZE;
@@ -56,10 +57,6 @@ public class BoardView {
         Polygon hex = hexagons.get(position);
         pane.getChildren().remove(hex);
         hexagons.remove(hex);
-    }
-
-    public void clear() {
-        pane.getChildren().clear();
     }
 
 }

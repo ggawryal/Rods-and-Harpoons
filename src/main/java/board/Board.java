@@ -5,8 +5,8 @@ import board.tile.Tile;
 import java.util.HashMap;
 
 public class Board {
-    HashMap<HexVector,Tile> tiles = new HashMap<>();
-    BoardView view;
+    private HashMap<HexVector,Tile> tiles = new HashMap<>();
+    private BoardView view;
 
     public Board(BoardView view) {
         this.view = view;
@@ -16,7 +16,7 @@ public class Board {
         return tiles.containsKey(position);
     }
 
-    Tile getTileAt(HexVector position) {
+    public Tile getTileAt(HexVector position) {
         return tiles.get(position);
     }
 
@@ -32,5 +32,10 @@ public class Board {
     public void removeTile(HexVector position) {
         tiles.remove(position);
         view.removeTile(position);
+    }
+    public void clear() {
+        for(HexVector position : tiles.keySet())
+            view.removeTile(position);
+        tiles.clear();
     }
 }

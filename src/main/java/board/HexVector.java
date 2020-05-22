@@ -50,6 +50,11 @@ public class HexVector {
             return east-southeast;
     }
 
+    public HexVector copy() {
+        HexVector v = new HexVector(this.east,this.southeast);
+        return v;
+    }
+
     @Override
     public String toString() {
         return "[" + east + ", "+southeast+"]";
