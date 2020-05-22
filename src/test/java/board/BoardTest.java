@@ -1,19 +1,30 @@
 package board;
 
+import board.tile.EmptyTile;
 import board.tile.Tile;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 class BoardTest {
     @Test
     public void testAddTile() {
         BoardView view = mock(BoardView.class);
         Board board = new Board(view);
-        assertTrue(board.addTile(new Tile(),new HexVector(1,3)));
-        assertTrue(board.addTile(new Tile(),new HexVector(2,3)));
-        assertFalse(board.addTile(new Tile(),new HexVector(1,3)));
+
+        Tile tile = new EmptyTile();
+        assertTrue(board.addTile(tile,new HexVector(1,3)));
+        verify(view).drawTile(tile,new HexVector(1,3));
+
+        assertTrue(board.addTile(tile,new HexVector(2,3)));
+        verify(view).drawTile(tile,new HexVector(2,3));
+
+        assertFalse(board.addTile(tile,new HexVector(1,3)));
+
+        verifyNoMoreInteractions(view);
+
+
     }
     @Test
     public void testHasTile() {
@@ -21,9 +32,26 @@ class BoardTest {
         Board board = new Board(view);
 
         assertFalse(board.hasTileAt(new HexVector(1,3)));
-        assertTrue(board.addTile(new Tile(),new HexVector(1,3)));
+        assertTrue(board.addTile(new EmptyTile(),new HexVector(1,3)));
         assertTrue(board.hasTileAt(new HexVector(1,3)));
         assertFalse(board.hasTileAt(new HexVector(1,4)));
+    }
+
+    @Test
+    public void testClear() {
+        BoardView view = mock(BoardView.class);
+        Board board = new Board(view);
+
+        board.addTile(new EmptyTile(),new HexVector(0,1));
+        board.addTile(new EmptyTile(),new HexVector(5,3));
+        board.addTile(new EmptyTile(),new HexVector(3,7));
+        board.removeTile(new HexVector(5,3));
+
+        board.clear();
+
+        assertFalse(board.hasTileAt(new HexVector(0,1)));
+        assertFalse(board.hasTileAt(new HexVector(5,3)));
+        assertFalse(board.hasTileAt(new HexVector(3,7)));
     }
 
 

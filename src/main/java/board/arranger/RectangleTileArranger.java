@@ -1,6 +1,10 @@
-package board;
+package board.arranger;
 
-import board.tile.Tile;
+import board.Board;
+import board.Direction;
+import board.HexVector;
+import board.arranger.TileArranger;
+import board.arranger.TileScoreChooser;
 
 /**
  * Board has height rows
@@ -15,7 +19,7 @@ public class RectangleTileArranger implements TileArranger {
     }
 
     @Override
-    public void arrange(Board b) {
+    public void arrange(Board b, TileScoreChooser tileScoreChooser) {
         b.clear();
 
         HexVector rowVector = new HexVector(0,0);
@@ -27,7 +31,7 @@ public class RectangleTileArranger implements TileArranger {
                 rowWidth --;
 
             for(int col=0; col<rowWidth; col++) {
-                b.addTile(new Tile(),colVector.copy());
+                b.addTile(tileScoreChooser.chooseTile(),colVector.copy());
                 colVector.add(new HexVector(1,0));
             }
 
