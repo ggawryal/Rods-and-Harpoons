@@ -41,18 +41,15 @@ public class HexVector {
         return scale(-1);
     }
 
-    public int getCoordinate(Direction d) {
-        if(d == Direction.E)
-            return east;
-        else if(d == Direction.SE)
-            return southeast;
-        else
-            return east-southeast;
+    public HexVector copy() {
+        return new HexVector(this.east, this.southeast);
     }
 
-    public HexVector copy() {
-        HexVector v = new HexVector(this.east,this.southeast);
-        return v;
+    public int getEast() {
+        return east;
+    }
+    public int getSoutheast() {
+        return southeast;
     }
 
     @Override
@@ -74,12 +71,11 @@ public class HexVector {
         return east*31 + southeast;
     }
 
-    private int east,southeast;
-
     private HexVector set(int east, int southeast) {
         this.east = east;
         this.southeast = southeast;
         return this;
     }
 
+    private int east,southeast;
 }

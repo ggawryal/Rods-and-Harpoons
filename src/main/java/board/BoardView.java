@@ -40,8 +40,8 @@ public class BoardView {
     }
 
     public void drawTile(Tile tile, HexVector position) {
-        double x = position.getCoordinate(Direction.E)*HEIGHT*2 + position.getCoordinate(Direction.SE)*HEIGHT;
-        double y = position.getCoordinate(Direction.SE)*1.5*SIZE;
+        double x = position.getEast()*HEIGHT*2 + position.getSoutheast()*HEIGHT;
+        double y = position.getSoutheast()*1.5*SIZE;
         Polygon hex = createHexagonAt(x,y,SIZE);
 
         hex.setFill(tile.getFill());
