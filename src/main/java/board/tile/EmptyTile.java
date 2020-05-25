@@ -1,15 +1,15 @@
 package board.tile;
 
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 
 public class EmptyTile implements Tile {
     @Override
-    public Color getFill() {
-        return Color.TRANSPARENT;
+    public int getScore() {
+        return 0;
     }
 
     @Override
-    public int getScore() {
-        return 0;
+    public Image getImage() {
+        return null;
     }
 }

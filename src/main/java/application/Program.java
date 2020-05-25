@@ -18,8 +18,8 @@ public class Program {
         @Override
         public void start(Stage stage) throws Exception {
             primaryStage = stage;
-            mainMenu = new MainMenu(800,600); mainMenu.load();
-            randomHexes = new RandomHexes(800,600); randomHexes.load();
+            mainMenu = new MainMenu(750,650); mainMenu.load();
+            randomHexes = new RandomHexes(750,650); randomHexes.load();
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();

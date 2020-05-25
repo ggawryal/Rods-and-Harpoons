@@ -1,9 +1,9 @@
 package board.tile;
 
 
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 
 public interface Tile {
-    Color getFill();
     int getScore();
+    Image getImage();
 }

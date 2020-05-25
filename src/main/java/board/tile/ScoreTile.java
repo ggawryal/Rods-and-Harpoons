@@ -1,23 +1,23 @@
 package board.tile;
 
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
 
 public class ScoreTile implements Tile {
-    static javafx.scene.paint.Color[] colors = {Color.RED, Color.BLUE, Color.GREEN};
     private final int score;
+    private final Image image;
 
     public ScoreTile(int score) {
         this.score = score;
         if(score < 1 || score >= 4)
             throw new RuntimeException("Tile with wrong score chosen");
-
-    }
-    public Color getFill() {
-        return colors[score-1];
+        image = new Image("/hex_" + score + ".png");
     }
 
     @Override
     public int getScore() {
         return score;
     }
+
+    @Override
+    public Image getImage() { return image; }
 }
