@@ -26,13 +26,17 @@ public class StandardMoveChecker implements MoveChecker {
         if(directionAndTurn == null)
             return false;
 
+        if(move.getFrom().equals(move.getTo()))
+            return false;
+
         HexVector oneVector = new HexVector(directionAndTurn.getKey(), directionAndTurn.getValue());
 
-        for(HexVector v = move.getFrom().copy(); !v.equals(move.getTo()); v = v.add(oneVector)){
+        for(HexVector v = move.getFrom().copy().add(oneVector); !v.equals(move.getTo().copy().add(oneVector)); v = v.add(oneVector)){
             if(!board.hasTileAt(v))
                 return false;
+            if(board.getTileAt(v).getScore() == 0)
+                return false;
         }
-        //TODO: check collisions with other players
         return true;
 
     }

@@ -5,6 +5,7 @@ import board.arranger.RatioTileChooser;
 import board.arranger.RectangleTileArranger;
 import board.arranger.TileArranger;
 import board.arranger.TileScoreChooser;
+import game.GameManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,7 +23,9 @@ public class RandomHexes extends Scene {
     public void load() {
         BoardView view = new BoardView(hexes);
         Board board = new Board(view);
-        view.setActionOnClick(board::removeTile);
+        MoveChecker moveChecker = new StandardMoveChecker(board);
+        GameManager gameManager = new GameManager(moveChecker, board, 2);
+        view.setActionOnClick(gameManager::onClickResponse);
 
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,3,1);
         TileArranger tileArranger = new RectangleTileArranger(8,8);
@@ -35,11 +38,16 @@ public class RandomHexes extends Scene {
 
         Button btnRearrange = new Button();
         btnRearrange.setText("Reset tiles.");
-        btnRearrange.setOnAction(event -> {tileArranger.arrange(board,tileScoreChooser);});
+        btnRearrange.setOnAction(event -> {
+            tileArranger.arrange(board,tileScoreChooser);
+            gameManager.init();
+        });
 
         vb.getChildren().addAll(btnRearrange,btnBack);
         vb.setAlignment(Pos.CENTER);
         root.getChildren().addAll(hexes,vb);
+
+        gameManager.init();
     }
 
     public RandomHexes(int width, int height) {
