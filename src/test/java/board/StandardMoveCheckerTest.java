@@ -1,11 +1,7 @@
 package board;
 
-import board.tile.ScoreTile;
-import board.tile.Tile;
+import board.drawable.tile.Tile;
 import org.junit.jupiter.api.Test;
-import org.mockito.AdditionalMatchers;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

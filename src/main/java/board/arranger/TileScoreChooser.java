@@ -1,6 +1,6 @@
 package board.arranger;
 
-import board.tile.Tile;
+import board.drawable.tile.Tile;
 
 public interface TileScoreChooser {
     Tile chooseTile();

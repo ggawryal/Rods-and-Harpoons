@@ -1,6 +1,6 @@
 package board;
 
-import board.tile.Tile;
+import board.drawable.tile.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;

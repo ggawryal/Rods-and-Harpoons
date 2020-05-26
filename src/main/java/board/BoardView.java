@@ -1,6 +1,7 @@
 package board;
 
-import board.tile.Tile;
+import board.drawable.Drawable;
+import board.drawable.tile.Tile;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import java.util.HashMap;
@@ -23,11 +24,11 @@ public class BoardView {
         this.onMouseClick = onMouseClick;
     }
 
-    void drawTile(Tile tile, HexVector position) {
+    private ImageView drawObject(Drawable object, HexVector position) {
         double x = position.getEast()*HEIGHT*2 + position.getSoutheast()*HEIGHT;
         double y = position.getSoutheast()*1.5*SIZE;
 
-        ImageView imageView = new ImageView(tile.getImage());
+        ImageView imageView = new ImageView(object.getImage());
         imageView.setFitHeight(2.2*SIZE);
         imageView.setFitWidth(2.2*SIZE);
         imageView.setX(x);
@@ -35,6 +36,12 @@ public class BoardView {
 
         if(onMouseClick != null)
             imageView.setOnMouseClicked(e -> onMouseClick.accept(position));
+
+        return imageView;
+    }
+
+    void drawTile(Tile tile, HexVector position) {
+        ImageView imageView = drawObject(tile, position);
 
         hexagons.put(position,imageView);
         pane.getChildren().add(imageView);

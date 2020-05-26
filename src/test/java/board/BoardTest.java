@@ -1,7 +1,7 @@
 package board;
 
-import board.tile.EmptyTile;
-import board.tile.Tile;
+import board.drawable.tile.EmptyTile;
+import board.drawable.tile.Tile;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -4,8 +4,8 @@ import board.Board;
 import board.HexVector;
 import board.Move;
 import board.MoveChecker;
-import board.tile.PlayerTile;
-import board.tile.Tile;
+import board.drawable.tile.PlayerTile;
+import board.drawable.tile.Tile;
 
 import java.util.ArrayList;
 
