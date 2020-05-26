@@ -34,7 +34,7 @@ public class StandardMoveChecker implements MoveChecker {
         for(HexVector v = move.getFrom().copy().add(oneVector); !v.equals(move.getTo().copy().add(oneVector)); v = v.add(oneVector)){
             if(!board.hasTileAt(v))
                 return false;
-            if(board.getTileAt(v).getScore() == 0)
+            if(board.hasPawnAt(v))
                 return false;
         }
         return true;

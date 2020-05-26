@@ -6,7 +6,7 @@ public class Player {
     private HexVector position;
     private int points;
 
-    Player(HexVector position) {
+    public Player(HexVector position) {
         this.position = position;
     }
 

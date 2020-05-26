@@ -1,6 +1,7 @@
 package board;
 
 import board.drawable.Drawable;
+import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -14,6 +15,7 @@ public class BoardView {
     private Pane pane;
 
     private HashMap<HexVector,ImageView> hexagons = new HashMap<>();
+    private HashMap<HexVector,ImageView> pawns = new HashMap<>();
 
     public BoardView(Pane pane) {
         this.pane = pane;
@@ -47,10 +49,23 @@ public class BoardView {
         pane.getChildren().add(imageView);
     }
 
+    void drawPawn(Pawn pawn, HexVector position) {
+        ImageView imageView = drawObject(pawn, position);
+
+        pawns.put(position, imageView);
+        pane.getChildren().add(imageView);
+    }
+
     void removeTile(HexVector position) {
         ImageView hex = hexagons.get(position);
         pane.getChildren().remove(hex);
         hexagons.remove(hex);
+    }
+
+    void removePawn(HexVector position) {
+        ImageView pawn = pawns.get(position);
+        pane.getChildren().remove(pawn);
+        pawns.remove(pawn);
     }
 
 }

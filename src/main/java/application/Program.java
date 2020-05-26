@@ -19,7 +19,7 @@ public class Program {
         public void start(Stage stage) throws Exception {
             primaryStage = stage;
             mainMenu = new MainMenu(750,650); mainMenu.load();
-            randomHexes = new RandomHexes(750,650); randomHexes.load();
+            randomHexes = new RandomHexes(750,650); randomHexes.load(2);
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();

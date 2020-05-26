@@ -17,10 +17,8 @@ class StandardMoveCheckerTest {
         HexVector d = new HexVector(Direction.E,-3).add(c);
 
         Board board = mock(Board.class);
-        Tile tile = mock(Tile.class);
         when(board.hasTileAt(any())).thenReturn(true);
-        when(board.getTileAt(any())).thenReturn(tile);
-        when(tile.getScore()).thenReturn(1);
+        when(board.hasPawnAt(any())).thenReturn(false);
 
         MoveChecker mc = new StandardMoveChecker(board);
 
@@ -42,12 +40,10 @@ class StandardMoveCheckerTest {
         HexVector d = new HexVector(Direction.E,-1);
 
         Board board = mock(Board.class);
-        Tile tile = mock(Tile.class);
         HexVector[] missingTiles = {new HexVector(Direction.E,1),new HexVector(Direction.SE,2), new HexVector(Direction.NE,5)};
 
         when(board.hasTileAt(any())).thenReturn(true);
-        when(board.getTileAt(any())).thenReturn(tile);
-        when(tile.getScore()).thenReturn(1);
+        when(board.hasPawnAt(any())).thenReturn(false);
         for(HexVector v : missingTiles)
             when(board.hasTileAt(v)).thenReturn(false);
 
