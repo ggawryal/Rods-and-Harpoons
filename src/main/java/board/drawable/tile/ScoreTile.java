@@ -1,6 +1,5 @@
 package board.drawable.tile;
 
-import board.drawable.tile.Tile;
 import javafx.scene.image.Image;
 
 public class ScoreTile implements Tile {

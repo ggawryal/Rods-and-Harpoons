@@ -15,10 +15,10 @@ import javafx.scene.layout.VBox;
 import static application.Program.MainApp.mainMenu;
 import static application.Program.MainApp.primaryStage;
 
-public class RandomHexes extends Scene {
+public class GameScene extends Scene {
     private final static Pane root = new Pane();
     private final static Pane hexes = new Pane();
-    private final static VBox vb = new VBox();
+    private final static VBox buttonsBox = new VBox();
 
     public void load(int numOfPlayers) {
         BoardView view = new BoardView(hexes);
@@ -45,13 +45,13 @@ public class RandomHexes extends Scene {
             gameManager.init();
         });
 
-        vb.getChildren().addAll(btnRearrange,btnBack);
-        vb.setAlignment(Pos.CENTER);
-        root.getChildren().addAll(hexes,vb);
+        buttonsBox.getChildren().addAll(btnRearrange,btnBack);
+        buttonsBox.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(hexes,buttonsBox);
 
     }
 
-    public RandomHexes(int width, int height) {
+    public GameScene(int width, int height) {
         super(root, width, height);
     }
 }

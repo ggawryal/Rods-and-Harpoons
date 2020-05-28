@@ -3,32 +3,37 @@ package scenes;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
+import javafx.scene.text.Font;
 
-import static application.Program.MainApp.primaryStage;
-import static application.Program.MainApp.randomHexes;
+import static application.Program.MainApp.*;
 
 public class MainMenu extends Scene {
     private final static StackPane root = new StackPane();
-    private final static VBox vb = new VBox(50);
+    private final static VBox rootBox = new VBox(50);
+    private final static VBox buttonsBox = new VBox(20);
 
     public void load() {
-        Text text = new Text();
-        text.setText("--- Epic Title ---");
+        ImageView logo = new ImageView(new Image("/logo.png"));
 
-        Button btnRandomHexes = new Button();
-        btnRandomHexes.setText("Drawing random hexagons");
-        btnRandomHexes.setOnAction(event -> primaryStage.setScene(randomHexes));
+        Button btnPlay = new Button();
+        btnPlay.setFont(Font.font(50));
+        btnPlay.setText("Play");
+        btnPlay.setOnAction(event -> primaryStage.setScene(gameScene));
 
         Button btnExit = new Button();
-        btnExit.setText("Exit game");
+        btnExit.setFont(Font.font(50));
+        btnExit.setText("Exit");
         btnExit.setOnAction(event -> System.exit(0));
 
-        vb.getChildren().addAll(text, btnRandomHexes, btnExit);
-        vb.setAlignment(Pos.CENTER);
-        root.getChildren().add(vb);
+        buttonsBox.getChildren().addAll(btnPlay, btnExit);
+        buttonsBox.setAlignment(Pos.CENTER);
+        rootBox.getChildren().addAll(logo, buttonsBox);
+        rootBox.setAlignment(Pos.CENTER);
+        root.getChildren().add(rootBox);
     }
 
     public MainMenu(int width, int height) {

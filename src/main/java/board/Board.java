@@ -2,10 +2,8 @@ package board;
 
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
-import game.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 

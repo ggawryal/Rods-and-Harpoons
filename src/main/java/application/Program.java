@@ -2,8 +2,8 @@ package application;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import scenes.GameScene;
 import scenes.MainMenu;
-import scenes.RandomHexes;
 
 public class Program {
     public static void main(String[] args) {
@@ -13,13 +13,13 @@ public class Program {
     public static class MainApp extends Application {
         public static Stage primaryStage;
         public static MainMenu mainMenu;
-        public static RandomHexes randomHexes;
+        public static GameScene gameScene;
 
         @Override
-        public void start(Stage stage) throws Exception {
+        public void start(Stage stage) {
             primaryStage = stage;
             mainMenu = new MainMenu(750,650); mainMenu.load();
-            randomHexes = new RandomHexes(750,650); randomHexes.load(2);
+            gameScene = new GameScene(750,650); gameScene.load(2);
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();

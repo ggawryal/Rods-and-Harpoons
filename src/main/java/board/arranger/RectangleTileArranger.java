@@ -3,8 +3,6 @@ package board.arranger;
 import board.Board;
 import board.Direction;
 import board.HexVector;
-import board.arranger.TileArranger;
-import board.arranger.TileScoreChooser;
 
 /**
  * Board has height rows
