@@ -8,6 +8,8 @@ import board.drawable.tile.Tile;
 
 import java.util.ArrayList;
 
+import static application.Program.MainApp.gameScene;
+
 public class GameManager {
     private final MoveChecker moveChecker;
     private final Board board;
@@ -21,10 +23,14 @@ public class GameManager {
         this.board = board;
     }
 
+    public ArrayList<Player> getPlayers() {
+        return players;
+    }
+
     private void addPlayers() {
         this.numOfPlayers = board.getNumOfPawns();
         for(int i = 1; i <= numOfPlayers; i++) {
-            players.add(new Player(board.getPawnPosition(i)));
+            players.add(new Player(i-1, board.getPawnPosition(i)));
         }
     }
 
@@ -46,11 +52,7 @@ public class GameManager {
     }
 
     private void endGame() {
-        System.out.println("GAME OVER!\nFINAL SCORE:\n");
-        for(int i = 1; i <= numOfPlayers; i++) {
-            Player player = players.get(i - 1);
-            System.out.println("PLAYER " + i + " - " + player.getPoints() + "p\n");
-        }
+        gameScene.showGameOver();
     }
 
     private void updateState() {
@@ -75,7 +77,7 @@ public class GameManager {
             board.removeTile(playerPosition);
             board.movePawn(playerPosition, position);
             player.setPosition(position);
-            System.out.println("Player_ID: " + (playerID + 1) + "\nPoints: " + player.getPoints() + "\n");
+            gameScene.updatePlayerPoints(player);
             turn++;
             updateState();
         }

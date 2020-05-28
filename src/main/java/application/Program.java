@@ -11,6 +11,8 @@ public class Program {
     }
 
     public static class MainApp extends Application {
+        public static final int WIDTH = 900;
+        public static final int HEIGHT = 650;
         public static Stage primaryStage;
         public static MainMenu mainMenu;
         public static GameScene gameScene;
@@ -18,8 +20,8 @@ public class Program {
         @Override
         public void start(Stage stage) {
             primaryStage = stage;
-            mainMenu = new MainMenu(750,650); mainMenu.load();
-            gameScene = new GameScene(750,650); gameScene.load(2);
+            mainMenu = new MainMenu(WIDTH,HEIGHT); mainMenu.load();
+            gameScene = new GameScene(WIDTH,HEIGHT);
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();
