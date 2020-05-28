@@ -10,6 +10,9 @@ import game.Player;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -24,14 +27,26 @@ import static application.Program.MainApp.*;
 public class GameScene extends Scene {
     private final static BorderPane root = new BorderPane();
     private static Pane hexes;
+    private static ScrollPane scrollPane;
+
     private static VBox buttonsBox;
     private static Text[] playerPoints;
     private static GameManager gameManager;
 
     public void load(int numOfPlayers) {
         root.getChildren().clear();
+        scrollPane = new ScrollPane();
         hexes = new Pane();
         buttonsBox = new VBox(10);
+
+        scrollPane.setContent(hexes);
+
+        scrollPane.setPannable(true);
+        hexes.setOnScroll(e -> e.consume());
+        hexes.addEventHandler(MouseEvent.ANY, event -> {
+            if(event.getButton() != MouseButton.MIDDLE)
+                event.consume();
+        });
 
         BoardView view = new BoardView(hexes);
         Board board = new Board(view);
@@ -63,7 +78,7 @@ public class GameScene extends Scene {
         for(int i=0; i<numOfPlayers; i++) buttonsBox.getChildren().add(playerPoints[i]);
         buttonsBox.getChildren().addAll(btnRearrange,btnBack);
         buttonsBox.setAlignment(Pos.CENTER);
-        root.setCenter(hexes);
+        root.setCenter(scrollPane);
         root.setLeft(buttonsBox);
     }
 

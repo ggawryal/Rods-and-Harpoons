@@ -1,7 +1,5 @@
 package board.drawable.tile;
 
-import javafx.scene.image.Image;
-
 public class EmptyTile implements Tile {
     @Override
     public int getScore() {
@@ -9,7 +7,7 @@ public class EmptyTile implements Tile {
     }
 
     @Override
-    public Image getImage() {
+    public String getImagePath() {
         return null;
     }
 }

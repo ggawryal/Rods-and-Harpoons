@@ -3,7 +3,9 @@ package board;
 import board.drawable.Drawable;
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
+import board.drawable.tile.TileImageLoader;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -13,7 +15,7 @@ public class BoardView {
     private static final double HEIGHT = SIZE*Math.sqrt(3)/2.0;
 
     private Pane pane;
-
+    private TileImageLoader tileImageLoader = new TileImageLoader();
     private HashMap<HexVector,ImageView> hexagons = new HashMap<>();
     private HashMap<HexVector,ImageView> pawns = new HashMap<>();
 
@@ -30,14 +32,17 @@ public class BoardView {
         double x = position.getEast()*HEIGHT*2 + position.getSoutheast()*HEIGHT;
         double y = position.getSoutheast()*1.5*SIZE;
 
-        ImageView imageView = new ImageView(object.getImage());
+        ImageView imageView = new ImageView(tileImageLoader.get(object.getImagePath()));
         imageView.setFitHeight(2.2*SIZE);
         imageView.setFitWidth(2.2*SIZE);
         imageView.setX(x);
         imageView.setY(y);
 
         if(onMouseClick != null)
-            imageView.setOnMouseClicked(e -> onMouseClick.accept(position));
+            imageView.setOnMouseClicked(mouseEvent -> {
+                if (!mouseEvent.getButton().equals(MouseButton.MIDDLE))
+                    onMouseClick.accept(position);
+            });
 
         return imageView;
     }

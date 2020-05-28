@@ -1,16 +1,14 @@
 package board.drawable.tile;
 
-import javafx.scene.image.Image;
-
 public class ScoreTile implements Tile {
     private final int score;
-    private final Image image;
+    private final String imagePath;
 
     public ScoreTile(int score) {
         this.score = score;
         if(score < 1 || score >= 4)
             throw new RuntimeException("Tile with wrong score chosen");
-        image = new Image("/hex_" + score + ".png");
+        imagePath = "/hex_" + score + ".png";
     }
 
     @Override
@@ -19,5 +17,5 @@ public class ScoreTile implements Tile {
     }
 
     @Override
-    public Image getImage() { return image; }
+    public String getImagePath() { return imagePath; }
 }
