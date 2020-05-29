@@ -19,7 +19,7 @@ public class RectangleTileArranger implements TileArranger {
     @Override
     public void arrange(Board b, TileScoreChooser tileScoreChooser) {
         b.clear();
-
+        tileScoreChooser.prepareTiles(getTotalTilesNeeded());
         HexVector rowVector = new HexVector(0,0);
         for(int row=0; row<height; row++) {
             HexVector colVector = rowVector.copy();
@@ -38,5 +38,10 @@ public class RectangleTileArranger implements TileArranger {
             else
                 rowVector.add(new HexVector(Direction.NE,-1));
         }
+    }
+
+    public int getTotalTilesNeeded() {
+        int evenRowNumber = (height+1)/2, oddRowNumber = (height)/2;
+        return evenRowNumber * evenRowWidth + oddRowNumber * (evenRowWidth-1);
     }
 }

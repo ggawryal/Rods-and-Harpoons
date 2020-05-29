@@ -58,7 +58,7 @@ public class Board {
 
 
 
-    boolean hasTileAt(HexVector position) {
+    public boolean hasTileAt(HexVector position) {
         return tiles.containsKey(position);
     }
 

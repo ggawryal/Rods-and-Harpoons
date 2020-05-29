@@ -3,14 +3,14 @@ package board.arranger;
 import board.drawable.tile.ScoreTile;
 import board.drawable.tile.Tile;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
- * Chooses randomly new tiles with ratio r1:r2:r3, where ri means number of tiles with score i
+ * Creates tileset with t[i] tiles of score i such that t[1] : t[2] : t[3] = r1 : r2 : r3
+ * Given same ratios and totalTileNumber, number of tiles of each type is constant (but order is random)
  */
 public class RatioTileChooser implements TileScoreChooser {
-    Random random = new Random();
-
     public RatioTileChooser(int r1, int r2, int r3) {
         if(r1 < 0 || r2 < 0 || r3 < 0 || r1+r2+r3 == 0)
             throw new RuntimeException("wrong ratio chosen");
@@ -21,17 +21,37 @@ public class RatioTileChooser implements TileScoreChooser {
     }
 
     @Override
-    public Tile chooseTile() {
-        int r = random.nextInt(ratioSum);
+    public void prepareTiles(int totalTileNumber) {
+        tiles.clear();
+        int[] tileCount = new int[4];
+        int rest = totalTileNumber;
         for(int i=1;i<=3;i++) {
-            r -= ratios[i];
-            if (r < 0)
-                return new ScoreTile(i);
+            tileCount[i] = ratios[i] * totalTileNumber / ratioSum;
+            rest -= tileCount[i];
         }
-        return new ScoreTile(3);
+        tileCount[1] += rest;
+        for(int i=1;i<=3;i++) {
+            for(int ct=0;ct<tileCount[i];ct++)
+                tiles.add(i);
+        }
+        Collections.shuffle(tiles);
     }
 
+    @Override
+    public Tile chooseTile() {
+        if(getTilesLeft() > 0) {
+            int score = tiles.remove(0);
+            return new ScoreTile(score);
+        }
+        throw new RuntimeException("chooseTile called, but no tiles left");
+    }
 
+    @Override
+    public int getTilesLeft() {
+        return tiles.size();
+    }
+
+    private ArrayList<Integer> tiles = new ArrayList<>();
     private final int[] ratios = new int[4];
     private final int ratioSum;
 }
