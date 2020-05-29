@@ -33,7 +33,10 @@ public class GameScene extends Scene {
     private static Text[] playerPoints;
     private static GameManager gameManager;
 
-    public void load(int numOfPlayers) {
+    private final static int numOfPlayers = 2;
+    private final static int numOfPawns = 3;
+
+    public void load() {
         root.getChildren().clear();
         scrollPane = new ScrollPane();
         hexes = new Pane();
@@ -51,13 +54,13 @@ public class GameScene extends Scene {
         BoardView view = new BoardView(hexes);
         Board board = new Board(view);
         MoveChecker moveChecker = new StandardMoveChecker(board);
-        gameManager = new GameManager(moveChecker, board);
+        gameManager = new GameManager(moveChecker, board, numOfPlayers);
         view.setActionOnClick(gameManager::onClickResponse);
 
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,3,1);
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
-        board.addPawns(numOfPlayers);
+        board.addPawns(numOfPlayers, numOfPawns);
         gameManager.init();
 
         playerPoints = new Text[numOfPlayers];
@@ -72,7 +75,7 @@ public class GameScene extends Scene {
         Button btnRearrange = new Button();
         btnRearrange.setText("Reset tiles");
         btnRearrange.setOnAction(event -> {
-            gameScene.load(numOfPlayers);
+            gameScene.load();
         });
 
         for(int i=0; i<numOfPlayers; i++) buttonsBox.getChildren().add(playerPoints[i]);

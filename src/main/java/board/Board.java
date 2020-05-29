@@ -22,17 +22,19 @@ public class Board {
         view.drawPawn(pawn, position);
     }
 
-    public void addPawns(int count) {
+    public void addPawns(int numOfPlayers, int numOfPawns) {
         ArrayList<HexVector> keysAsArray = new ArrayList<>(tiles.keySet());
-        ArrayList<Integer> ids = new ArrayList<>();
-        for(int i = 1; i <= count; i++) {
-            int num = r.nextInt(keysAsArray.size());
-            while(ids.contains(num)) {
-                num = r.nextInt(keysAsArray.size());
+        ArrayList<Integer> numbers = new ArrayList<>();
+        for(int i = 1; i <= numOfPlayers; i++) {
+            for(int j = 0; j < numOfPawns; j++) {
+                int n = r.nextInt(keysAsArray.size());
+                while (numbers.contains(n)) {
+                    n = r.nextInt(keysAsArray.size());
+                }
+                numbers.add(n);
+                HexVector position = keysAsArray.get(n);
+                addPawn(new Pawn(i), position);
             }
-            ids.add(num);
-            HexVector position = keysAsArray.get(num);
-            addPawn(new Pawn(i), position);
         }
     }
 
@@ -44,13 +46,14 @@ public class Board {
         return pawns.containsKey(position);
     }
 
-    public HexVector getPawnPosition(int id) {
+    public ArrayList<HexVector> getPawnsPositions(int id) {
+        ArrayList<HexVector> result = new ArrayList<>();
         for(HexVector position : pawns.keySet()) {
             Pawn pawn = pawns.get(position);
             if(pawn.getId() == id)
-                return position;
+                result.add(position);
         }
-        return null;
+        return result;
     }
 
 
@@ -82,10 +85,16 @@ public class Board {
         view.removePawn(position);
     }
 
-    public void movePawn(HexVector from, HexVector to) {
-        int id = pawns.get(from).getId();
-        removePawn(from);
-        addPawn(new Pawn(id), to);
+    public void movePawn(Move move) {
+        int id = pawns.get(move.getFrom()).getId();
+        removePawn(move.getFrom());
+        addPawn(new Pawn(id), move.getTo());
+    }
+
+    public void switchPawnImage(HexVector position) {
+        Pawn pawn = pawns.get(position);
+        pawn.switchImage();
+        view.setPawnImage(pawn.getImagePath(), position);
     }
 
     public void clear() {

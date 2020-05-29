@@ -14,41 +14,52 @@ public class GameManager {
     private final MoveChecker moveChecker;
     private final Board board;
     private int numOfPlayers;
+    private HexVector activePawnPosition;
     private int turn;
     private final ArrayList<Player> players = new ArrayList<>();
 
 
-    public GameManager(MoveChecker moveChecker, Board board) {
+    public GameManager(MoveChecker moveChecker, Board board, int numOfPlayers) {
         this.moveChecker = moveChecker;
         this.board = board;
+        this.numOfPlayers = numOfPlayers;
     }
 
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    private void addPlayers() {
-        this.numOfPlayers = board.getNumOfPawns();
+    private void addPlayers(int numOfPlayers) {
         for(int i = 1; i <= numOfPlayers; i++) {
-            players.add(new Player(i-1, board.getPawnPosition(i)));
+            Player player = new Player(i - 1);
+            for(HexVector position : board.getPawnsPositions(i)) {
+                player.addPawn(position);
+            }
+            players.add(player);
         }
     }
 
     public void init() {
         players.clear();
         turn = 0;
-        addPlayers();
+        addPlayers(numOfPlayers);
     }
 
-    private boolean canPlayerMove(int id) {
-        Player player = players.get(id);
-        HexVector position = player.getPosition();
+    private boolean canPawnMove(HexVector position) {
         return moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(-1, 0)))) ||
                 moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(1, 0)))) ||
                 moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(0, -1)))) ||
                 moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(0, 1)))) ||
                 moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(1, -1)))) ||
                 moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(-1, 1))));
+    }
+
+    private boolean canPlayerMove(Player player) {
+        for(int i = 0; i < player.getPawnsCount(); i++) {
+            if(canPawnMove(player.getPawnPosition(i)))
+                return true;
+        }
+        return false;
     }
 
     private void endGame() {
@@ -58,7 +69,7 @@ public class GameManager {
     private void updateState() {
         for(int i = 0; i < numOfPlayers; i++) {
             int playerID = turn % numOfPlayers;
-            if(!canPlayerMove(playerID))
+            if(!canPlayerMove(players.get(playerID)))
                 turn++;
             else
                 return;
@@ -66,20 +77,41 @@ public class GameManager {
         endGame();
     }
 
+    private void tryToMove(Player player, Move move) {
+        if(moveChecker.isValidMove(move)) {
+            Tile tile = board.getTileAt(move.getFrom());
+            player.addPoints(tile.getScore());
+            board.removeTile(move.getFrom());
+            board.movePawn(move);
+            player.changePawnPosition(move);
+            gameScene.updatePlayerPoints(player);
+            activePawnPosition = null;
+            turn++;
+            updateState();
+        }
+    }
+
+    private void deactivatePawn() {
+        if(activePawnPosition != null) {
+            board.switchPawnImage(activePawnPosition);
+        }
+        activePawnPosition = null;
+    }
+
+    private void activatePawnAt(HexVector position) {
+        activePawnPosition = position;
+        board.switchPawnImage(position);
+    }
 
     public void onClickResponse(HexVector position) {
         int playerID = turn % numOfPlayers;
         Player player = players.get(playerID);
-        HexVector playerPosition = player.getPosition();
-        if(moveChecker.isValidMove(new Move(playerPosition, position))) {
-            Tile tile = board.getTileAt(playerPosition);
-            player.addPoints(tile.getScore());
-            board.removeTile(playerPosition);
-            board.movePawn(playerPosition, position);
-            player.setPosition(position);
-            gameScene.updatePlayerPoints(player);
-            turn++;
-            updateState();
+        if(player.hasPawnAt(position)) {
+            deactivatePawn();
+            activatePawnAt(position);
+        } else {
+            if(activePawnPosition != null)
+                tryToMove(player, new Move(activePawnPosition, position));
         }
     }
 }

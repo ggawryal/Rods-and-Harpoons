@@ -61,6 +61,11 @@ public class BoardView {
         pane.getChildren().add(imageView);
     }
 
+    void setPawnImage(String imagePath, HexVector position) {
+        ImageView imageView = pawns.get(position);
+        imageView.setImage(tileImageLoader.get(imagePath));
+    }
+
     void removeTile(HexVector position) {
         ImageView hex = hexagons.get(position);
         pane.getChildren().remove(hex);

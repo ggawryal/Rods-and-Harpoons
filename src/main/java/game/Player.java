@@ -1,25 +1,44 @@
 package game;
 
 import board.HexVector;
+import board.Move;
+
+import java.util.ArrayList;
 
 public class Player {
     private int id;
-    private HexVector position;
+    private ArrayList<HexVector> pawnsPositions = new ArrayList<>();
     private int points;
 
-    public Player(int id, HexVector position) {
+    public Player(int id) {
         this.id = id;
-        this.position = position;
     }
 
     public int getId() { return id; }
 
-    public HexVector getPosition() {
-        return position;
+    public void addPawn(HexVector position) {
+        pawnsPositions.add(position);
     }
 
-    public void setPosition(HexVector position) {
-        this.position = position;
+    public int getPawnsCount() {
+        return pawnsPositions.size();
+    }
+
+    public HexVector getPawnPosition(int index) {
+        return pawnsPositions.get(index);
+    }
+
+    public boolean hasPawnAt(HexVector position) {
+        return pawnsPositions.contains(position);
+    }
+
+    public void changePawnPosition(Move move) {
+        for(int i = 0; i < pawnsPositions.size(); i++) {
+            if(pawnsPositions.get(i).equals(move.getFrom())) {
+                pawnsPositions.set(i, move.getTo());
+                return;
+            }
+        }
     }
 
     public int getPoints() {

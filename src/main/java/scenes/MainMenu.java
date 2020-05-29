@@ -23,7 +23,7 @@ public class MainMenu extends Scene {
         btnPlay.setFont(Font.font(50));
         btnPlay.setText("Play");
         btnPlay.setOnAction(event -> {
-            gameScene.load(2);
+            gameScene.load();
             primaryStage.setScene(gameScene);
         });
 
