@@ -7,10 +7,13 @@ import board.arranger.TileArranger;
 import board.arranger.TileScoreChooser;
 import game.GameManager;
 import game.Player;
+import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -45,7 +48,7 @@ public class GameScene extends Scene {
         scrollPane.setContent(hexes);
 
         scrollPane.setPannable(true);
-        hexes.setOnScroll(e -> e.consume());
+        hexes.setOnScroll(Event::consume);
         hexes.addEventHandler(MouseEvent.ANY, event -> {
             if(event.getButton() != MouseButton.MIDDLE)
                 event.consume();
@@ -63,6 +66,10 @@ public class GameScene extends Scene {
         board.addPawns(numOfPlayers, numOfPawns);
         gameManager.init();
 
+        ImageView logo = new ImageView(new Image("/logo_small.png"));
+        logo.setFitWidth(100);
+        logo.setFitHeight(100);
+
         playerPoints = new Text[numOfPlayers];
         for(int i=0; i<2; i++) {
             playerPoints[i] = new Text("Player " + (i+1) + ": 0");
@@ -78,6 +85,7 @@ public class GameScene extends Scene {
             gameScene.load();
         });
 
+        buttonsBox.getChildren().add(logo);
         for(int i=0; i<numOfPlayers; i++) buttonsBox.getChildren().add(playerPoints[i]);
         buttonsBox.getChildren().addAll(btnRearrange,btnBack);
         buttonsBox.setAlignment(Pos.CENTER);

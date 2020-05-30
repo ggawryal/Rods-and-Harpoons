@@ -93,14 +93,14 @@ public class GameManager {
 
     private void deactivatePawn() {
         if(activePawnPosition != null) {
-            board.switchPawnImage(activePawnPosition);
+            board.switchPawnShadow(activePawnPosition);
         }
         activePawnPosition = null;
     }
 
     private void activatePawnAt(HexVector position) {
         activePawnPosition = position;
-        board.switchPawnImage(position);
+        board.switchPawnShadow(position);
     }
 
     public void onClickResponse(HexVector position) {

@@ -91,10 +91,8 @@ public class Board {
         addPawn(new Pawn(id), move.getTo());
     }
 
-    public void switchPawnImage(HexVector position) {
-        Pawn pawn = pawns.get(position);
-        pawn.switchImage();
-        view.setPawnImage(pawn.getImagePath(), position);
+    public void switchPawnShadow(HexVector position) {
+        view.switchPawnShadow(position);
     }
 
     public void clear() {

@@ -4,6 +4,8 @@ import board.drawable.Drawable;
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 import board.drawable.tile.TileImageLoader;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
@@ -61,9 +63,15 @@ public class BoardView {
         pane.getChildren().add(imageView);
     }
 
-    void setPawnImage(String imagePath, HexVector position) {
+    void switchPawnShadow(HexVector position) {
         ImageView imageView = pawns.get(position);
-        imageView.setImage(tileImageLoader.get(imagePath));
+        if(imageView.getEffect() == null) {
+            Glow glow = new Glow(0);
+            glow.setInput(new DropShadow());
+            imageView.setEffect(glow);
+        } else {
+            imageView.setEffect(null);
+        }
     }
 
     void removeTile(HexVector position) {
