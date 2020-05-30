@@ -6,11 +6,9 @@ import board.drawable.tile.Tile;
 import board.drawable.tile.TileImageLoader;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -38,8 +36,8 @@ public class BoardView {
         double y = position.getSoutheast()*1.5*SIZE;
 
         ImageView imageView = new ImageView(tileImageLoader.get(object.getImagePath()));
-        imageView.setFitHeight(2.2*SIZE);
-        imageView.setFitWidth(2.2*SIZE);
+        imageView.setFitHeight(2.01*SIZE);
+        imageView.setFitWidth(2.01*SIZE);
         imageView.setX(x);
         imageView.setY(y);
 
@@ -61,8 +59,6 @@ public class BoardView {
 
     void drawPawn(Pawn pawn, HexVector position) {
         ImageView imageView = drawObject(pawn, position);
-        imageView.setViewOrder(-2);
-
         pawns.put(position, imageView);
         pane.getChildren().add(imageView);
     }
@@ -70,10 +66,10 @@ public class BoardView {
     void switchPawnSelection(HexVector position) {
         ImageView imageView = pawns.get(position);
         if(imageView.getEffect() == null) {
-            imageView.setViewOrder(-3);
+            imageView.setViewOrder(-1);
             imageView.setEffect(new DropShadow());
         } else {
-            imageView.setViewOrder(-2);
+            imageView.setViewOrder(0);
             imageView.setEffect(null);
         }
     }
@@ -81,10 +77,8 @@ public class BoardView {
     void switchTileGlow(HexVector position) {
         ImageView imageView = hexagons.get(position);
         if(imageView.getEffect() == null) {
-            imageView.setViewOrder(-1);
             imageView.setEffect(new Glow(0.5));
         } else {
-            imageView.setViewOrder(0);
             imageView.setEffect(null);
         }
     }
