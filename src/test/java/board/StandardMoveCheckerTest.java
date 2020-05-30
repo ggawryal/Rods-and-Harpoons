@@ -2,6 +2,8 @@ package board;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -56,5 +58,29 @@ class StandardMoveCheckerTest {
         assertTrue(mc.isValidMove(new Move(c,a)));
         assertTrue(mc.isValidMove(new Move(a,d)));
         assertTrue(mc.isValidMove(new Move(d,a)));
+    }
+
+    @Test
+    public void testGetPossibleMoves() {
+        Board board = mock(Board.class);
+        HexVector[] tiles = {
+                new HexVector(0,0),
+                new HexVector(0,1),
+                new HexVector(1,1),
+                new HexVector(-1,1)
+        };
+
+        when(board.hasTileAt(any())).thenReturn(false);
+        when(board.hasPawnAt(any())).thenReturn(false);
+        for(HexVector v : tiles) {
+            when(board.hasTileAt(v)).thenReturn(true);
+        }
+
+        MoveChecker mc = new StandardMoveChecker(board);
+        List<Move> moveList =  mc.getPossibleMoves(new HexVector(0,0));
+
+        assertEquals(2,moveList.size());
+        assertTrue(moveList.contains(new Move(new HexVector(0,0),new HexVector(0,1))));
+        assertTrue(moveList.contains(new Move(new HexVector(0,0),new HexVector(-1,1))));
     }
 }

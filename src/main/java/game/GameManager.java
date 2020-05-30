@@ -46,12 +46,7 @@ public class GameManager {
     }
 
     private boolean canPawnMove(HexVector position) {
-        return moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(-1, 0)))) ||
-                moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(1, 0)))) ||
-                moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(0, -1)))) ||
-                moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(0, 1)))) ||
-                moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(1, -1)))) ||
-                moveChecker.isValidMove(new Move(position, position.copy().add(new HexVector(-1, 1))));
+        return !moveChecker.getPossibleMoves(position).isEmpty();
     }
 
     private boolean canPlayerMove(Player player) {

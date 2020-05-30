@@ -93,10 +93,8 @@ public class Board {
     public void switchPawnSelection(HexVector position) {
         view.switchPawnSelection(position);
         StandardMoveChecker moveChecker = new StandardMoveChecker(this);
-        for(HexVector hexVector : tiles.keySet()) {
-            if(moveChecker.isValidMove(new Move(position,hexVector))) {
-                view.switchTileGlow(hexVector);
-            }
+        for(Move move : moveChecker.getPossibleMoves(position)) {
+            view.switchTileGlow(move.getTo());
         }
     }
 
