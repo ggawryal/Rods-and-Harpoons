@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Board {
-    private HashMap<HexVector,Tile> tiles = new HashMap<>();
+    private HashMap<HexVector, Tile> tiles = new HashMap<>();
     private HashMap<HexVector, Pawn> pawns = new HashMap<>();
     private BoardView view;
     private Random r = new Random();
@@ -56,8 +56,6 @@ public class Board {
         return result;
     }
 
-
-
     public boolean hasTileAt(HexVector position) {
         return tiles.containsKey(position);
     }
@@ -87,12 +85,19 @@ public class Board {
 
     public void movePawn(Move move) {
         int id = pawns.get(move.getFrom()).getId();
+        switchPawnSelection(move.getFrom());
         removePawn(move.getFrom());
         addPawn(new Pawn(id), move.getTo());
     }
 
-    public void switchPawnShadow(HexVector position) {
-        view.switchPawnShadow(position);
+    public void switchPawnSelection(HexVector position) {
+        view.switchPawnSelection(position);
+        StandardMoveChecker moveChecker = new StandardMoveChecker(this);
+        for(HexVector hexVector : tiles.keySet()) {
+            if(moveChecker.isValidMove(new Move(position,hexVector))) {
+                view.switchTileGlow(hexVector);
+            }
+        }
     }
 
     public void clear() {
