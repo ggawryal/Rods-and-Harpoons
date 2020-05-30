@@ -12,17 +12,20 @@ import static org.mockito.Mockito.when;
 class StandardMoveCheckerTest {
     @Test
     public void testIsValidMoveWhenNoMissingTiles() {
+        System.out.println("jazda");
         HexVector a = new HexVector(0,0);
         HexVector b = new HexVector(Direction.SE,5);
         HexVector c = new HexVector(Direction.NE,4);
         HexVector d = new HexVector(Direction.E,-3).add(c);
 
         Board board = mock(Board.class);
-        when(board.hasTileAt(any())).thenReturn(true);
+        when(board.hasTileAt(any())).thenReturn(false);
+        for(int i=-8;i<8;i++)
+            for(int j=-8;j<8;j++)
+                when(board.hasTileAt(new HexVector(i,j))).thenReturn(true);
         when(board.hasPawnAt(any())).thenReturn(false);
 
         MoveChecker mc = new StandardMoveChecker(board);
-
 
         assertTrue(mc.isValidMove(new Move(a,b)));
         assertTrue(mc.isValidMove(new Move(b,a)));
@@ -43,8 +46,12 @@ class StandardMoveCheckerTest {
         Board board = mock(Board.class);
         HexVector[] missingTiles = {new HexVector(Direction.E,1),new HexVector(Direction.SE,2), new HexVector(Direction.NE,5)};
 
-        when(board.hasTileAt(any())).thenReturn(true);
         when(board.hasPawnAt(any())).thenReturn(false);
+        when(board.hasTileAt(any())).thenReturn(false);
+        for(int i=-8;i<8;i++)
+            for(int j=-8;j<8;j++)
+                when(board.hasTileAt(new HexVector(i,j))).thenReturn(true);
+
         for(HexVector v : missingTiles)
             when(board.hasTileAt(v)).thenReturn(false);
 
