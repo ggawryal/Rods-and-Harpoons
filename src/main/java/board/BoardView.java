@@ -26,10 +26,6 @@ public class BoardView {
         this.pane = pane;
     }
 
-    private Consumer<HexVector> onMouseClick;
-    public void setActionOnClick(Consumer<HexVector> onMouseClick) {
-        this.onMouseClick = onMouseClick;
-    }
 
     private ImageView drawObject(Drawable object, HexVector position) {
         double x = position.getEast()*HEIGHT*2 + position.getSoutheast()*HEIGHT;
@@ -41,13 +37,16 @@ public class BoardView {
         imageView.setX(x);
         imageView.setY(y);
 
-        if(onMouseClick != null)
-            imageView.setOnMouseClicked(mouseEvent -> {
-                if (!mouseEvent.getButton().equals(MouseButton.MIDDLE))
-                    onMouseClick.accept(position);
-            });
-
         return imageView;
+    }
+
+    public void setActionOnClickForExistingTiles(Consumer<HexVector> onMouseClick) {
+        for(var entry : hexagons.entrySet()) {
+            entry.getValue().setOnMouseClicked(mouseEvent -> {
+                if (!mouseEvent.getButton().equals(MouseButton.MIDDLE))
+                    onMouseClick.accept(entry.getKey());
+            });
+        }
     }
 
     void drawTile(Tile tile, HexVector position) {

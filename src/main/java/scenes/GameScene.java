@@ -6,6 +6,7 @@ import board.arranger.RectangleTileArranger;
 import board.arranger.TileArranger;
 import board.arranger.TileScoreChooser;
 import game.GameManager;
+import game.HumanController;
 import game.Player;
 import javafx.event.Event;
 import javafx.geometry.Pos;
@@ -23,6 +24,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 
 import static application.Program.MainApp.*;
@@ -57,14 +59,17 @@ public class GameScene extends Scene {
         BoardView view = new BoardView(hexes);
         Board board = new Board(view);
         MoveChecker moveChecker = new StandardMoveChecker(board);
-        gameManager = new GameManager(moveChecker, board, numOfPlayers);
-        view.setActionOnClick(gameManager::onClickResponse);
 
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,3,1);
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
-        board.addPawns(numOfPlayers, numOfPawns);
-        gameManager.init();
+
+        gameManager = new GameManager(moveChecker, board, Arrays.asList(new HumanController(), new HumanController()));
+        view.setActionOnClickForExistingTiles(position -> {
+            if(gameManager.getCurrentController() instanceof HumanController) {
+               ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
+            }
+        });
 
         ImageView logo = new ImageView(new Image("/logo_small.png"));
         logo.setFitWidth(100);

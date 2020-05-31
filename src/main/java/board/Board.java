@@ -3,9 +3,7 @@ package board;
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class Board {
     private HashMap<HexVector, Tile> tiles = new HashMap<>();
@@ -17,25 +15,13 @@ public class Board {
         this.view = view;
     }
 
-    private void addPawn(Pawn pawn, HexVector position) {
+    public void addPawn(Pawn pawn, HexVector position) {
         pawns.put(position, pawn);
         view.drawPawn(pawn, position);
     }
 
-    public void addPawns(int numOfPlayers, int numOfPawns) {
-        ArrayList<HexVector> keysAsArray = new ArrayList<>(tiles.keySet());
-        ArrayList<Integer> numbers = new ArrayList<>();
-        for(int i = 1; i <= numOfPlayers; i++) {
-            for(int j = 0; j < numOfPawns; j++) {
-                int n = r.nextInt(keysAsArray.size());
-                while (numbers.contains(n)) {
-                    n = r.nextInt(keysAsArray.size());
-                }
-                numbers.add(n);
-                HexVector position = keysAsArray.get(n);
-                addPawn(new Pawn(i), position);
-            }
-        }
+    public Collection<HexVector> getTilePositions() {
+        return tiles.keySet();
     }
 
     public int getNumOfPawns() {
@@ -85,7 +71,6 @@ public class Board {
 
     public void movePawn(Move move) {
         int id = pawns.get(move.getFrom()).getId();
-        switchPawnSelection(move.getFrom());
         removePawn(move.getFrom());
         addPawn(new Pawn(id), move.getTo());
     }
@@ -93,9 +78,8 @@ public class Board {
     public void switchPawnSelection(HexVector position) {
         view.switchPawnSelection(position);
         StandardMoveChecker moveChecker = new StandardMoveChecker(this);
-        for(Move move : moveChecker.getPossibleMoves(position)) {
+        for(Move move : moveChecker.getPossibleMoves(position))
             view.switchTileGlow(move.getTo());
-        }
     }
 
     public void clear() {
