@@ -60,7 +60,7 @@ public class GameScene extends Scene {
         Board board = new Board(view);
         MoveChecker moveChecker = new StandardMoveChecker(board);
 
-        TileScoreChooser tileScoreChooser = new RatioTileChooser(3,3,1);
+        TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
 
