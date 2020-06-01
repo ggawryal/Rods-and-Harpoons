@@ -8,6 +8,7 @@ import board.arranger.TileScoreChooser;
 import game.GameManager;
 import game.HumanController;
 import game.Player;
+import game.RandomMovingBot;
 import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -64,7 +65,7 @@ public class GameScene extends Scene {
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
 
-        gameManager = new GameManager(moveChecker, board, Arrays.asList(new HumanController(), new HumanController()));
+        gameManager = new GameManager(moveChecker, board, Arrays.asList(new HumanController(), new RandomMovingBot()));
         view.setActionOnClickForExistingTiles(position -> {
             if(gameManager.getCurrentController() instanceof HumanController) {
                ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
@@ -96,6 +97,8 @@ public class GameScene extends Scene {
         buttonsBox.setAlignment(Pos.CENTER);
         root.setCenter(scrollPane);
         root.setLeft(buttonsBox);
+
+        gameManager.startGame();
     }
 
     public void updatePlayerPoints(Player player) {

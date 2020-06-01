@@ -5,6 +5,7 @@ import board.HexVector;
 import board.Move;
 import board.MoveChecker;
 import board.drawable.tile.Tile;
+import javafx.application.Platform;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -33,6 +34,10 @@ public class GameManager {
         pawnSetUpper.setUpPawns(board,players,2);
     }
 
+    public void startGame() {
+        controllers.get(0).nextTurn();
+    }
+
     public ArrayList<Player> getPlayers() {
         return players;
     }
@@ -40,7 +45,7 @@ public class GameManager {
     public void addPlayer(PlayerController playerController) {
         Player player = new Player(getPlayers().size());
         players.add(player);
-        playerController.setPlayerAndBoard(player,board);
+        playerController.set(player,board,moveChecker);
         playerController.setActionOnMove(move -> tryToMove(player,move));
         controllers.add(playerController);
     }
@@ -66,8 +71,10 @@ public class GameManager {
             int playerID = turn % getPlayersNumber();
             if(!canPlayerMove(players.get(playerID)))
                 turn++;
-            else
+            else {
+                controllers.get(playerID).nextTurn();
                 return;
+            }
         }
         endGame();
     }
@@ -77,15 +84,17 @@ public class GameManager {
     }
 
     public boolean tryToMove(Player player, Move move) {
-        if(moveChecker.isValidMove(move)) {
-            Tile tile = board.getTileAt(move.getFrom());
-            player.addPoints(tile.getScore());
-            board.removeTile(move.getFrom());
-            board.movePawn(move);
-            player.changePawnPosition(move);
-            gameScene.updatePlayerPoints(player);
-            turn++;
-            updateState();
+        if(players.get(turn % getPlayersNumber()).equals(player) && moveChecker.isValidMove(move)) {
+            Platform.runLater(() -> {
+                Tile tile = board.getTileAt(move.getFrom());
+                player.addPoints(tile.getScore());
+                board.removeTile(move.getFrom());
+                board.movePawn(move);
+                player.changePawnPosition(move);
+                gameScene.updatePlayerPoints(player);
+                turn++;
+                updateState();
+            });
             return true;
         }
         return false;
