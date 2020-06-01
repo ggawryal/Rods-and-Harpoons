@@ -1,6 +1,8 @@
 package application;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import scenes.GameScene;
 import scenes.MainMenu;
@@ -20,11 +22,20 @@ public class Program {
         @Override
         public void start(Stage stage) {
             primaryStage = stage;
-            mainMenu = new MainMenu(WIDTH,HEIGHT); mainMenu.load();
+            primaryStage.setTitle("Rods and Harpoons");
+            stage.getIcons().add(new Image("logo_small.png"));
+            primaryStage.setOnCloseRequest(e -> {
+                Platform.exit();
+                System.exit(0);
+            });
+
+            mainMenu = new MainMenu(WIDTH,HEIGHT);
+            mainMenu.load();
             gameScene = new GameScene(WIDTH,HEIGHT);
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();
+
         }
     }
 }
