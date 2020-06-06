@@ -20,7 +20,7 @@ public class HumanController implements PlayerController {
         if(!myTurn)
             return;
         if(activePawnPosition != null) {
-            board.switchPawnSelection(activePawnPosition);
+            board.switchPawnSelection(activePawnPosition, true);
         }
         activePawnPosition = null;
     }
@@ -29,7 +29,7 @@ public class HumanController implements PlayerController {
         if(!myTurn)
             return;
         activePawnPosition = position;
-        board.switchPawnSelection(position);
+        board.switchPawnSelection(position, true);
     }
 
     public void onClickResponse(HexVector position) {

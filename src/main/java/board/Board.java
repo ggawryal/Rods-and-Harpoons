@@ -75,11 +75,13 @@ public class Board {
         addPawn(new Pawn(id), move.getTo());
     }
 
-    public void switchPawnSelection(HexVector position) {
+    public void switchPawnSelection(HexVector position, boolean highlightPossibleMoves) {
         view.switchPawnSelection(position);
-        StandardMoveChecker moveChecker = new StandardMoveChecker(this);
-        for(Move move : moveChecker.getPossibleMoves(position))
-            view.switchTileGlow(move.getTo());
+        if (highlightPossibleMoves) {
+            StandardMoveChecker moveChecker = new StandardMoveChecker(this);
+            for(Move move : moveChecker.getPossibleMoves(position))
+                view.switchTileGlow(move.getTo());
+        }
     }
 
     public void clear() {

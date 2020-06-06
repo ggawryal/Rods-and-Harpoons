@@ -108,24 +108,30 @@ public class GameScene extends Scene {
     public void showGameOver() {
         ArrayList<Player> players = gameManager.getPlayers();
         players.sort(Comparator.comparingInt(Player::getPoints).reversed());
+        boolean draw = players.get(0).getPoints() == players.get(1).getPoints();
         VBox gameOverBox = new VBox(10);
-        root.getChildren().clear();
 
         Text gameOverText = new Text("Game over!");
         gameOverText.setFont(Font.font(20));
-        Text winnerText = new Text("Player " + (players.get(0).getId()+1) + " won with " + players.get(0).getPoints() + " points!");
+        Text winnerText;
+        if(!draw) {
+            winnerText = new Text("Player " + (players.get(0).getId()+1) + " won with " + players.get(0).getPoints() + " points!");
+        } else {
+            winnerText = new Text("It's a draw!");
+        }
         winnerText.setFont(Font.font(50));
-        Text[] otherPlayersText = new Text[players.size()-1];
+        ArrayList<Text> otherPlayersText = new ArrayList<>();
+        if(draw) otherPlayersText.add(new Text("Player " + (players.get(0).getId()+1) + ": " + players.get(0).getPoints() + " points."));
         for(int i=1; i<players.size(); i++) {
-            otherPlayersText[i-1] = new Text("Player " + (players.get(i).getId()+1) + ": " + players.get(i).getPoints() + " points.");
+            otherPlayersText.add(new Text("Player " + (players.get(i).getId()+1) + ": " + players.get(i).getPoints() + " points."));
         }
 
         Button btnBack = new Button();
-        btnBack.setText("Go back to main menu");
-        btnBack.setOnAction(event -> primaryStage.setScene(mainMenu));
+        btnBack.setText("Hide");
+        btnBack.setOnAction(event -> root.setCenter(scrollPane));
 
         gameOverBox.getChildren().addAll(gameOverText,winnerText);
-        for(int i=0; i<players.size()-1; i++) gameOverBox.getChildren().add(otherPlayersText[i]);
+        gameOverBox.getChildren().addAll(otherPlayersText);
         gameOverBox.getChildren().add(btnBack);
 
         gameOverBox.setAlignment(Pos.CENTER);
