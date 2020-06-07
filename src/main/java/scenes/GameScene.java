@@ -5,10 +5,7 @@ import board.arranger.RatioTileChooser;
 import board.arranger.RectangleTileArranger;
 import board.arranger.TileArranger;
 import board.arranger.TileScoreChooser;
-import game.GameManager;
-import game.HumanController;
-import game.Player;
-import game.RandomMovingBot;
+import game.*;
 import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,6 +24,7 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import static application.Program.MainApp.*;
 
@@ -39,7 +37,7 @@ public class GameScene extends Scene {
     private static ArrayList<Text> playerPoints;
     private static GameManager gameManager;
 
-    public void load() {
+    public void load(List<String> nicknames, List<PlayerController> controllers) {
         root.getChildren().clear();
         scrollPane = new ScrollPane();
         hexes = new Pane();
@@ -62,7 +60,7 @@ public class GameScene extends Scene {
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
 
-        gameManager = new GameManager(moveChecker, board, Arrays.asList(new HumanController(), new RandomMovingBot()));
+        gameManager = new GameManager(moveChecker, board, nicknames, controllers);
         view.setActionOnClickForExistingTiles(position -> {
             if(gameManager.getCurrentController() instanceof HumanController) {
                ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
@@ -88,7 +86,7 @@ public class GameScene extends Scene {
         btnRearrange.setText("Reset tiles");
         btnRearrange.setOnAction(event -> {
             gameManager.endGame();
-            gameScene.load();
+            gameScene.load(nicknames, controllers);
         });
 
         gameStateBox.getChildren().add(logo);

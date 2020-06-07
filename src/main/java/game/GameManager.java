@@ -25,12 +25,14 @@ public class GameManager {
         return players.size();
     }
 
-    public GameManager(MoveChecker moveChecker, Board board, List<PlayerController> controllers) {
+    public GameManager(MoveChecker moveChecker, Board board, List<String> nicknames, List<PlayerController> controllers) {
         this.moveChecker = moveChecker;
         this.board = board;
 
-        for(PlayerController c : controllers)
-            addPlayer(c);
+        if(nicknames.size() != controllers.size()) throw new RuntimeException();
+        for(int i=0; i<nicknames.size(); i++) {
+            addPlayer(nicknames.get(i), controllers.get(i));
+        }
 
         pawnSetUpper.setUpPawns(board,players,2);
     }
@@ -43,8 +45,8 @@ public class GameManager {
         return players;
     }
 
-    public void addPlayer(PlayerController playerController) {
-        Player player = new Player(getPlayers().size());
+    public void addPlayer(String nickname, PlayerController playerController) {
+        Player player = new Player(getPlayers().size(), nickname);
         players.add(player);
         playerController.set(player,board,moveChecker);
         playerController.setActionOnMove(move -> tryToMove(player,move));

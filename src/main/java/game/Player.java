@@ -11,9 +11,9 @@ public class Player {
     private ArrayList<HexVector> pawnsPositions = new ArrayList<>();
     private int points;
 
-    public Player(int id) {
+    public Player(int id, String nickname) {
         this.id = id;
-        this.nickname = "Player " + (id+1);
+        this.nickname = nickname;
     }
 
     public int getId() { return id; }

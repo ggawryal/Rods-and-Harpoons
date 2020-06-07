@@ -22,10 +22,7 @@ public class MainMenu extends Scene {
         Button btnPlay = new Button();
         btnPlay.setFont(Font.font(50));
         btnPlay.setText("Play");
-        btnPlay.setOnAction(event -> {
-            gameScene.load();
-            primaryStage.setScene(gameScene);
-        });
+        btnPlay.setOnAction(event -> primaryStage.setScene(settings));
 
         Button btnExit = new Button();
         btnExit.setFont(Font.font(50));
