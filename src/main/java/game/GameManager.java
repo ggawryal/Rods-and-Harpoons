@@ -16,6 +16,7 @@ public class GameManager {
     private final MoveChecker moveChecker;
     private final Board board;
     private int turn;
+    private boolean gameEnded;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<PlayerController> controllers = new ArrayList<>();
     PawnSetUpper pawnSetUpper = new PawnSetUpper();
@@ -62,11 +63,13 @@ public class GameManager {
         return false;
     }
 
-    private void endGame() {
+    public void endGame() {
+        gameEnded = true;
         gameScene.showGameOver();
     }
 
     private void updateState() {
+        if(gameEnded) return;
         for(int i = 0; i < getPlayersNumber(); i++) {
             int playerID = turn % getPlayersNumber();
             if(!canPlayerMove(players.get(playerID)))

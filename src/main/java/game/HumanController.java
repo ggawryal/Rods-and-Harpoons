@@ -5,7 +5,6 @@ import board.HexVector;
 import board.Move;
 import board.MoveChecker;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class HumanController implements PlayerController {
@@ -36,8 +35,12 @@ public class HumanController implements PlayerController {
         if(!myTurn)
             return;
         if(player.hasPawnAt(position)) {
-            deactivatePawn();
-            activatePawnAt(position);
+            if(position == activePawnPosition) {
+                deactivatePawn();
+            } else {
+                deactivatePawn();
+                activatePawnAt(position);
+            }
         } else if(activePawnPosition != null) {
             HexVector prevPawnPosition = activePawnPosition;
             deactivatePawn();

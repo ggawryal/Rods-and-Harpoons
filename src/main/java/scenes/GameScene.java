@@ -35,18 +35,15 @@ public class GameScene extends Scene {
     private static Pane hexes;
     private static ScrollPane scrollPane;
 
-    private static VBox buttonsBox;
-    private static Text[] playerPoints;
+    private static VBox gameStateBox;
+    private static ArrayList<Text> playerPoints;
     private static GameManager gameManager;
-
-    private final static int numOfPlayers = 2;
-    private final static int numOfPawns = 3;
 
     public void load() {
         root.getChildren().clear();
         scrollPane = new ScrollPane();
         hexes = new Pane();
-        buttonsBox = new VBox(10);
+        gameStateBox = new VBox(10);
 
         scrollPane.setContent(hexes);
 
@@ -76,33 +73,36 @@ public class GameScene extends Scene {
         logo.setFitWidth(100);
         logo.setFitHeight(100);
 
-        playerPoints = new Text[numOfPlayers];
-        for(int i=0; i<2; i++) {
-            playerPoints[i] = new Text("Player " + (i+1) + ": 0");
-        }
+        playerPoints = new ArrayList<>();
+        ArrayList<Player> players = gameManager.getPlayers();
+        for(Player p : players) playerPoints.add(new Text(p.getNickname() + ": 0"));
 
         Button btnBack = new Button();
         btnBack.setText("Go back to main menu");
-        btnBack.setOnAction(event -> primaryStage.setScene(mainMenu));
+        btnBack.setOnAction(event -> {
+            gameManager.endGame();
+            primaryStage.setScene(mainMenu);
+        });
 
         Button btnRearrange = new Button();
         btnRearrange.setText("Reset tiles");
         btnRearrange.setOnAction(event -> {
+            gameManager.endGame();
             gameScene.load();
         });
 
-        buttonsBox.getChildren().add(logo);
-        for(int i=0; i<numOfPlayers; i++) buttonsBox.getChildren().add(playerPoints[i]);
-        buttonsBox.getChildren().addAll(btnRearrange,btnBack);
-        buttonsBox.setAlignment(Pos.CENTER);
+        gameStateBox.getChildren().add(logo);
+        gameStateBox.getChildren().addAll(playerPoints);
+        gameStateBox.getChildren().addAll(btnRearrange,btnBack);
+        gameStateBox.setAlignment(Pos.CENTER);
         root.setCenter(scrollPane);
-        root.setLeft(buttonsBox);
+        root.setLeft(gameStateBox);
 
         gameManager.startGame();
     }
 
     public void updatePlayerPoints(Player player) {
-        playerPoints[player.getId()].setText("Player " + (player.getId()+1) + ": " + player.getPoints());
+        playerPoints.get(player.getId()).setText(player.getNickname() + ": " + player.getPoints());
     }
 
     public void showGameOver() {
@@ -115,24 +115,24 @@ public class GameScene extends Scene {
         gameOverText.setFont(Font.font(20));
         Text winnerText;
         if(!draw) {
-            winnerText = new Text("Player " + (players.get(0).getId()+1) + " won with " + players.get(0).getPoints() + " points!");
+            winnerText = new Text(players.get(0).getNickname() + " won with " + players.get(0).getPoints() + " points!");
         } else {
             winnerText = new Text("It's a draw!");
         }
         winnerText.setFont(Font.font(50));
         ArrayList<Text> otherPlayersText = new ArrayList<>();
-        if(draw) otherPlayersText.add(new Text("Player " + (players.get(0).getId()+1) + ": " + players.get(0).getPoints() + " points."));
+        if(draw) otherPlayersText.add(new Text(players.get(0).getNickname() + ": " + players.get(0).getPoints() + " points."));
         for(int i=1; i<players.size(); i++) {
-            otherPlayersText.add(new Text("Player " + (players.get(i).getId()+1) + ": " + players.get(i).getPoints() + " points."));
+            otherPlayersText.add(new Text(players.get(i).getNickname() + ": " + players.get(i).getPoints() + " points."));
         }
 
-        Button btnBack = new Button();
-        btnBack.setText("Hide");
-        btnBack.setOnAction(event -> root.setCenter(scrollPane));
+        Button btnHide = new Button();
+        btnHide.setText("Hide");
+        btnHide.setOnAction(event -> root.setCenter(scrollPane));
 
         gameOverBox.getChildren().addAll(gameOverText,winnerText);
         gameOverBox.getChildren().addAll(otherPlayersText);
-        gameOverBox.getChildren().add(btnBack);
+        gameOverBox.getChildren().add(btnHide);
 
         gameOverBox.setAlignment(Pos.CENTER);
         root.setCenter(gameOverBox);

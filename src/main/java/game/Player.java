@@ -7,14 +7,20 @@ import java.util.ArrayList;
 
 public class Player {
     private int id;
+    private String nickname;
     private ArrayList<HexVector> pawnsPositions = new ArrayList<>();
     private int points;
 
     public Player(int id) {
         this.id = id;
+        this.nickname = "Player " + (id+1);
     }
 
     public int getId() { return id; }
+
+    public String getNickname() {
+        return nickname;
+    }
 
     public void addPawn(HexVector position) {
         pawnsPositions.add(position);
