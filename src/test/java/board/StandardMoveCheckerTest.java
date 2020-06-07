@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 class StandardMoveCheckerTest {
     @Test
     public void testIsValidMoveWhenNoMissingTiles() {
-        System.out.println("jazda");
         HexVector a = new HexVector(0,0);
         HexVector b = new HexVector(Direction.SE,5);
         HexVector c = new HexVector(Direction.NE,4);
