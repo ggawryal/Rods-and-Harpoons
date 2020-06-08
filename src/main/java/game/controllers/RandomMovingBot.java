@@ -1,8 +1,12 @@
-package game;
+package game.controllers;
 
 import board.Board;
 import board.Move;
 import board.MoveChecker;
+import game.Player;
+import game.controllers.PlayerController;
+import game.threads.ThreadRunner;
+import util.Sleeper;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,31 +21,26 @@ public class RandomMovingBot implements PlayerController {
     private MoveChecker moveChecker;
     private Function<Move,Boolean> actionOnMove;
 
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ThreadRunner threadRunner;
+    Sleeper sleeper;
     private Random random = new Random();
 
+    public RandomMovingBot(ThreadRunner threadRunner, Sleeper sleeper) {
+        this.threadRunner = threadRunner;
+        this.sleeper = sleeper;
+    }
 
     @Override
     public void nextTurn() {
-        executorService.submit(() -> {
-            try {
-                TimeUnit.MILLISECONDS.sleep(random.nextInt(200)+100); // from 100 to 300 ms
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        threadRunner.runLaterInBackground(() -> {
+            sleeper.sleep(random.nextInt(200)+100); // from 100 to 300 ms
             ArrayList<Move> moves = new ArrayList<>();
             for(int i=0;i<player.getPawnsCount();i++)
                 moves.addAll(moveChecker.getPossibleMoves(player.getPawnPosition(i)));
             Move selectedMove = moves.get(random.nextInt(moves.size()));
             board.switchPawnSelection(selectedMove.getFrom(), false);
-            try {
-                TimeUnit.MILLISECONDS.sleep(random.nextInt(200)+300); // from 300 to 500 ms
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            boolean moved = actionOnMove.apply(selectedMove);
-            if(!moved)
-                throw new RuntimeException("Random moving bot selected incorrect move");
+            sleeper.sleep(random.nextInt(random.nextInt(200)+300)); // from 300 to 500 ms
+            threadRunner.runLaterInMainThread(()-> actionOnMove.apply(selectedMove));
         });
     }
 

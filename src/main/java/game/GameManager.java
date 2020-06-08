@@ -5,7 +5,7 @@ import board.HexVector;
 import board.Move;
 import board.MoveChecker;
 import board.drawable.tile.Tile;
-import javafx.application.Platform;
+import game.controllers.PlayerController;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -90,16 +90,14 @@ public class GameManager {
 
     public boolean tryToMove(Player player, Move move) {
         if(players.get(turn % getPlayersNumber()).equals(player) && moveChecker.isValidMove(move)) {
-            Platform.runLater(() -> {
-                Tile tile = board.getTileAt(move.getFrom());
-                player.addPoints(tile.getScore());
-                board.removeTile(move.getFrom());
-                board.movePawn(move);
-                player.changePawnPosition(move);
-                gameScene.updatePlayerPoints(player);
-                turn++;
-                updateState();
-            });
+            Tile tile = board.getTileAt(move.getFrom());
+            player.addPoints(tile.getScore());
+            board.removeTile(move.getFrom());
+            board.movePawn(move);
+            player.changePawnPosition(move);
+            gameScene.updatePlayerPoints(player);
+            turn++;
+            updateState();
             return true;
         }
         return false;

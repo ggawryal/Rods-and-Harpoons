@@ -1,8 +1,9 @@
 package scenes;
 
-import game.HumanController;
-import game.PlayerController;
-import game.RandomMovingBot;
+import game.controllers.HumanController;
+import game.controllers.PlayerController;
+import game.controllers.RandomMovingBot;
+import game.threads.JavaFXThreadRunner;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import util.RealTimeSleeper;
 
 import java.util.ArrayList;
 
@@ -46,7 +48,7 @@ public class Settings extends Scene {
                         controllers.add(new HumanController());
                         break;
                     case "Easy Bot":
-                        controllers.add(new RandomMovingBot());
+                        controllers.add(new RandomMovingBot(new JavaFXThreadRunner(),new RealTimeSleeper()));
                         break;
                 }
             }

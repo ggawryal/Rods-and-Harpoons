@@ -6,6 +6,8 @@ import board.arranger.RectangleTileArranger;
 import board.arranger.TileArranger;
 import board.arranger.TileScoreChooser;
 import game.*;
+import game.controllers.HumanController;
+import game.controllers.PlayerController;
 import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -22,7 +24,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 

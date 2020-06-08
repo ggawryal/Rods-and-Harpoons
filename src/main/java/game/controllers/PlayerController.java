@@ -1,8 +1,9 @@
-package game;
+package game.controllers;
 
 import board.Board;
 import board.Move;
 import board.MoveChecker;
+import game.Player;
 
 import java.util.function.Function;
 
