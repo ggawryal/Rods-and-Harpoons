@@ -15,18 +15,31 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-public class RandomMovingBot implements PlayerController {
+public class RandomMovingBot implements BotController {
     private Player player;
     private Board board;
     private MoveChecker moveChecker;
     private Function<Move,Boolean> actionOnMove;
 
     private ThreadRunner threadRunner;
-    Sleeper sleeper;
+    private Sleeper sleeper;
     private Random random = new Random();
 
-    public RandomMovingBot(ThreadRunner threadRunner, Sleeper sleeper) {
+    public RandomMovingBot() {}
+
+    public RandomMovingBot(Sleeper sleeper, ThreadRunner threadRunner) {
+        this();
+        setSleeper(sleeper);
+        setThreadRunner(threadRunner);
+    }
+
+    @Override
+    public void setThreadRunner(ThreadRunner threadRunner) {
         this.threadRunner = threadRunner;
+    }
+
+    @Override
+    public void setSleeper(Sleeper sleeper) {
         this.sleeper = sleeper;
     }
 

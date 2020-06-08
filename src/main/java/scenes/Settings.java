@@ -48,7 +48,7 @@ public class Settings extends Scene {
                         controllers.add(new HumanController());
                         break;
                     case "Easy Bot":
-                        controllers.add(new RandomMovingBot(new JavaFXThreadRunner(),new RealTimeSleeper()));
+                        controllers.add(new RandomMovingBot(new RealTimeSleeper(),new JavaFXThreadRunner()));
                         break;
                 }
             }

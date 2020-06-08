@@ -29,7 +29,7 @@ import java.util.List;
 
 import static application.Program.MainApp.*;
 
-public class GameScene extends Scene {
+public class GameScene extends Scene implements GameObserver{
     private final static BorderPane root = new BorderPane();
     private static Pane hexes;
     private static ScrollPane scrollPane;
@@ -53,7 +53,7 @@ public class GameScene extends Scene {
                 event.consume();
         });
 
-        BoardView view = new BoardView(hexes);
+        BoardView view = new JavaFXBoardView(hexes);
         Board board = new Board(view);
         MoveChecker moveChecker = new StandardMoveChecker(board);
 
@@ -62,6 +62,7 @@ public class GameScene extends Scene {
         tileArranger.arrange(board,tileScoreChooser);
 
         gameManager = new GameManager(moveChecker, board, nicknames, controllers);
+        gameManager.setObserver(this);
         view.setActionOnClickForExistingTiles(position -> {
             if(gameManager.getCurrentController() instanceof HumanController) {
                ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
@@ -100,11 +101,13 @@ public class GameScene extends Scene {
         gameManager.startGame();
     }
 
+    @Override
     public void updatePlayerPoints(Player player) {
         playerPoints.get(player.getId()).setText(player.getNickname() + ": " + player.getPoints());
     }
 
-    public void showGameOver() {
+    @Override
+    public void onGameOver() {
         ArrayList<Player> players = gameManager.getPlayers();
         players.sort(Comparator.comparingInt(Player::getPoints).reversed());
         boolean draw = players.get(0).getPoints() == players.get(1).getPoints();
@@ -140,4 +143,6 @@ public class GameScene extends Scene {
     public GameScene(int width, int height) {
         super(root, width, height);
     }
+
+
 }
