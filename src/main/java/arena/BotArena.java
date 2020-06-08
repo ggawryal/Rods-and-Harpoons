@@ -16,7 +16,6 @@ import game.controllers.RandomMovingBot;
 import game.threads.OnlyMainThreadRunner;
 import util.FakeSleeper;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 public class BotArena {
@@ -62,19 +61,24 @@ public class BotArena {
         statistics.collectGameResult(gameManager.getPlayers());
     }
     public static void main(String[] args) {
-        int totalRounds = 1000;
+        int totalRounds = 10000;
         BotArena botArena = new BotArena();
 
         botArena.addPlayer(new RandomMovingBot());
         botArena.addPlayer(new RandomMovingBot());
 
-        Statistics statistics = new SimpleStatistics(botArena.getNicknames());
+        StatisticsGroup statistics = new StatisticsGroup();
+
+        ArrayList<String> nicks = botArena.getNicknames();
+
+        statistics.setPlayersNumber(nicks.size());
+        statistics.addStatistics(new WinStatistic(nicks)).addStatistics(new AveragePointsStatistic(nicks));
         botArena.setStatistics(statistics);
 
         for(int i=0;i<totalRounds;i++) {
             botArena.newRound();
         }
-        System.out.println(statistics.getBriefStatisticsInfo());
+        System.out.println(statistics.getStatsGroupedByPlayer());
 
     }
 }

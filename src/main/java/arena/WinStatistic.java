@@ -5,12 +5,16 @@ import game.Player;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-public class SimpleStatistics implements Statistics {
+public class WinStatistic implements Statistics {
     ArrayList<String> nicknames;
     int[] wins;
     int totalGames = 0;
 
-    public SimpleStatistics(ArrayList<String> nicknames) {
+    private int getPlayersNumber() {
+        return nicknames.size();
+    }
+
+    public WinStatistic(ArrayList<String> nicknames) {
         this.nicknames = nicknames;
         wins = new int[nicknames.size()];
     }
@@ -27,20 +31,7 @@ public class SimpleStatistics implements Statistics {
     }
 
     @Override
-    public String getBriefStatisticsInfo() {
-        StringBuilder sb = new StringBuilder();
-        for(int i=0;i<getPlayersNumber();i++) {
-            sb.append(String.format("Player %s (with id = %d) won %d/%d games [%.2f%%]\n",nicknames.get(i),i,wins[i],totalGames,wins[i]/(double)totalGames));
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public String getFullStatisticsInfo() {
-        return getBriefStatisticsInfo();
-    }
-
-    private int getPlayersNumber() {
-        return nicknames.size();
+    public String getStatisticsFor(int i) {
+        return String.format("Player %s (with id = %d) won %d/%d games [%.2f%%]\n",nicknames.get(i),i,wins[i],totalGames,wins[i]*100/(double)totalGames);
     }
 }
