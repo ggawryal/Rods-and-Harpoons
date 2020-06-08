@@ -72,5 +72,11 @@ public class BotController implements PlayerController {
         this.actionOnMove = action;
     }
 
+    @Override
+    public String toString() {
+        if(strategy == null)
+            return "Bot with no strategy";
+        return "Bot with "+strategy.getClass().getSimpleName();
+    }
 
 }

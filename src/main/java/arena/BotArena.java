@@ -13,6 +13,7 @@ import game.GameObserver;
 import game.Player;
 import game.controllers.BotController;
 import game.controllers.strategies.GreedyStrategy;
+import game.controllers.strategies.MixedStrategy;
 import game.controllers.strategies.RandomMoveStrategy;
 import game.threads.OnlyMainThreadRunner;
 import util.FakeSleeper;
@@ -48,7 +49,7 @@ public class BotArena {
         botController.setThreadRunner(new OnlyMainThreadRunner());
         botController.setSleeper(new FakeSleeper());
         players.add(botController);
-        nicknames.add(botController.getClass().toString());
+        nicknames.add(botController.toString());
     }
 
     public void newRound() {
@@ -62,11 +63,11 @@ public class BotArena {
         statistics.collectGameResult(gameManager.getPlayers());
     }
     public static void main(String[] args) {
-        int totalRounds = 10000;
+        int totalRounds = 1000;
         BotArena botArena = new BotArena();
 
-        botArena.addPlayer(new BotController(new RandomMoveStrategy()));
         botArena.addPlayer(new BotController(new GreedyStrategy()));
+        botArena.addPlayer(new BotController(new MixedStrategy()));
 
         StatisticsGroup statistics = new StatisticsGroup();
 
