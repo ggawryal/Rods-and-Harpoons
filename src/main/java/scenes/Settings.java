@@ -1,8 +1,8 @@
 package scenes;
 
-import game.controllers.HumanController;
-import game.controllers.PlayerController;
-import game.controllers.RandomMovingBot;
+import game.controllers.*;
+import game.controllers.strategies.GreedyStrategy;
+import game.controllers.strategies.RandomMoveStrategy;
 import game.threads.JavaFXThreadRunner;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -48,7 +48,10 @@ public class Settings extends Scene {
                         controllers.add(new HumanController());
                         break;
                     case "Easy Bot":
-                        controllers.add(new RandomMovingBot(new RealTimeSleeper(),new JavaFXThreadRunner()));
+                        controllers.add(new BotController(new RandomMoveStrategy(), new RealTimeSleeper(),new JavaFXThreadRunner()));
+                        break;
+                    case "Medium Bot":
+                        controllers.add(new BotController(new GreedyStrategy(), new RealTimeSleeper(),new JavaFXThreadRunner()));
                         break;
                 }
             }
@@ -67,7 +70,7 @@ public class Settings extends Scene {
     private void addPlayerBox() {
         HBox hBox = new HBox(20);
         TextField textField = new TextField("Player " + (playerBoxes.getChildren().size()+1));
-        ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList("Human", "Easy Bot"));
+        ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList("Human", "Easy Bot", "Medium Bot"));
         choiceBox.setValue("Human");
         hBox.getChildren().addAll(textField, choiceBox);
         hBox.setAlignment(Pos.CENTER);

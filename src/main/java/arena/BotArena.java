@@ -12,7 +12,8 @@ import game.GameManager;
 import game.GameObserver;
 import game.Player;
 import game.controllers.BotController;
-import game.controllers.RandomMovingBot;
+import game.controllers.strategies.GreedyStrategy;
+import game.controllers.strategies.RandomMoveStrategy;
 import game.threads.OnlyMainThreadRunner;
 import util.FakeSleeper;
 
@@ -64,8 +65,8 @@ public class BotArena {
         int totalRounds = 10000;
         BotArena botArena = new BotArena();
 
-        botArena.addPlayer(new RandomMovingBot());
-        botArena.addPlayer(new RandomMovingBot());
+        botArena.addPlayer(new BotController(new RandomMoveStrategy()));
+        botArena.addPlayer(new BotController(new GreedyStrategy()));
 
         StatisticsGroup statistics = new StatisticsGroup();
 
