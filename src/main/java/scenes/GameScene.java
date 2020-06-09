@@ -20,8 +20,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,7 +38,7 @@ public class GameScene extends Scene implements GameObserver{
     private static ScrollPane scrollPane;
 
     private static VBox gameStateBox;
-    private static ArrayList<Text> playerPoints;
+    private static ArrayList<TextFlow> playerPoints;
     private static GameManager gameManager;
 
     public void load(List<String> nicknames, List<PlayerController> controllers) {
@@ -75,7 +78,19 @@ public class GameScene extends Scene implements GameObserver{
 
         playerPoints = new ArrayList<>();
         ArrayList<Player> players = gameManager.getPlayers();
-        for(Player p : players) playerPoints.add(new Text(p.getNickname() + ": 0"));
+        for(Player p : players) {
+            Text coloredMark = new Text("█ ");
+            switch(p.getId()) {
+                case 0: coloredMark.setFill(new Color(1,0,0,1)); break;
+                case 1: coloredMark.setFill(new Color(0,0.5,0,1)); break;
+                case 2: coloredMark.setFill(new Color(0,0,1,1)); break;
+                case 3: coloredMark.setFill(new Color(1,1,0,1)); break;
+            }
+            Text playerText = new Text(p.getNickname() + ": 0");
+            TextFlow textFlow = new TextFlow(coloredMark, playerText);
+            textFlow.setTextAlignment(TextAlignment.CENTER);
+            playerPoints.add(textFlow);
+        }
 
         Button btnBack = new Button();
         btnBack.setText("Go back to main menu");
@@ -103,7 +118,7 @@ public class GameScene extends Scene implements GameObserver{
 
     @Override
     public void updatePlayerPoints(Player player) {
-        playerPoints.get(player.getId()).setText(player.getNickname() + ": " + player.getPoints());
+        ((Text)playerPoints.get(player.getId()).getChildren().get(1)).setText(player.getNickname() + ": " + player.getPoints());
     }
 
     @Override
