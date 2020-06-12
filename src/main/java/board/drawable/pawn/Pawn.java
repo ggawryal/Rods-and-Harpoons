@@ -1,8 +1,10 @@
 package board.drawable.pawn;
 
 import board.drawable.Drawable;
+import database.DBDocument;
+import org.bson.Document;
 
-public class Pawn implements Drawable {
+public class Pawn implements Drawable, DBDocument {
     private final int id;
     private String imagePath;
 
@@ -18,5 +20,10 @@ public class Pawn implements Drawable {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public Document toDocument() {
+        return new Document("id", id);
     }
 }

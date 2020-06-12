@@ -1,5 +1,6 @@
 package application;
 
+import database.MongoDB;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -20,9 +21,11 @@ public class Program {
         public static MainMenu mainMenu;
         public static Settings settings;
         public static GameScene gameScene;
+        public static MongoDB mongoDB;
 
         @Override
         public void start(Stage stage) {
+            mongoDB = new MongoDB();
             primaryStage = stage;
             primaryStage.setTitle("Rods and Harpoons");
             stage.getIcons().add(new Image("logo_small.png"));
@@ -39,7 +42,6 @@ public class Program {
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();
-
         }
     }
 }

@@ -15,6 +15,14 @@ public class Board {
         this.view = view;
     }
 
+    public HashMap<HexVector, Tile> getTilesCopy() {
+        return new HashMap<>(tiles);
+    }
+
+    public HashMap<HexVector, Pawn> getPawnsCopy() {
+        return new HashMap<>(pawns);
+    }
+
     public void addPawn(Pawn pawn, HexVector position) {
         pawns.put(position, pawn);
         view.drawPawn(pawn, position);

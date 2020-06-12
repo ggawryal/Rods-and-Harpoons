@@ -1,6 +1,9 @@
 package board;
 
-public class HexVector {
+import database.DBDocument;
+import org.bson.Document;
+
+public class HexVector implements DBDocument {
     public HexVector(Direction d, int length) {
         switch (d) {
             case NE:
@@ -75,6 +78,12 @@ public class HexVector {
         this.east = east;
         this.southeast = southeast;
         return this;
+    }
+
+    @Override
+    public Document toDocument() {
+        return new Document("east", east)
+                .append("southeast", southeast);
     }
 
     private int east,southeast;

@@ -4,9 +4,13 @@ import board.Board;
 import board.HexVector;
 import board.Move;
 import board.MoveChecker;
+import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 import game.controllers.PlayerController;
+import util.GameInfo;
+import util.PlayerMove;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -19,6 +23,7 @@ public class GameManager {
     private boolean gameEnded;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<PlayerController> controllers = new ArrayList<>();
+    private final ArrayList<PlayerMove> playersMoves = new ArrayList<PlayerMove>();
     PawnSetUpper pawnSetUpper = new PawnSetUpper();
     GameObserver gameObserver;
 
@@ -36,6 +41,11 @@ public class GameManager {
         }
 
         pawnSetUpper.setUpPawns(board,players,2);
+    }
+
+    public GameInfo getGameInfo() {
+        return new GameInfo(board.getTilesCopy(), board.getPawnsCopy(),
+                players, playersMoves);
     }
 
     public void setObserver(GameObserver gameObserver) {
@@ -70,9 +80,9 @@ public class GameManager {
         return false;
     }
 
-    public void endGame() {
+    public void endGame(boolean saveResult) {
         gameEnded = true;
-        gameObserver.onGameOver();
+        gameObserver.onGameOver(saveResult);
     }
 
     private void updateState() {
@@ -86,7 +96,7 @@ public class GameManager {
                 return;
             }
         }
-        endGame();
+        endGame(true);
     }
 
     public PlayerController getCurrentController() {
@@ -96,12 +106,14 @@ public class GameManager {
     private boolean tryToMove(Player player, Move move) {
         if(players.get(turn % getPlayersNumber()).equals(player) && moveChecker.isValidMove(move)) {
             Tile tile = board.getTileAt(move.getFrom());
-            player.addPoints(tile.getScore());
+            int tileScore = tile.getScore();
+            player.addPoints(tileScore);
             board.removeTile(move.getFrom());
             board.movePawn(move);
             player.changePawnPosition(move);
             gameObserver.updatePlayerPoints(player);
             turn++;
+            playersMoves.add(new PlayerMove(player.getId(), tileScore, move));
             updateState();
             return true;
         }

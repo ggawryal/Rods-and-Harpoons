@@ -1,75 +1,76 @@
 package database;
 
 
-import com.mongodb.DBCursor;
-import com.mongodb.MongoClient;
+import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
+import org.bson.types.ObjectId;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Field;
-import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import util.Pair;
+import util.GameInfo;
 
-import javax.print.Doc;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 public class MongoDB implements Database {
-    private MongoClient mongoClient = new MongoClient();
+    private MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb+srv://admin:admin@cluster0-gx7zn.mongodb.net"));
     private MongoDatabase database = mongoClient.getDatabase("RodsAndHarpoonsDB");
 
     private void removeCollection(String collection) {
         database.getCollection(collection).drop();
     }
-    public void saveScores(List<Pair<String,Integer>> nicksAndScores) {
-        Collections.sort(nicksAndScores, (a, b) -> -Integer.compare(a.getSecond(),b.getSecond()));
-        ArrayList<Document> players = new ArrayList<>();
-
-        for(var v : nicksAndScores)
-            players.add(new Document("nickname",v.getFirst()).append("score",v.getSecond()));
-
-        MongoCollection<Document> collection  = database.getCollection("highscores");
-        collection.insertOne(new Document("players",players));
+    private void removeMatchesAndPlayers() {
+        removeCollection("matches");
+        removeCollection("players");
     }
 
+    public ArrayList<Pair<String,Integer>> getScoresSortedByMaxScore(int limit) {
+        ArrayList<Pair<String,Integer>> res = new ArrayList<>();
+        MongoCollection<Document> players = database.getCollection("players");
+        FindIterable<Document> cursor = players.find().sort(new BasicDBObject("highscore", -1)).limit(limit);
 
-    public ArrayList<ArrayList<Pair<String,Integer> > > getScoresSortedByMaxScore(int limit) {
-        MongoCollection<Document> collection  = database.getCollection("highscores");
-        ArrayList<ArrayList<Pair<String,Integer>>> res = new ArrayList<>();
-
-        for(Document doc : collection.find().limit(limit)) {
-            List<Document> players = doc.getList("players", Document.class);
-            ArrayList<Pair<String,Integer>> nicksAndScores = new ArrayList<>();
-            for(Document player: players)
-                nicksAndScores.add(new Pair<>(player.getString("nickname"), player.getInteger("score")));
-
-            res.add(nicksAndScores);
+        for (Document document : cursor) {
+            String nickName = document.getString("nickname");
+            int highScore = document.getInteger("highscore");
+            res.add(new Pair<>(nickName, highScore));
         }
         return res;
+    }
 
+    public void saveFinishedGame(GameInfo gameInfo) {
+        gameInfo.getPlayers().sort((a, b) -> -Integer.compare(a.getPoints(), b.getPoints()));
+
+        MongoCollection<Document> collection = database.getCollection("matches");
+        Document document = gameInfo.toDocument();
+        collection.insertOne(document);
+
+        ObjectId matchId = document.get("_id", ObjectId.class);
+
+        FindOneAndUpdateOptions options = new FindOneAndUpdateOptions()
+                .upsert(true);
+        MongoCollection<Document> players = database.getCollection("players");
+        players.createIndex(Indexes.ascending("nickname"), new IndexOptions().unique(true));
+        for(var player : gameInfo.getPlayers()) {
+            BasicDBObject query = new BasicDBObject("nickname", player.getNickname());
+            BasicDBObject MatchesUpdate = new BasicDBObject("matches", matchId);
+            BasicDBObject HighScoreUpdate = new BasicDBObject("highscore", player.getPoints());
+            BasicDBObject update = new BasicDBObject("$addToSet", MatchesUpdate)
+                    .append("$max", HighScoreUpdate);
+            players.findOneAndUpdate(query, update, options);
+        }
     }
 
 
     public static void main(String[] args) {
         MongoDB mongo = new MongoDB();
-        mongo.removeCollection("highscores");
-        List<Pair<String,Integer>> scores = Arrays.asList(new Pair<>("p1",30), new Pair<>("p2",15));
-        List<Pair<String,Integer>> scores2 = Arrays.asList(new Pair<>("p3",40), new Pair<>("p4",10));
-        List<Pair<String,Integer>> scores3 = Arrays.asList(new Pair<>("p5",25), new Pair<>("p26",20));
-        mongo.saveScores(scores);
-        mongo.saveScores(scores2);
-        mongo.saveScores(scores3);
-        for(var it : mongo.getScoresSortedByMaxScore(2)) {
-            System.out.println("scores");
-            for(var p : it) {
-                System.out.println(p.getFirst()+" "+p.getSecond());
-            }
-
+        for (var pair : mongo.getScoresSortedByMaxScore(5)) {
+            System.out.println(pair.getFirst() + " " + pair.getSecond());
         }
     }
 

@@ -2,10 +2,13 @@ package game;
 
 import board.HexVector;
 import board.Move;
+import com.mongodb.client.model.DBCollectionDistinctOptions;
+import database.DBDocument;
+import org.bson.Document;
 
 import java.util.ArrayList;
 
-public class Player {
+public class Player implements DBDocument {
     private int id;
     private String nickname;
     private ArrayList<HexVector> pawnsPositions = new ArrayList<>();
@@ -53,5 +56,12 @@ public class Player {
 
     public void addPoints(int value) {
         points += value;
+    }
+
+    @Override
+    public Document toDocument() {
+        return new Document("id", id)
+                .append("nickname", nickname)
+                .append("points", points);
     }
 }

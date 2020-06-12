@@ -79,7 +79,7 @@ public class GameScene extends Scene implements GameObserver{
         playerPoints = new ArrayList<>();
         ArrayList<Player> players = gameManager.getPlayers();
         for(Player p : players) {
-            Text coloredMark = new Text("█ ");
+            Text coloredMark = new Text("█              ");
             switch(p.getId()) {
                 case 0: coloredMark.setFill(new Color(1,0,0,1)); break;
                 case 1: coloredMark.setFill(new Color(0,0.5,0,1)); break;
@@ -95,14 +95,14 @@ public class GameScene extends Scene implements GameObserver{
         Button btnBack = new Button();
         btnBack.setText("Go back to main menu");
         btnBack.setOnAction(event -> {
-            gameManager.endGame();
+            gameManager.endGame(false);
             primaryStage.setScene(mainMenu);
         });
 
         Button btnRearrange = new Button();
         btnRearrange.setText("Reset tiles");
         btnRearrange.setOnAction(event -> {
-            gameManager.endGame();
+            gameManager.endGame(false);
             gameScene.load(nicknames, controllers);
         });
 
@@ -121,8 +121,14 @@ public class GameScene extends Scene implements GameObserver{
         ((Text)playerPoints.get(player.getId()).getChildren().get(1)).setText(player.getNickname() + ": " + player.getPoints());
     }
 
+    void updateDatabase() {
+        mongoDB.saveFinishedGame(gameManager.getGameInfo());
+    }
+
     @Override
-    public void onGameOver() {
+    public void onGameOver(boolean saveGame) {
+        if(saveGame)
+            updateDatabase();
         ArrayList<Player> players = gameManager.getPlayers();
         players.sort(Comparator.comparingInt(Player::getPoints).reversed());
         boolean draw = players.get(0).getPoints() == players.get(1).getPoints();

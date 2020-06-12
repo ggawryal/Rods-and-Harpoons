@@ -56,7 +56,7 @@ public class BotArena {
         resetBoard();
         gameManager = new GameManager(moveChecker, board, nicknames, players);
         gameManager.setObserver(new GameObserver() {
-            @Override public void onGameOver() {}
+            @Override public void onGameOver(boolean saveGame) {}
             @Override public void updatePlayerPoints(Player player) {}
         });
         gameManager.startGame();
