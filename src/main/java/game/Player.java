@@ -9,8 +9,8 @@ import org.bson.Document;
 import java.util.ArrayList;
 
 public class Player implements DBDocument {
-    private int id;
-    private String nickname;
+    private final int id;
+    private final String nickname;
     private ArrayList<HexVector> pawnsPositions = new ArrayList<>();
     private int points;
 
@@ -48,6 +48,7 @@ public class Player implements DBDocument {
                 return;
             }
         }
+        throw new RuntimeException("Given player hasn't pawn at given position");
     }
 
     public int getPoints() {

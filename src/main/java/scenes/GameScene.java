@@ -34,6 +34,8 @@ import static application.Program.MainApp.*;
 
 public class GameScene extends Scene implements GameObserver{
     private final static BorderPane root = new BorderPane();
+    private static final char fullBlockSymbol = 0x2588; //unicode
+
     private static Pane hexes;
     private static ScrollPane scrollPane;
 
@@ -79,7 +81,7 @@ public class GameScene extends Scene implements GameObserver{
         playerPoints = new ArrayList<>();
         ArrayList<Player> players = gameManager.getPlayers();
         for(Player p : players) {
-            Text coloredMark = new Text("█              ");
+            Text coloredMark = new Text(Character.toString(fullBlockSymbol));
             switch(p.getId()) {
                 case 0: coloredMark.setFill(new Color(1,0,0,1)); break;
                 case 1: coloredMark.setFill(new Color(0,0.5,0,1)); break;
