@@ -60,6 +60,11 @@ public class HumanController implements PlayerController {
     }
 
     @Override
+    public Player getPlayer() {
+        return player;
+    }
+
+    @Override
     public void setActionOnMove(Function<Move,Boolean> action) {
         this.actionOnMove = action;
     }

@@ -66,7 +66,7 @@ public class GameScene extends Scene implements GameObserver{
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
 
-        gameManager = new GameManager(moveChecker, board, nicknames, controllers);
+        gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);
         gameManager.setObserver(this);
         view.setActionOnClickForExistingTiles(position -> {
             if(gameManager.getCurrentController() instanceof HumanController) {
@@ -88,7 +88,7 @@ public class GameScene extends Scene implements GameObserver{
                 case 2: coloredMark.setFill(new Color(0,0,1,1)); break;
                 case 3: coloredMark.setFill(new Color(1,1,0,1)); break;
             }
-            Text playerText = new Text(p.getNickname() + ": 0");
+            Text playerText = new Text(" " + p.getNickname() + ": 0");
             TextFlow textFlow = new TextFlow(coloredMark, playerText);
             textFlow.setTextAlignment(TextAlignment.CENTER);
             playerPoints.add(textFlow);

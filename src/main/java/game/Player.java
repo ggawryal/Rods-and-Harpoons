@@ -2,7 +2,6 @@ package game;
 
 import board.HexVector;
 import board.Move;
-import com.mongodb.client.model.DBCollectionDistinctOptions;
 import database.DBDocument;
 import org.bson.Document;
 
@@ -48,7 +47,7 @@ public class Player implements DBDocument {
                 return;
             }
         }
-        throw new RuntimeException("Given player hasn't pawn at given position");
+        throw new RuntimeException("Given player doesn't have a pawn at given position");
     }
 
     public int getPoints() {

@@ -9,7 +9,6 @@ public class Board {
     private HashMap<HexVector, Tile> tiles = new HashMap<>();
     private HashMap<HexVector, Pawn> pawns = new HashMap<>();
     private BoardView view;
-    private Random r = new Random();
 
     public Board(BoardView view) {
         this.view = view;

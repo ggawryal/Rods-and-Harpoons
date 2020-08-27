@@ -31,7 +31,7 @@ public class GameManager {
         return players.size();
     }
 
-    public GameManager(MoveChecker moveChecker, Board board, List<String> nicknames, List<? extends PlayerController> controllers) {
+    public GameManager(MoveChecker moveChecker, Board board, List<String> nicknames, List<? extends PlayerController> controllers, int pawnsPerPlayer) {
         this.moveChecker = moveChecker;
         this.board = board;
 
@@ -40,7 +40,7 @@ public class GameManager {
             addPlayer(nicknames.get(i), controllers.get(i));
         }
 
-        pawnSetUpper.setUpPawns(board,players,2);
+        pawnSetUpper.setUpPawns(board,players,pawnsPerPlayer);
     }
 
     public GameInfo getGameInfo() {
@@ -66,6 +66,10 @@ public class GameManager {
         playerController.set(player,board,moveChecker);
         playerController.setActionOnMove(move -> tryToMove(player,move));
         controllers.add(playerController);
+    }
+
+    public ArrayList<PlayerController> getControllers() {
+        return controllers;
     }
 
     private boolean canPawnMove(HexVector position) {
@@ -103,7 +107,7 @@ public class GameManager {
         return controllers.get(turn % getPlayersNumber());
     }
 
-    private boolean tryToMove(Player player, Move move) {
+    public boolean tryToMove(Player player, Move move) {
         if(players.get(turn % getPlayersNumber()).equals(player) && moveChecker.isValidMove(move)) {
             Tile tile = board.getTileAt(move.getFrom());
             int tileScore = tile.getScore();
