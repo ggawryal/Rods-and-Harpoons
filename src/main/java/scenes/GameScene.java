@@ -25,6 +25,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import util.GameInfo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -42,6 +43,7 @@ public class GameScene extends Scene implements GameObserver{
     private static VBox gameStateBox;
     private static ArrayList<TextFlow> playerPoints;
     private static GameManager gameManager;
+    private static String currentGameId;
 
     public void load(List<String> nicknames, List<PlayerController> controllers) {
         root.getChildren().clear();
@@ -66,6 +68,7 @@ public class GameScene extends Scene implements GameObserver{
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
 
+        currentGameId = null;
         gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);
         gameManager.setObserver(this);
         view.setActionOnClickForExistingTiles(position -> {
@@ -119,18 +122,32 @@ public class GameScene extends Scene implements GameObserver{
     }
 
     @Override
-    public void updatePlayerPoints(Player player) {
+    public void onPlayerPointsUpdated(Player player) {
         ((Text)playerPoints.get(player.getId()).getChildren().get(1)).setText(player.getNickname() + ": " + player.getPoints());
     }
 
-    void updateDatabase() {
-        mongoDB.saveFinishedGame(gameManager.getGameInfo());
+    @Override
+    public void onGameInfoUpdated(GameInfo gameInfo) {
+        saveGameToDatabase(gameInfo);
+    }
+    private void saveGameToDatabase(GameInfo gameInfo) {
+        if(currentGameId == null)
+            currentGameId = mongoDB.saveNewGame(gameInfo);
+        else
+            mongoDB.updateGame(currentGameId, gameInfo);
     }
 
     @Override
-    public void onGameOver(boolean saveGame) {
-        if(saveGame)
-            updateDatabase();
+    public void onGameOver(GameInfo gameInfo, boolean saveGame) {
+        if(saveGame) {
+            saveGameToDatabase(gameInfo);
+            mongoDB.updatePlayersHighscores(gameInfo.getPlayers(),currentGameId);
+        }
+        else if(currentGameId != null)
+            mongoDB.removeGame(currentGameId);
+
+        currentGameId = null;
+
         ArrayList<Player> players = gameManager.getPlayers();
         players.sort(Comparator.comparingInt(Player::getPoints).reversed());
         boolean draw = players.get(0).getPoints() == players.get(1).getPoints();

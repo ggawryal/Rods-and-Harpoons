@@ -1,6 +1,9 @@
 package game;
 
+import util.GameInfo;
+
 public interface GameObserver {
-    void onGameOver(boolean saveGame);
-    void updatePlayerPoints(Player player);
+    void onGameOver(GameInfo gameInfo, boolean saveGame);
+    void onPlayerPointsUpdated(Player player);
+    void onGameInfoUpdated(GameInfo gameInfo);
 }

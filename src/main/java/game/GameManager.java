@@ -23,7 +23,7 @@ public class GameManager {
     private boolean gameEnded;
     private final ArrayList<Player> players = new ArrayList<>();
     private final ArrayList<PlayerController> controllers = new ArrayList<>();
-    private final ArrayList<PlayerMove> playersMoves = new ArrayList<PlayerMove>();
+    private GameInfo gameInfo;
     PawnSetUpper pawnSetUpper = new PawnSetUpper();
     GameObserver gameObserver;
 
@@ -41,11 +41,8 @@ public class GameManager {
         }
 
         pawnSetUpper.setUpPawns(board,players,pawnsPerPlayer);
-    }
 
-    public GameInfo getGameInfo() {
-        return new GameInfo(board.getTilesCopy(), board.getPawnsCopy(),
-                players, playersMoves);
+        gameInfo = new GameInfo(board.getTilesCopy(),board.getPawnsCopy(), players, new ArrayList<>(),false);
     }
 
     public void setObserver(GameObserver gameObserver) {
@@ -86,11 +83,13 @@ public class GameManager {
 
     public void endGame(boolean saveResult) {
         gameEnded = true;
-        gameObserver.onGameOver(saveResult);
+        gameInfo = new GameInfo(gameInfo.getTiles(),gameInfo.getPawns(), gameInfo.getPlayers(),gameInfo.getPlayersMoves(),true);
+        gameObserver.onGameOver(gameInfo, saveResult);
     }
 
     private void updateState() {
-        if(gameEnded) return;
+        if(gameEnded)
+            return;
         for(int i = 0; i < getPlayersNumber(); i++) {
             int playerID = turn % getPlayersNumber();
             if(!canPlayerMove(players.get(playerID)))
@@ -115,9 +114,15 @@ public class GameManager {
             board.removeTile(move.getFrom());
             board.movePawn(move);
             player.changePawnPosition(move);
-            gameObserver.updatePlayerPoints(player);
+
+            ArrayList<PlayerMove> updatedPlayerMoves = new ArrayList<>(gameInfo.getPlayersMoves());
+            updatedPlayerMoves.add(new PlayerMove(player.getId(), tileScore, move));
+            gameInfo = new GameInfo(gameInfo.getTiles(),gameInfo.getPawns(), gameInfo.getPlayers(),updatedPlayerMoves,false);
+
+            gameObserver.onGameInfoUpdated(gameInfo);
+            gameObserver.onPlayerPointsUpdated(player);
+
             turn++;
-            playersMoves.add(new PlayerMove(player.getId(), tileScore, move));
             updateState();
             return true;
         }

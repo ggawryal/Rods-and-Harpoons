@@ -17,6 +17,7 @@ import game.controllers.strategies.MixedStrategy;
 import game.controllers.strategies.RandomMoveStrategy;
 import game.threads.OnlyMainThreadRunner;
 import util.FakeSleeper;
+import util.GameInfo;
 
 import java.util.ArrayList;
 
@@ -56,8 +57,9 @@ public class BotArena {
         resetBoard();
         gameManager = new GameManager(moveChecker, board, nicknames, players, 2);
         gameManager.setObserver(new GameObserver() {
-            @Override public void onGameOver(boolean saveGame) {}
-            @Override public void updatePlayerPoints(Player player) {}
+            @Override public void onGameOver(GameInfo gameInfo, boolean saveGame) {}
+            @Override public void onPlayerPointsUpdated(Player player) {}
+            @Override public void onGameInfoUpdated(GameInfo gameInfo) {}
         });
         gameManager.startGame();
         statistics.collectGameResult(gameManager.getPlayers());

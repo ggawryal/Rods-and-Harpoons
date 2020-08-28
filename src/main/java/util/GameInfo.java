@@ -16,13 +16,15 @@ public class GameInfo implements DBDocument {
     private final HashMap<HexVector, Pawn> pawns;
     private final ArrayList<Player> players;
     private final ArrayList<PlayerMove> playersMoves;
+    private final boolean gameFinished;
 
     public GameInfo(HashMap<HexVector, Tile> tiles, HashMap<HexVector, Pawn> pawns,
-                    ArrayList<Player> players, ArrayList<PlayerMove> playersMoves) {
+                    ArrayList<Player> players, ArrayList<PlayerMove> playersMoves, boolean gameFinished) {
         this.tiles = new HashMap<>(tiles);
         this.pawns = new HashMap<>(pawns);
         this.players = new ArrayList<>(players);
         this.playersMoves = new ArrayList<>(playersMoves);
+        this.gameFinished = gameFinished;
     }
 
     public HashMap<HexVector, Tile> getTiles() {
@@ -40,6 +42,8 @@ public class GameInfo implements DBDocument {
     public ArrayList<PlayerMove> getPlayersMoves() {
         return playersMoves;
     }
+
+    public boolean isGameFinished() { return gameFinished; }
 
     private ArrayList<Document> getPlayersMovesAsDocuments() {
         ArrayList<Document> result = new ArrayList<>();
@@ -75,12 +79,17 @@ public class GameInfo implements DBDocument {
         return result;
     }
 
+
+
     @Override
     public Document toDocument() {
         return new Document("tiles", getTilesAsDocuments())
                 .append("pawns", getPawnsAsDocumentS())
                 .append("players", getPlayersAsDocuments())
                 .append("playersmoves", getPlayersMovesAsDocuments())
+                .append("gameFinished",gameFinished)
         ;
     }
+
+
 }
