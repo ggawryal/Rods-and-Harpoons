@@ -1,8 +1,8 @@
-package util;
+package util.sleeper;
 
 import java.util.concurrent.TimeUnit;
 
-public class RealTimeSleeper implements Sleeper{
+public class RealTimeSleeper implements Sleeper {
     @Override
     public void sleep(long millis) {
         try {

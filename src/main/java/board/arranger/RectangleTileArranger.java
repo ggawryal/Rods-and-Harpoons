@@ -5,7 +5,7 @@ import board.Direction;
 import board.HexVector;
 
 /**
- * Board has height rows
+ * Board has 'height' rows
  * Even rows have evenRowWidth tiles and odd have evenRowWidth-1
  */
 public class RectangleTileArranger implements TileArranger {

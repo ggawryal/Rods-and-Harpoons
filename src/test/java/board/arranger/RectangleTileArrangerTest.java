@@ -1,7 +1,7 @@
 package board.arranger;
 
 import board.Board;
-import board.BoardView;
+import board.views.BoardView;
 import board.HexVector;
 import org.junit.jupiter.api.Test;
 

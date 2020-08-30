@@ -7,6 +7,9 @@ import game.Player;
 
 import java.util.function.Function;
 
+/**
+ * Interface for different types of players
+ */
 public interface PlayerController {
     void set(Player player, Board board, MoveChecker moveChecker);
     Player getPlayer();

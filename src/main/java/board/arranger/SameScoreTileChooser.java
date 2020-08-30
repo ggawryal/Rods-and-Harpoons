@@ -3,6 +3,9 @@ package board.arranger;
 import board.drawable.tile.ScoreTile;
 import board.drawable.tile.Tile;
 
+/**
+ Always creates tiles with 1 score
+ */
 public class SameScoreTileChooser implements TileScoreChooser {
     @Override
     public void prepareTiles(int totalTileNumber) {

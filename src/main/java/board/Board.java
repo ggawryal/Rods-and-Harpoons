@@ -2,6 +2,7 @@ package board;
 
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
+import board.views.BoardView;
 
 import java.util.*;
 

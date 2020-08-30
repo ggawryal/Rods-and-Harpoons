@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import util.RealTimeSleeper;
+import util.sleeper.RealTimeSleeper;
 
 import java.util.ArrayList;
 

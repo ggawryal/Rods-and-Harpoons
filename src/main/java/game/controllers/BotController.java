@@ -6,11 +6,14 @@ import board.MoveChecker;
 import game.Player;
 import game.controllers.strategies.BotStrategy;
 import game.threads.ThreadRunner;
-import util.Sleeper;
+import util.sleeper.Sleeper;
 
 import java.util.*;
 import java.util.function.Function;
 
+/**
+ * Player controlled by AI
+ */
 public class BotController implements PlayerController {
     private Player player;
     private Board board;

@@ -8,6 +8,9 @@ import game.Player;
 
 import java.util.function.Function;
 
+/**
+ * Player controlled by human (at local computer)
+ */
 public class HumanController implements PlayerController {
     private Player player;
     private Board board;

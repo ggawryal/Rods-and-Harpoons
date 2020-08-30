@@ -4,6 +4,9 @@ import game.Player;
 
 import java.util.ArrayList;
 
+/**
+Allows to collect multiple statistics from one game
+*/
 public class StatisticsGroup implements Statistics{
     ArrayList<Statistics> list = new ArrayList<>();
     private int playersNumber;

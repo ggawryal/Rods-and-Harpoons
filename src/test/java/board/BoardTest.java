@@ -2,6 +2,7 @@ package board;
 
 import board.drawable.tile.EmptyTile;
 import board.drawable.tile.Tile;
+import board.views.BoardView;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

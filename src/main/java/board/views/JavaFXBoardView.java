@@ -1,9 +1,11 @@
-package board;
+package board.views;
 
+import board.HexVector;
 import board.drawable.Drawable;
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 import board.drawable.tile.TileImageLoader;
+import board.views.BoardView;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
@@ -13,7 +15,7 @@ import javafx.scene.layout.Pane;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-public class JavaFXBoardView implements BoardView{
+public class JavaFXBoardView implements BoardView {
     private static final double SIZE = 50;
     private static final double HEIGHT = SIZE*Math.sqrt(3)/2.0;
 

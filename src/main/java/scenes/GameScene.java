@@ -5,6 +5,8 @@ import board.arranger.RatioTileChooser;
 import board.arranger.RectangleTileArranger;
 import board.arranger.TileArranger;
 import board.arranger.TileScoreChooser;
+import board.views.BoardView;
+import board.views.JavaFXBoardView;
 import game.*;
 import game.controllers.HumanController;
 import game.controllers.PlayerController;

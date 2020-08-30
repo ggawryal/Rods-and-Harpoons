@@ -5,6 +5,9 @@ import board.HexVector;
 import board.Move;
 import board.MoveChecker;
 
+/**
+ * Considers values of start and end tile of each move, number of direct neighbouring tiles and number of all achievable tiles
+ */
 public class MixedStrategy implements BotStrategy {
     private Board board;
     private MoveChecker moveChecker;

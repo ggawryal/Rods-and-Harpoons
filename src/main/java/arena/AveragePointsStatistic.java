@@ -4,7 +4,9 @@ import game.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-
+/**
+Tracks average points of each player per game
+*/
 public class AveragePointsStatistic implements Statistics {
     ArrayList<String> nicknames;
     double[] pointSum;

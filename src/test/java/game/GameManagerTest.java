@@ -3,6 +3,7 @@ package game;
 import board.*;
 import board.arranger.*;
 import board.drawable.pawn.Pawn;
+import board.views.BoardView;
 import game.controllers.BotController;
 import game.controllers.HumanController;
 import game.controllers.PlayerController;

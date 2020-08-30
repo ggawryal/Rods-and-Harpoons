@@ -1,7 +1,7 @@
 package game;
 
 import board.Board;
-import board.BoardView;
+import board.views.BoardView;
 import board.HexVector;
 import board.arranger.RatioTileChooser;
 import board.arranger.RectangleTileArranger;

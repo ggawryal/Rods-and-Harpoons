@@ -4,7 +4,9 @@ import game.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-
+/**
+Tracks win rate of each player, treating draw also as win
+ */
 public class WinStatistic implements Statistics {
     ArrayList<String> nicknames;
     int[] wins;

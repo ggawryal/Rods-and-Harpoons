@@ -1,9 +1,9 @@
-package arena;
+package board.views;
 
-import board.BoardView;
 import board.HexVector;
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
+import board.views.BoardView;
 
 import java.util.function.Consumer;
 
