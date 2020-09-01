@@ -2,7 +2,6 @@ package util;
 
 import board.Move;
 import database.DBDocument;
-import game.Player;
 import org.bson.Document;
 
 public class PlayerMove implements DBDocument {

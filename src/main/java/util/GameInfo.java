@@ -7,7 +7,6 @@ import database.DBDocument;
 import game.Player;
 import org.bson.Document;
 
-import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -79,17 +78,12 @@ public class GameInfo implements DBDocument {
         return result;
     }
 
-
-
     @Override
     public Document toDocument() {
         return new Document("tiles", getTilesAsDocuments())
                 .append("pawns", getPawnsAsDocumentS())
                 .append("players", getPlayersAsDocuments())
                 .append("playersmoves", getPlayersMovesAsDocuments())
-                .append("gameFinished",gameFinished)
-        ;
+                .append("gameFinished", gameFinished);
     }
-
-
 }

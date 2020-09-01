@@ -9,6 +9,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
+import java.io.IOException;
+
 import static application.Program.MainApp.*;
 
 public class MainMenu extends Scene {
@@ -17,19 +19,31 @@ public class MainMenu extends Scene {
     private final static VBox buttonsBox = new VBox(20);
 
     public void load() {
+        root.getChildren().clear();
+        rootBox.getChildren().clear();
+        buttonsBox.getChildren().clear();
         ImageView logo = new ImageView(new Image("/logo.png"));
 
-        Button btnPlay = new Button();
-        btnPlay.setFont(Font.font(50));
-        btnPlay.setText("Play");
-        btnPlay.setOnAction(event -> primaryStage.setScene(settings));
+        Button btnNewGame = new Button();
+        btnNewGame.setFont(Font.font(50));
+        btnNewGame.setText("New Game");
+        btnNewGame.setOnAction(event -> primaryStage.setScene(settings));
+
+        Button btnContinue = new Button();
+        btnContinue.setFont(Font.font(30));
+        btnContinue.setText("Continue");
+        try {
+            btnContinue.setDisable(jsonSavefile.read().getBoolean("gameFinished"));
+        } catch (Exception e) {
+            btnContinue.setDisable(true);
+        }
 
         Button btnExit = new Button();
-        btnExit.setFont(Font.font(50));
+        btnExit.setFont(Font.font(30));
         btnExit.setText("Exit");
         btnExit.setOnAction(event -> System.exit(0));
 
-        buttonsBox.getChildren().addAll(btnPlay, btnExit);
+        buttonsBox.getChildren().addAll(btnNewGame, btnContinue, btnExit);
         buttonsBox.setAlignment(Pos.CENTER);
         rootBox.getChildren().addAll(logo, buttonsBox);
         rootBox.setAlignment(Pos.CENTER);

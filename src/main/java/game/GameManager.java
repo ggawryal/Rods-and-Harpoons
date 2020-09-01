@@ -4,17 +4,13 @@ import board.Board;
 import board.HexVector;
 import board.Move;
 import board.MoveChecker;
-import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 import game.controllers.PlayerController;
 import util.GameInfo;
 import util.PlayerMove;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
-
-
 
 public class GameManager {
     private final MoveChecker moveChecker;
@@ -41,8 +37,7 @@ public class GameManager {
         }
 
         pawnSetUpper.setUpPawns(board,players,pawnsPerPlayer);
-
-        gameInfo = new GameInfo(board.getTilesCopy(),board.getPawnsCopy(), players, new ArrayList<>(),false);
+        gameInfo = new GameInfo(board.getTilesCopy(),board.getPawnsCopy(), players, new ArrayList<>(), false);
     }
 
     public void setObserver(GameObserver gameObserver) {
@@ -50,6 +45,7 @@ public class GameManager {
     }
 
     public void startGame() {
+        gameObserver.onGameInfoUpdated(gameInfo);
         controllers.get(0).nextTurn();
     }
 
@@ -83,7 +79,7 @@ public class GameManager {
 
     public void endGame(boolean saveResult) {
         gameEnded = true;
-        gameInfo = new GameInfo(gameInfo.getTiles(),gameInfo.getPawns(), gameInfo.getPlayers(),gameInfo.getPlayersMoves(),true);
+        gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(), true);
         gameObserver.onGameOver(gameInfo, saveResult);
     }
 
@@ -117,7 +113,7 @@ public class GameManager {
 
             ArrayList<PlayerMove> updatedPlayerMoves = new ArrayList<>(gameInfo.getPlayersMoves());
             updatedPlayerMoves.add(new PlayerMove(player.getId(), tileScore, move));
-            gameInfo = new GameInfo(gameInfo.getTiles(),gameInfo.getPawns(), gameInfo.getPlayers(),updatedPlayerMoves,false);
+            gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(), gameInfo.getPlayers(), updatedPlayerMoves, false);
 
             gameObserver.onGameInfoUpdated(gameInfo);
             gameObserver.onPlayerPointsUpdated(player);

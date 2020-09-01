@@ -45,7 +45,6 @@ public class GameScene extends Scene implements GameObserver{
     private static VBox gameStateBox;
     private static ArrayList<TextFlow> playerPoints;
     private static GameManager gameManager;
-    private static String currentGameId;
 
     public void load(List<String> nicknames, List<PlayerController> controllers) {
         root.getChildren().clear();
@@ -70,7 +69,6 @@ public class GameScene extends Scene implements GameObserver{
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
 
-        currentGameId = null;
         gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);
         gameManager.setObserver(this);
         view.setActionOnClickForExistingTiles(position -> {
@@ -103,6 +101,7 @@ public class GameScene extends Scene implements GameObserver{
         btnBack.setText("Go back to main menu");
         btnBack.setOnAction(event -> {
             gameManager.endGame(false);
+            mainMenu.load();
             primaryStage.setScene(mainMenu);
         });
 
@@ -130,25 +129,16 @@ public class GameScene extends Scene implements GameObserver{
 
     @Override
     public void onGameInfoUpdated(GameInfo gameInfo) {
-        saveGameToDatabase(gameInfo);
-    }
-    private void saveGameToDatabase(GameInfo gameInfo) {
-        if(currentGameId == null)
-            currentGameId = mongoDB.saveNewGame(gameInfo);
-        else
-            mongoDB.updateGame(currentGameId, gameInfo);
+        jsonSavefile.saveGame(gameInfo);
     }
 
     @Override
     public void onGameOver(GameInfo gameInfo, boolean saveGame) {
         if(saveGame) {
-            saveGameToDatabase(gameInfo);
-            mongoDB.updatePlayersHighscores(gameInfo.getPlayers(),currentGameId);
+            jsonSavefile.saveGame(gameInfo);
+            String gameId = mongoDB.saveGame(gameInfo);
+            mongoDB.updatePlayersHighscores(gameInfo.getPlayers(), gameId);
         }
-        else if(currentGameId != null)
-            mongoDB.removeGame(currentGameId);
-
-        currentGameId = null;
 
         ArrayList<Player> players = gameManager.getPlayers();
         players.sort(Comparator.comparingInt(Player::getPoints).reversed());
@@ -185,6 +175,5 @@ public class GameScene extends Scene implements GameObserver{
     public GameScene(int width, int height) {
         super(root, width, height);
     }
-
 
 }

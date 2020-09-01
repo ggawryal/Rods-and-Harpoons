@@ -1,5 +1,6 @@
 package application;
 
+import database.JsonSavefile;
 import database.MongoDB;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -22,10 +23,13 @@ public class Program {
         public static Settings settings;
         public static GameScene gameScene;
         public static MongoDB mongoDB;
+        public static JsonSavefile jsonSavefile;
 
         @Override
         public void start(Stage stage) {
             mongoDB = new MongoDB();
+            jsonSavefile = new JsonSavefile("game.sav");
+
             primaryStage = stage;
             primaryStage.setTitle("Rods and Harpoons");
             stage.getIcons().add(new Image("logo_small.png"));
