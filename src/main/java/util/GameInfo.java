@@ -2,13 +2,17 @@ package util;
 
 import board.HexVector;
 import board.drawable.pawn.Pawn;
+import board.drawable.tile.ScoreTile;
 import board.drawable.tile.Tile;
 import database.DBDocument;
 import game.Player;
 import org.bson.Document;
 
+
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class GameInfo implements DBDocument {
     private final HashMap<HexVector, Tile> tiles;
@@ -83,7 +87,34 @@ public class GameInfo implements DBDocument {
         return new Document("tiles", getTilesAsDocuments())
                 .append("pawns", getPawnsAsDocumentS())
                 .append("players", getPlayersAsDocuments())
-                .append("playersmoves", getPlayersMovesAsDocuments())
+                .append("playersMoves", getPlayersMovesAsDocuments())
                 .append("gameFinished", gameFinished);
     }
+
+    public GameInfo(Document document) {
+        tiles = new HashMap<>();
+        for(Document doc : document.getList("tiles",Document.class)) {
+            Document position = doc.get("position",Document.class);
+            Document tile = doc.get("tile",Document.class);
+            tiles.put(new HexVector(position), new ScoreTile(tile));
+        }
+
+        pawns = new HashMap<>();
+        for(Document doc : document.getList("pawns",Document.class)) {
+            Document position = doc.get("position",Document.class);
+            Document pawn = doc.get("pawn",Document.class);
+            pawns.put(new HexVector(position), new Pawn(pawn));
+        }
+
+        players = new ArrayList<>();
+        for(Document doc : document.getList("players",Document.class))
+            players.add(new Player(doc));
+
+        playersMoves = new ArrayList<>();
+        for(Document doc : document.getList("playersMoves",Document.class))
+            playersMoves.add(new PlayerMove(doc));
+
+        gameFinished = document.getBoolean("gameFinished");
+    }
+
 }

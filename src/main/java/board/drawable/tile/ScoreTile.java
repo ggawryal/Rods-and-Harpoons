@@ -25,4 +25,8 @@ public class ScoreTile implements Tile {
     public Document toDocument() {
         return new Document("score", score);
     }
+
+    public ScoreTile(Document document) {
+        this(document.getInteger("score"));
+    }
 }

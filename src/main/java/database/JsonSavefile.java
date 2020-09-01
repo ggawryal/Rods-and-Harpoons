@@ -1,5 +1,7 @@
 package database;
 
+import board.drawable.tile.Tile;
+import game.Player;
 import org.bson.Document;
 import org.bson.json.JsonWriterSettings;
 import util.GameInfo;
@@ -49,7 +51,9 @@ public class JsonSavefile implements Database {
         }
     }
 
-    public Document read() throws IOException {
-        return Document.parse(Files.readString(Paths.get(fileName)));
+    public GameInfo loadGame() throws IOException {
+        Document document = Document.parse(Files.readString(Paths.get(fileName)));
+        return new GameInfo(document);
+
     }
 }

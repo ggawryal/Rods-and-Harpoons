@@ -86,5 +86,9 @@ public class HexVector implements DBDocument {
                 .append("southeast", southeast);
     }
 
+    public HexVector(Document document) {
+        this(document.getInteger("east"), document.getInteger("southeast"));
+    }
+
     private int east, southeast;
 }

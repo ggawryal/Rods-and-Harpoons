@@ -1,5 +1,6 @@
 package util;
 
+import board.HexVector;
 import board.Move;
 import database.DBDocument;
 import org.bson.Document;
@@ -29,5 +30,10 @@ public class PlayerMove implements DBDocument {
                 .append("points", points)
                 .append("from", move.getFrom().toDocument())
                 .append("to", move.getTo().toDocument());
+    }
+
+    public PlayerMove(Document document) {
+        this(document.getInteger("playerid"), document.getInteger("points"),
+                new Move(new HexVector(document.get("from",Document.class)), new HexVector(document.get("to",Document.class))));
     }
 }

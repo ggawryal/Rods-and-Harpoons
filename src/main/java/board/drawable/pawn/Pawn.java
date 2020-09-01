@@ -26,4 +26,8 @@ public class Pawn implements Drawable, DBDocument {
     public Document toDocument() {
         return new Document("id", id);
     }
+
+    public Pawn(Document document) {
+        this(document.getInteger("id"));
+    }
 }

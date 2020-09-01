@@ -64,4 +64,9 @@ public class Player implements DBDocument {
                 .append("nickname", nickname)
                 .append("points", points);
     }
+
+    public Player(Document document) {
+        this(document.getInteger("id"),document.getString("nickname"));
+        this.points = document.getInteger("points");
+    }
 }

@@ -8,8 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-
-import java.io.IOException;
+import util.GameInfo;
 
 import static application.Program.MainApp.*;
 
@@ -32,8 +31,11 @@ public class MainMenu extends Scene {
         Button btnContinue = new Button();
         btnContinue.setFont(Font.font(30));
         btnContinue.setText("Continue");
+
+        GameInfo savedGame;
         try {
-            btnContinue.setDisable(jsonSavefile.read().getBoolean("gameFinished"));
+            savedGame = jsonSavefile.loadGame();
+            btnContinue.setDisable(savedGame.isGameFinished());
         } catch (Exception e) {
             btnContinue.setDisable(true);
         }
