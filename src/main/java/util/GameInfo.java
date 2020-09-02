@@ -22,13 +22,20 @@ public class GameInfo implements DBDocument {
     private final ArrayList<PlayerMove> playersMoves;
     private final boolean gameFinished;
 
+    public int getTurn() {
+        return turn;
+    }
+
+    private final int turn;
+
     public GameInfo(HashMap<HexVector, Tile> tiles, HashMap<HexVector, Pawn> pawns, List<ControllerFactory> controllerFactories,
-                    ArrayList<Player> players, ArrayList<PlayerMove> playersMoves, boolean gameFinished) {
+                    ArrayList<Player> players, ArrayList<PlayerMove> playersMoves, int turn, boolean gameFinished) {
         this.tiles = new HashMap<>(tiles);
         this.pawns = new HashMap<>(pawns);
         this.controllerFactories = new ArrayList<>(controllerFactories);
         this.players = new ArrayList<>(players);
         this.playersMoves = new ArrayList<>(playersMoves);
+        this.turn = turn;
         this.gameFinished = gameFinished;
     }
 
@@ -101,7 +108,9 @@ public class GameInfo implements DBDocument {
                 .append("controllers", getControllersAsDocument())
                 .append("players", getPlayersAsDocuments())
                 .append("playersMoves", getPlayersMovesAsDocuments())
+                .append("turn", turn)
                 .append("gameFinished", gameFinished);
+
     }
 
     public GameInfo(Document document) {
@@ -131,6 +140,7 @@ public class GameInfo implements DBDocument {
         for(Document doc : document.getList("playersMoves",Document.class))
             playersMoves.add(new PlayerMove(doc));
 
+        turn = document.getInteger("turn");
         gameFinished = document.getBoolean("gameFinished");
     }
 

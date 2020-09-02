@@ -4,9 +4,8 @@ import board.*;
 import board.arranger.*;
 import board.drawable.pawn.Pawn;
 import board.views.BoardView;
-import game.controllers.BotController;
-import game.controllers.HumanController;
-import game.controllers.PlayerController;
+import game.controllers.*;
+import game.controllers.bot_factories.EasyBotFactory;
 import game.controllers.strategies.BotStrategy;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +23,7 @@ public class GameManagerTest {
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
         ArrayList<String> nicknames = new ArrayList<>();
-        ArrayList<PlayerController> controllers = new ArrayList<>();
+        ArrayList<ControllerFactory> controllers = new ArrayList<>();
         nicknames.add("player");
 
         //more nicknames than controllers
@@ -45,10 +44,10 @@ public class GameManagerTest {
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
         ArrayList<String> nicknames = new ArrayList<>();
-        ArrayList<PlayerController> controllers = new ArrayList<>();
+        ArrayList<ControllerFactory> controllers = new ArrayList<>();
         for(int i=0; i<3; i++) {
             nicknames.add("player"+i);
-            controllers.add(i%2==0 ? new HumanController() : new BotController(mock(BotStrategy.class)));
+            controllers.add(i%2==0 ? new HumanControllerFactory() : new EasyBotFactory());
         }
 
         GameManager gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);
@@ -69,10 +68,10 @@ public class GameManagerTest {
         TileArranger tileArranger = new RectangleTileArranger(8,8);
         tileArranger.arrange(board,tileScoreChooser);
         ArrayList<String> nicknames = new ArrayList<>();
-        ArrayList<PlayerController> controllers = new ArrayList<>();
+        ArrayList<ControllerFactory> controllers = new ArrayList<>();
         for(int i=0; i<2; i++) {
             nicknames.add("player"+i);
-            controllers.add(mock(PlayerController.class));
+            controllers.add(getFactoryOfMockedController());
         }
         GameManager gameManager = new GameManager(moveChecker, board, nicknames, controllers, 0);
         gameManager.setObserver(mock(GameObserver.class));
@@ -99,5 +98,19 @@ public class GameManagerTest {
         //correct
         move = new Move(new HexVector(0,1), new HexVector(1,1));
         assertTrue(gameManager.tryToMove(gameManager.getPlayers().get(1), move));
+    }
+
+    private ControllerFactory getFactoryOfMockedController() {
+        return new ControllerFactory() {
+            @Override
+            public PlayerController newController() {
+                return mock(PlayerController.class);
+            }
+
+            @Override
+            public String getName() {
+                return "";
+            }
+        };
     }
 }
