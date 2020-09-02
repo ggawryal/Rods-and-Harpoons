@@ -36,6 +36,11 @@ public class MainMenu extends Scene {
         try {
             savedGame = jsonSavefile.loadGame();
             btnContinue.setDisable(savedGame.isGameFinished());
+            btnContinue.setOnAction(event -> {
+                gameScene.load(savedGame);
+                primaryStage.setScene(gameScene);
+            });
+
         } catch (Exception e) {
             btnContinue.setDisable(true);
         }
@@ -51,6 +56,7 @@ public class MainMenu extends Scene {
         rootBox.setAlignment(Pos.CENTER);
         root.getChildren().add(rootBox);
     }
+
 
     public MainMenu(int width, int height) {
         super(root,width,height);

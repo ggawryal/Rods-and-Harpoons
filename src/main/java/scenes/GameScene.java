@@ -8,6 +8,7 @@ import board.arranger.TileScoreChooser;
 import board.views.BoardView;
 import board.views.JavaFXBoardView;
 import game.*;
+import game.controllers.ControllerFactory;
 import game.controllers.HumanController;
 import game.controllers.PlayerController;
 import javafx.event.Event;
@@ -46,7 +47,44 @@ public class GameScene extends Scene implements GameObserver{
     private static ArrayList<TextFlow> playerPoints;
     private static GameManager gameManager;
 
-    public void load(List<String> nicknames, List<PlayerController> controllers) {
+    public void load(List<String> nicknames, List<ControllerFactory> controllers) {
+        loadPanes();
+        BoardView view = new JavaFXBoardView(hexes);
+        Board board = new Board(view);
+        MoveChecker moveChecker = new StandardMoveChecker(board);
+
+        TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
+        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        tileArranger.arrange(board,tileScoreChooser);
+
+        gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);
+        view.setActionOnClickForExistingTiles(position -> {
+            if(gameManager.getCurrentController() instanceof HumanController) {
+                ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
+            }
+        });
+
+        gameManager.setObserver(this);
+        loadUI();
+    }
+
+    public void load(GameInfo gameInfo) {
+        loadPanes();
+        BoardView view = new JavaFXBoardView(hexes);
+        Board board = new Board(view);
+        MoveChecker moveChecker = new StandardMoveChecker(board);
+
+        gameManager = new GameManager(moveChecker, board, gameInfo);
+        view.setActionOnClickForExistingTiles(position -> {
+            if(gameManager.getCurrentController() instanceof HumanController) {
+                ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
+            }
+        });
+        gameManager.setObserver(this);
+        loadUI();
+    }
+
+    public void loadPanes() {
         root.getChildren().clear();
         scrollPane = new ScrollPane();
         hexes = new Pane();
@@ -57,26 +95,12 @@ public class GameScene extends Scene implements GameObserver{
         scrollPane.setPannable(true);
         hexes.setOnScroll(Event::consume);
         hexes.addEventHandler(MouseEvent.ANY, event -> {
-            if(event.getButton() != MouseButton.MIDDLE)
+            if (event.getButton() != MouseButton.MIDDLE)
                 event.consume();
         });
+    }
 
-        BoardView view = new JavaFXBoardView(hexes);
-        Board board = new Board(view);
-        MoveChecker moveChecker = new StandardMoveChecker(board);
-
-        TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
-        tileArranger.arrange(board,tileScoreChooser);
-
-        gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);
-        gameManager.setObserver(this);
-        view.setActionOnClickForExistingTiles(position -> {
-            if(gameManager.getCurrentController() instanceof HumanController) {
-               ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
-            }
-        });
-
+    public void loadUI() {
         ImageView logo = new ImageView(new Image("/logo_small.png"));
         logo.setFitWidth(100);
         logo.setFitHeight(100);
@@ -109,7 +133,7 @@ public class GameScene extends Scene implements GameObserver{
         btnRearrange.setText("Reset tiles");
         btnRearrange.setOnAction(event -> {
             gameManager.endGame(false);
-            gameScene.load(nicknames, controllers);
+            //gameScene.load(nicknames, controllers);
         });
 
         gameStateBox.getChildren().add(logo);
