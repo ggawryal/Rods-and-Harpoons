@@ -1,6 +1,9 @@
 package scenes;
 
 import game.controllers.*;
+import game.controllers.bot_factories.EasyBotFactory;
+import game.controllers.bot_factories.HardBotFactory;
+import game.controllers.bot_factories.MediumBotFactory;
 import game.controllers.strategies.GreedyStrategy;
 import game.controllers.strategies.MixedStrategy;
 import game.controllers.strategies.RandomMoveStrategy;
@@ -41,22 +44,22 @@ public class Settings extends Scene {
         btnPlay.setText("Play");
         btnPlay.setOnAction(event -> {
             ArrayList<String> nicknames = new ArrayList<>();
-            ArrayList<PlayerController> controllers = new ArrayList<>();
+            ArrayList<ControllerFactory> controllers = new ArrayList<>();
 
             for(int i=0; i<playerBoxes.getChildren().size()-1; i++) {
                 nicknames.add(((TextField)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(0)).getText());
                 switch(((ChoiceBox<String>)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(1)).getValue()) {
                     case "Human":
-                        controllers.add(new HumanController());
+                        controllers.add(new HumanControllerFactory());
                         break;
                     case "Easy Bot":
-                        controllers.add(new BotController(new RandomMoveStrategy(), new RealTimeSleeper(),new JavaFXThreadRunner()));
+                        controllers.add(new EasyBotFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
                         break;
                     case "Medium Bot":
-                        controllers.add(new BotController(new GreedyStrategy(), new RealTimeSleeper(),new JavaFXThreadRunner()));
+                        controllers.add(new MediumBotFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
                         break;
                     case "Hard Bot":
-                        controllers.add(new BotController(new MixedStrategy(), new RealTimeSleeper(),new JavaFXThreadRunner()));
+                        controllers.add(new HardBotFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
                         break;
                 }
             }

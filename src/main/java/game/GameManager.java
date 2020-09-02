@@ -5,6 +5,7 @@ import board.HexVector;
 import board.Move;
 import board.MoveChecker;
 import board.drawable.tile.Tile;
+import game.controllers.ControllerFactory;
 import game.controllers.PlayerController;
 import util.GameInfo;
 import util.PlayerMove;
@@ -27,17 +28,36 @@ public class GameManager {
         return players.size();
     }
 
-    public GameManager(MoveChecker moveChecker, Board board, List<String> nicknames, List<? extends PlayerController> controllers, int pawnsPerPlayer) {
+    public GameManager(MoveChecker moveChecker, Board board, List<String> nicknames, List<ControllerFactory> controllerFactories, int pawnsPerPlayer) {
         this.moveChecker = moveChecker;
         this.board = board;
 
-        if(nicknames.size() != controllers.size()) throw new RuntimeException();
+        if(nicknames.size() != controllerFactories.size()) throw new RuntimeException();
         for(int i=0; i<nicknames.size(); i++) {
-            addPlayer(nicknames.get(i), controllers.get(i));
+            Player player = new Player(getPlayers().size(), nicknames.get(i));
+            bindPlayerWithController(player,controllerFactories.get(i));
+            players.add(player);
         }
 
         pawnSetUpper.setUpPawns(board,players,pawnsPerPlayer);
-        gameInfo = new GameInfo(board.getTilesCopy(),board.getPawnsCopy(), players, new ArrayList<>(), false);
+        gameInfo = new GameInfo(board.getTilesCopy(),board.getPawnsCopy(), controllerFactories, players, new ArrayList<>(), false);
+    }
+
+    public GameManager(MoveChecker moveChecker, Board board, GameInfo gameInfo) {
+        this.moveChecker = moveChecker;
+        this.board = board;
+        board.clear();
+        for(var entry : gameInfo.getTiles().entrySet())
+            board.addTile(entry.getValue(),entry.getKey());
+
+        for(int i=0; i<gameInfo.getPlayers().size(); i++) {
+            bindPlayerWithController(gameInfo.getPlayers().get(i), gameInfo.getControllerFactories().get(i));
+            players.add(gameInfo.getPlayers().get(i));
+        }
+
+        turn = gameInfo.getPlayersMoves().size();
+        gameEnded = gameInfo.isGameFinished();
+        this.gameInfo = gameInfo;
     }
 
     public void setObserver(GameObserver gameObserver) {
@@ -46,16 +66,15 @@ public class GameManager {
 
     public void startGame() {
         gameObserver.onGameInfoUpdated(gameInfo);
-        controllers.get(0).nextTurn();
+        controllers.get(turn % getPlayersNumber()).nextTurn();
     }
 
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    private void addPlayer(String nickname, PlayerController playerController) {
-        Player player = new Player(getPlayers().size(), nickname);
-        players.add(player);
+    private void bindPlayerWithController(Player player, ControllerFactory playerControllerFactory) {
+        PlayerController playerController = playerControllerFactory.newController();
         playerController.set(player,board,moveChecker);
         playerController.setActionOnMove(move -> tryToMove(player,move));
         controllers.add(playerController);
@@ -79,7 +98,7 @@ public class GameManager {
 
     public void endGame(boolean saveResult) {
         gameEnded = true;
-        gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(), true);
+        gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(), true);
         gameObserver.onGameOver(gameInfo, saveResult);
     }
 
@@ -113,7 +132,7 @@ public class GameManager {
 
             ArrayList<PlayerMove> updatedPlayerMoves = new ArrayList<>(gameInfo.getPlayersMoves());
             updatedPlayerMoves.add(new PlayerMove(player.getId(), tileScore, move));
-            gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(), gameInfo.getPlayers(), updatedPlayerMoves, false);
+            gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(),gameInfo.getControllerFactories(), gameInfo.getPlayers(), updatedPlayerMoves, false);
 
             gameObserver.onGameInfoUpdated(gameInfo);
             gameObserver.onPlayerPointsUpdated(player);

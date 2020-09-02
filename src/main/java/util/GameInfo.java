@@ -2,33 +2,37 @@ package util;
 
 import board.HexVector;
 import board.drawable.pawn.Pawn;
-import board.drawable.tile.ScoreTile;
 import board.drawable.tile.Tile;
 import database.DBDocument;
 import game.Player;
+import game.controllers.ControllerFactory;
 import org.bson.Document;
 
 
-import javax.print.Doc;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.HashMap;
 
 public class GameInfo implements DBDocument {
     private final HashMap<HexVector, Tile> tiles;
     private final HashMap<HexVector, Pawn> pawns;
+    private final ArrayList<ControllerFactory> controllerFactories;
     private final ArrayList<Player> players;
     private final ArrayList<PlayerMove> playersMoves;
     private final boolean gameFinished;
 
-    public GameInfo(HashMap<HexVector, Tile> tiles, HashMap<HexVector, Pawn> pawns,
+    public GameInfo(HashMap<HexVector, Tile> tiles, HashMap<HexVector, Pawn> pawns, List<ControllerFactory> controllerFactories,
                     ArrayList<Player> players, ArrayList<PlayerMove> playersMoves, boolean gameFinished) {
         this.tiles = new HashMap<>(tiles);
         this.pawns = new HashMap<>(pawns);
+        this.controllerFactories = new ArrayList<>(controllerFactories);
         this.players = new ArrayList<>(players);
         this.playersMoves = new ArrayList<>(playersMoves);
         this.gameFinished = gameFinished;
     }
+
+    public ArrayList<ControllerFactory> getControllerFactories() { return controllerFactories; }
 
     public HashMap<HexVector, Tile> getTiles() {
         return tiles;
@@ -82,10 +86,19 @@ public class GameInfo implements DBDocument {
         return result;
     }
 
+    private ArrayList<Document> getControllersAsDocument() {
+        ArrayList<Document> result = new ArrayList<>();
+        for(ControllerFactory factory : controllerFactories) {
+            result.add(new Document("type", factory.getClass().getCanonicalName()));
+        }
+        return result;
+    }
+
     @Override
     public Document toDocument() {
         return new Document("tiles", getTilesAsDocuments())
                 .append("pawns", getPawnsAsDocumentS())
+                .append("controllers", getControllersAsDocument())
                 .append("players", getPlayersAsDocuments())
                 .append("playersMoves", getPlayersMovesAsDocuments())
                 .append("gameFinished", gameFinished);
@@ -96,7 +109,7 @@ public class GameInfo implements DBDocument {
         for(Document doc : document.getList("tiles",Document.class)) {
             Document position = doc.get("position",Document.class);
             Document tile = doc.get("tile",Document.class);
-            tiles.put(new HexVector(position), new ScoreTile(tile));
+            tiles.put(new HexVector(position), loadTile(tile));
         }
 
         pawns = new HashMap<>();
@@ -105,6 +118,10 @@ public class GameInfo implements DBDocument {
             Document pawn = doc.get("pawn",Document.class);
             pawns.put(new HexVector(position), new Pawn(pawn));
         }
+
+        controllerFactories = new ArrayList<>();
+        for(Document doc : document.getList("controllers",Document.class))
+            controllerFactories.add(loadControllerFactory(doc));
 
         players = new ArrayList<>();
         for(Document doc : document.getList("players",Document.class))
@@ -115,6 +132,28 @@ public class GameInfo implements DBDocument {
             playersMoves.add(new PlayerMove(doc));
 
         gameFinished = document.getBoolean("gameFinished");
+    }
+
+    private Tile loadTile(Document document) {
+        try {
+            String canonicalName  = document.getString("type");
+            Class<?> c = Class.forName(canonicalName);
+            Constructor<?> constructor = c.getConstructor(Document.class);
+            return (Tile) constructor.newInstance(document);
+        }catch(Exception ignored) {
+            throw new RuntimeException("Unknown type of tile found");
+        }
+    }
+
+    private ControllerFactory loadControllerFactory(Document document) {
+        try {
+            String canonicalName  = document.getString("type");
+            Class<?> c = Class.forName(canonicalName);
+            Constructor<?> constructor = c.getConstructor();
+            return (ControllerFactory) constructor.newInstance();
+        }catch(Exception ignored) {
+            throw new RuntimeException("Unknown type of controller found");
+        }
     }
 
 }

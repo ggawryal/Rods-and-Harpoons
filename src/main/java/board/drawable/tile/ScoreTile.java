@@ -23,9 +23,10 @@ public class ScoreTile implements Tile {
 
     @Override
     public Document toDocument() {
-        return new Document("score", score);
+        return new Document("type",getClass().getCanonicalName()).append("score", score);
     }
 
+    @SuppressWarnings("unused")
     public ScoreTile(Document document) {
         this(document.getInteger("score"));
     }
