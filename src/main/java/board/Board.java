@@ -80,7 +80,9 @@ public class Board {
     public void movePawn(Move move) {
         int id = pawns.get(move.getFrom()).getId();
         removePawn(move.getFrom());
-        addPawn(new Pawn(id), move.getTo());
+        Pawn newPawn = new Pawn(id);
+        addPawn(newPawn, move.getTo());
+        view.playMoveTransition(newPawn, move);
     }
 
     public void switchPawnSelection(HexVector position, boolean highlightPossibleMoves) {

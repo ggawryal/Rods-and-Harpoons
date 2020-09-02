@@ -46,7 +46,7 @@ public class BotController implements PlayerController {
     @Override
     public void nextTurn() {
         threadRunner.runLaterInBackground(() -> {
-            sleeper.sleep(random.nextInt(200)+100); // from 100 to 300 ms
+            sleeper.sleep(random.nextInt(250)+500); // from 500 to 750 ms
             ArrayList<Move> moves = new ArrayList<>();
 
             for(int i=0;i<player.getPawnsCount();i++)
@@ -57,7 +57,7 @@ public class BotController implements PlayerController {
 
             Move selectedMove = moves.get(random.nextInt(moves.size()));
             board.switchPawnSelection(selectedMove.getFrom(), false);
-            sleeper.sleep(random.nextInt(random.nextInt(200)+300)); // from 300 to 500 ms
+            sleeper.sleep(random.nextInt(random.nextInt(250)+250)); // from 250 to 500 ms
             threadRunner.runLaterInMainThread(()-> actionOnMove.apply(selectedMove));
         });
     }

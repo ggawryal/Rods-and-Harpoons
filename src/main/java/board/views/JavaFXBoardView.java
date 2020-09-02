@@ -1,16 +1,18 @@
 package board.views;
 
 import board.HexVector;
+import board.Move;
 import board.drawable.Drawable;
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 import board.drawable.tile.TileImageLoader;
-import board.views.BoardView;
+import javafx.animation.TranslateTransition;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -87,6 +89,23 @@ public class JavaFXBoardView implements BoardView {
         } else {
             imageView.setEffect(null);
         }
+    }
+
+    @Override
+    public void playMoveTransition(Pawn pawn, Move move) {
+        pawns.get(move.getTo()).setVisible(false);
+        ImageView transitionPawn = drawObject(pawn, move.getFrom());
+        pane.getChildren().add(transitionPawn);
+        TranslateTransition transition = new TranslateTransition();
+        transition.setNode(transitionPawn);
+        transition.setToX(hexagons.get(move.getTo()).getX() - hexagons.get(move.getFrom()).getX());
+        transition.setToY(hexagons.get(move.getTo()).getY() - hexagons.get(move.getFrom()).getY());
+        transition.setDuration(Duration.millis(200+move.getDistance()*50));
+        transition.setOnFinished(event -> {
+            pawns.get(move.getTo()).setVisible(true);
+            pane.getChildren().remove(transitionPawn);
+        });
+        transition.play();
     }
 
     @Override

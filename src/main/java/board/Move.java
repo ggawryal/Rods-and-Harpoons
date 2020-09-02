@@ -13,6 +13,12 @@ public class Move {
         return to;
     }
 
+    public int getDistance() {
+        HexVector diff = to.copy().sub(from);
+        if(diff.getEast() != 0) return Math.abs(diff.getEast());
+        else return Math.abs(diff.getSoutheast());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

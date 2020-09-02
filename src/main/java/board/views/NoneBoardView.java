@@ -1,9 +1,9 @@
 package board.views;
 
 import board.HexVector;
+import board.Move;
 import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
-import board.views.BoardView;
 
 import java.util.function.Consumer;
 
@@ -25,6 +25,9 @@ public class NoneBoardView implements BoardView {
 
     @Override
     public void switchTileGlow(HexVector position) {}
+
+    @Override
+    public void playMoveTransition(Pawn pawn, Move move) {}
 
     @Override
     public void setActionOnClickForExistingTiles(Consumer<HexVector> onMouseClick) {}

@@ -84,14 +84,14 @@ public class GameScene extends Scene implements GameObserver{
         playerPoints = new ArrayList<>();
         ArrayList<Player> players = gameManager.getPlayers();
         for(Player p : players) {
-            Text coloredMark = new Text(Character.toString(fullBlockSymbol));
+            Text coloredMark = new Text(fullBlockSymbol + " ");
             switch(p.getId()) {
                 case 0: coloredMark.setFill(new Color(1,0,0,1)); break;
                 case 1: coloredMark.setFill(new Color(0,0.5,0,1)); break;
                 case 2: coloredMark.setFill(new Color(0,0,1,1)); break;
                 case 3: coloredMark.setFill(new Color(1,1,0,1)); break;
             }
-            Text playerText = new Text(" " + p.getNickname() + ": 0");
+            Text playerText = new Text(p.getNickname() + ": 0");
             TextFlow textFlow = new TextFlow(coloredMark, playerText);
             textFlow.setTextAlignment(TextAlignment.CENTER);
             playerPoints.add(textFlow);
