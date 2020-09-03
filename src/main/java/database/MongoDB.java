@@ -2,17 +2,24 @@ package database;
 
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.client.model.*;
-import game.Player;
-import org.bson.types.ObjectId;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.UpdateOptions;
+import game.Player;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import util.GameInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 
 public class MongoDB implements Database {
@@ -45,6 +52,17 @@ public class MongoDB implements Database {
     @Override
     public void removeGame(String gameId) {
         database.getCollection("matches").deleteOne(new BasicDBObject("_id", new ObjectId(gameId)));
+    }
+
+    public ArrayList<Document> getPlayerMatches(String nickName) {
+        ArrayList<Document> result = new ArrayList<>();
+        BasicDBObject query = new BasicDBObject("players.nickname", nickName);
+        FindIterable<Document> cursor = database.getCollection("matches").find(query);
+        for(Document gameDocument : cursor) {
+            result.add(gameDocument);
+        }
+        Collections.reverse(result);
+        return result;
     }
 
     public void updatePlayersHighscores(Collection<Player> players, String gameId) {

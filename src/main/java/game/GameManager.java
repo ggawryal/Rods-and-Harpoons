@@ -10,8 +10,8 @@ import game.controllers.PlayerController;
 import util.GameInfo;
 import util.PlayerMove;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameManager {
     private final MoveChecker moveChecker;
@@ -70,21 +70,6 @@ public class GameManager {
                 throw new RuntimeException("Wrong pawn's id in game info");
         }
 
-        for(PlayerMove playerMove : gameInfo.getPlayersMoves()) {
-            board.removeTile(playerMove.getMove().getFrom());
-            board.movePawn(playerMove.getMove());
-            boolean foundOwner = false;
-            for(Player player : players) {
-                if (player.getId() == playerMove.getPlayerId()) {
-                    player.changePawnPosition(playerMove.getMove());
-                    foundOwner = true;
-                    break;
-                }
-            }
-            if(!foundOwner)
-                throw new RuntimeException("Wrong player's id in player move");
-        }
-
         turn = gameInfo.getTurn();
         gameEnded = gameInfo.isGameFinished();
         this.gameInfo = gameInfo;
@@ -130,7 +115,7 @@ public class GameManager {
 
     public void endGame(boolean saveResult) {
         gameEnded = true;
-        gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(),turn, true);
+        gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(),turn, true);
         gameObserver.onGameOver(gameInfo, saveResult);
     }
 
@@ -163,14 +148,16 @@ public class GameManager {
             player.changePawnPosition(move);
 
             boolean hasGameAlreadyEnded = updateTurn();
+
+            ArrayList<PlayerMove> updatedPlayerMoves = new ArrayList<>(gameInfo.getPlayersMoves());
+            updatedPlayerMoves.add(new PlayerMove(player.getId(), tileScore, move));
+            gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), updatedPlayerMoves, turn, false);
+            gameObserver.onGameInfoUpdated(gameInfo);
+            gameObserver.onPlayerPointsUpdated(player);
+
             if(hasGameAlreadyEnded)
                 endGame(true);
             else {
-                ArrayList<PlayerMove> updatedPlayerMoves = new ArrayList<>(gameInfo.getPlayersMoves());
-                updatedPlayerMoves.add(new PlayerMove(player.getId(), tileScore, move));
-                gameInfo = new GameInfo(gameInfo.getTiles(), gameInfo.getPawns(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), updatedPlayerMoves, turn, false);
-                gameObserver.onGameInfoUpdated(gameInfo);
-                gameObserver.onPlayerPointsUpdated(player);
                 controllers.get(turn % getPlayersNumber()).nextTurn();
             }
             return true;

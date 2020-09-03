@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import scenes.GameScene;
 import scenes.MainMenu;
+import scenes.MatchHistory;
 import scenes.Settings;
 
 public class Program {
@@ -22,6 +23,7 @@ public class Program {
         public static MainMenu mainMenu;
         public static Settings settings;
         public static GameScene gameScene;
+        public static MatchHistory matchHistory;
         public static MongoDB mongoDB;
         public static JsonSavefile jsonSavefile;
 
@@ -43,6 +45,8 @@ public class Program {
             settings = new Settings(WIDTH, HEIGHT);
             settings.load();
             gameScene = new GameScene(WIDTH,HEIGHT);
+            matchHistory = new MatchHistory(WIDTH, HEIGHT);
+            matchHistory.load();
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();

@@ -10,6 +10,8 @@ public class Pawn implements Drawable, DBDocument {
 
     public Pawn(int id) {
         this.id = id;
+        if(id < 1 || id >= 5)
+            throw new RuntimeException("Pawn with wrong id chosen");
         this.imagePath = "/hex_P" + id + ".png";
     }
 

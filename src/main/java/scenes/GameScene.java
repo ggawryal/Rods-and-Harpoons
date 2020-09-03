@@ -1,16 +1,19 @@
 package scenes;
 
-import board.*;
+import board.Board;
+import board.MoveChecker;
+import board.StandardMoveChecker;
 import board.arranger.RatioTileChooser;
 import board.arranger.RectangleTileArranger;
 import board.arranger.TileArranger;
 import board.arranger.TileScoreChooser;
 import board.views.BoardView;
 import board.views.JavaFXBoardView;
-import game.*;
+import game.GameManager;
+import game.GameObserver;
+import game.Player;
 import game.controllers.ControllerFactory;
 import game.controllers.HumanController;
-import game.controllers.PlayerController;
 import javafx.event.Event;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,7 +26,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -65,7 +67,7 @@ public class GameScene extends Scene implements GameObserver{
         });
 
         gameManager.setObserver(this);
-        loadUI();
+        loadUI(gameManager.getPlayers(), controllers);
     }
 
     public void load(GameInfo gameInfo) {
@@ -76,12 +78,12 @@ public class GameScene extends Scene implements GameObserver{
 
         gameManager = new GameManager(moveChecker, board, gameInfo);
         view.setActionOnClickForExistingTiles(position -> {
-            if(gameManager.getCurrentController() instanceof HumanController) {
+            if (gameManager.getCurrentController() instanceof HumanController) {
                 ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
             }
         });
         gameManager.setObserver(this);
-        loadUI();
+        loadUI(gameManager.getPlayers(), gameInfo.getControllerFactories());
     }
 
     public void loadPanes() {
@@ -100,21 +102,16 @@ public class GameScene extends Scene implements GameObserver{
         });
     }
 
-    public void loadUI() {
+    public void loadUI(List<Player> players, List<ControllerFactory> controllers) {
         ImageView logo = new ImageView(new Image("/logo_small.png"));
         logo.setFitWidth(100);
         logo.setFitHeight(100);
 
         playerPoints = new ArrayList<>();
-        ArrayList<Player> players = gameManager.getPlayers();
+
         for(Player p : players) {
             Text coloredMark = new Text(fullBlockSymbol + " ");
-            switch(p.getId()) {
-                case 0: coloredMark.setFill(new Color(1,0,0,1)); break;
-                case 1: coloredMark.setFill(new Color(0,0.5,0,1)); break;
-                case 2: coloredMark.setFill(new Color(0,0,1,1)); break;
-                case 3: coloredMark.setFill(new Color(1,1,0,1)); break;
-            }
+            coloredMark.setFill(p.getColor());
             Text playerText = new Text(p.getNickname() + ": 0");
             TextFlow textFlow = new TextFlow(coloredMark, playerText);
             textFlow.setTextAlignment(TextAlignment.CENTER);
@@ -133,12 +130,16 @@ public class GameScene extends Scene implements GameObserver{
         btnRearrange.setText("Reset tiles");
         btnRearrange.setOnAction(event -> {
             gameManager.endGame(false);
-            //gameScene.load(nicknames, controllers);
+            ArrayList<String> nickNames = new ArrayList<>();
+            for(Player player : players) {
+                nickNames.add(player.getNickname());
+            }
+            gameScene.load(nickNames, controllers);
         });
 
+        gameStateBox.getChildren().addAll(btnRearrange, btnBack);
         gameStateBox.getChildren().add(logo);
         gameStateBox.getChildren().addAll(playerPoints);
-        gameStateBox.getChildren().addAll(btnRearrange,btnBack);
         gameStateBox.setAlignment(Pos.CENTER);
         root.setCenter(scrollPane);
         root.setLeft(gameStateBox);

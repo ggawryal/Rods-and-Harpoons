@@ -45,12 +45,17 @@ public class MainMenu extends Scene {
             btnContinue.setDisable(true);
         }
 
+        Button btnMatchHistory = new Button();
+        btnMatchHistory.setFont(Font.font(30));
+        btnMatchHistory.setText("Match History");
+        btnMatchHistory.setOnAction(event -> primaryStage.setScene(matchHistory));
+
         Button btnExit = new Button();
         btnExit.setFont(Font.font(30));
         btnExit.setText("Exit");
         btnExit.setOnAction(event -> System.exit(0));
 
-        buttonsBox.getChildren().addAll(btnNewGame, btnContinue, btnExit);
+        buttonsBox.getChildren().addAll(btnNewGame, btnContinue, btnMatchHistory, btnExit);
         buttonsBox.setAlignment(Pos.CENTER);
         rootBox.getChildren().addAll(logo, buttonsBox);
         rootBox.setAlignment(Pos.CENTER);

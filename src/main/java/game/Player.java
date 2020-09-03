@@ -3,6 +3,7 @@ package game;
 import board.HexVector;
 import board.Move;
 import database.DBDocument;
+import javafx.scene.paint.Color;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -52,6 +53,16 @@ public class Player implements DBDocument {
 
     public int getPoints() {
         return points;
+    }
+
+    public Color getColor() {
+        switch(id) {
+            case 0: return new Color(1,0,0,1);
+            case 1: return new Color(0,0.5,0,1);
+            case 2: return new Color(0,0,1,1);
+            case 3: return new Color(1,1,0,1);
+            default: return new Color(0, 0, 0, 0);
+        }
     }
 
     public void addPoints(int value) {

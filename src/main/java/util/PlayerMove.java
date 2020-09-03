@@ -24,6 +24,8 @@ public class PlayerMove implements DBDocument {
         return playerId;
     }
 
+    public int getPoints() { return points; }
+
     @Override
     public Document toDocument() {
         return new Document("playerid", playerId)
