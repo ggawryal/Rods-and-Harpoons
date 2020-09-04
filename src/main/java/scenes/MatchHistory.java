@@ -33,7 +33,7 @@ import static application.Program.MainApp.*;
 public class MatchHistory extends Scene {
     private final static StackPane root = new StackPane();
     private final static VBox rootBox = new VBox(50);
-    private final static VBox gamesBox = new VBox(50);
+    private final static VBox gamesBox = new VBox(20);
     private static final char fullBlockSymbol = 0x2588;
     private final static ListView<String> gamesList = new ListView<>();
     private ArrayList<Document> games;
@@ -42,12 +42,14 @@ public class MatchHistory extends Scene {
     public void load() {
         ImageView logo = new ImageView(new Image("/logo.png"));
         TextField textField = new TextField("nickname");
-        textField.setMaxWidth(300);
+        textField.setMaxWidth(500);
+        textField.setFont(Font.font(30));
+        textField.setAlignment(Pos.CENTER);
 
         gamesBox.setVisible(false);
 
         Button btnSearch = new Button();
-        btnSearch.setFont(Font.font(30));
+        btnSearch.setFont(Font.font(50));
         btnSearch.setText("Search");
         btnSearch.setOnAction(event -> {
             rootBox.setVisible(false);
@@ -70,11 +72,11 @@ public class MatchHistory extends Scene {
 
         Button btnBack = new Button();
         btnBack.setFont(Font.font(30));
-        btnBack.setText("back");
+        btnBack.setText("Back");
         btnBack.setOnAction(event -> primaryStage.setScene(mainMenu));
 
         Button btnShow = new Button();
-        btnShow.setFont(Font.font(30));
+        btnShow.setFont(Font.font(50));
         btnShow.setText("Show");
         btnShow.setOnAction(event -> {
             GameInfo game = new GameInfo(games.get(gamesList.getSelectionModel().getSelectedIndex()));
@@ -149,10 +151,16 @@ public class MatchHistory extends Scene {
 
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(primaryStage);
+            dialog.setTitle(gamesList.getSelectionModel().getSelectedItem());
 
-            Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
+            Scene scene = new Scene(root, WIDTH, HEIGHT);
             dialog.setScene(scene);
             dialog.show();
+        });
+        btnShow.setDisable(true);
+        gamesList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) btnShow.setDisable(false);
+            else btnShow.setDisable(true);
         });
 
         Button btnGamesBack = new Button();

@@ -4,9 +4,6 @@ import game.controllers.*;
 import game.controllers.bot_factories.EasyBotFactory;
 import game.controllers.bot_factories.HardBotFactory;
 import game.controllers.bot_factories.MediumBotFactory;
-import game.controllers.strategies.GreedyStrategy;
-import game.controllers.strategies.MixedStrategy;
-import game.controllers.strategies.RandomMoveStrategy;
 import game.threads.JavaFXThreadRunner;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -24,8 +21,7 @@ import util.sleeper.RealTimeSleeper;
 
 import java.util.ArrayList;
 
-import static application.Program.MainApp.gameScene;
-import static application.Program.MainApp.primaryStage;
+import static application.Program.MainApp.*;
 
 public class Settings extends Scene {
     private final static StackPane root = new StackPane();
@@ -76,9 +72,16 @@ public class Settings extends Scene {
         for(int i=0; i<3; i++) addPlayerBox();
         removePlayerBox((HBox)playerBoxes.getChildren().get(2));
 
+        Button btnBack = new Button("Back");
+        btnBack.setFont(Font.font(30));
+        btnBack.setOnAction(event -> primaryStage.setScene(mainMenu));
+        HBox buttonsBox = new HBox(20);
+        buttonsBox.getChildren().addAll(btnPlay, btnBack);
+        buttonsBox.setAlignment(Pos.CENTER);
+
         rootBox.getChildren().add(logo);
         rootBox.getChildren().addAll(playerBoxes);
-        rootBox.getChildren().addAll(btnPlay);
+        rootBox.getChildren().add(buttonsBox);
         rootBox.setAlignment(Pos.CENTER);
         root.getChildren().add(rootBox);
     }
