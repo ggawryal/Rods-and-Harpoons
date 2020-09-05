@@ -6,7 +6,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class JavaFXThreadRunner implements ThreadRunner {
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService;
+
+    public JavaFXThreadRunner(String threadName) {
+        executorService = Executors.newSingleThreadExecutor(runnable -> new Thread(runnable, threadName));
+    }
+
     @Override
     public void runLaterInBackground(Runnable runnable) {
         executorService.submit(runnable);

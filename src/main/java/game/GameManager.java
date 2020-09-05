@@ -12,6 +12,7 @@ import util.PlayerMove;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class GameManager {
     private final MoveChecker moveChecker;
@@ -115,13 +116,21 @@ public class GameManager {
 
     public void endGame(boolean saveResult) {
         gameEnded = true;
-        gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(),turn, true);
-        gameObserver.onGameOver(gameInfo, saveResult);
+        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for(Thread thread : threadSet) {
+            if(thread.getName().startsWith("bot")) {
+                thread.interrupt();
+            }
+        }
+        if(saveResult) {
+            gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(), turn, true);
+            gameObserver.onGameOver(gameInfo, true);
+        }
     }
 
     private boolean updateTurn() {
         if(gameEnded)
-            return false;
+            return true;
         turn++;
         for(int i = 0; i < getPlayersNumber(); i++) {
             int playerID = turn % getPlayersNumber();
@@ -153,10 +162,11 @@ public class GameManager {
             updatedPlayerMoves.add(new PlayerMove(player.getId(), tileScore, move));
             gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), updatedPlayerMoves, turn, false);
             gameObserver.onGameInfoUpdated(gameInfo);
-            gameObserver.onPlayerPointsUpdated(player);
+            if(!gameEnded)
+                gameObserver.onPlayerPointsUpdated(player);
 
             if(hasGameAlreadyEnded)
-                endGame(true);
+                endGame(!gameEnded);
             else {
                 controllers.get(turn % getPlayersNumber()).nextTurn();
             }

@@ -19,7 +19,7 @@ public abstract class BotFactory implements ControllerFactory{
 
     @SuppressWarnings("unused")
     public BotFactory() {
-        this(new RealTimeSleeper(), new JavaFXThreadRunner());
+        this(new RealTimeSleeper(), new JavaFXThreadRunner("bot factory"));
     }
 
     @Override
