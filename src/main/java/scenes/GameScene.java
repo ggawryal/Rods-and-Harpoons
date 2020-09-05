@@ -163,8 +163,7 @@ public class GameScene extends Scene implements GameObserver{
     public void onGameOver(GameInfo gameInfo, boolean saveGame) {
         if(saveGame) {
             jsonSavefile.saveGame(gameInfo);
-            String gameId = mongoDB.saveGame(gameInfo);
-            mongoDB.updatePlayersHighscores(gameInfo.getPlayers(), gameId);
+            mongoDB.updatePlayersHighScore(gameInfo.getPlayers());
         }
 
         ArrayList<Player> players = gameManager.getPlayers();

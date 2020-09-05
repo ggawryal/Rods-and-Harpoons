@@ -24,11 +24,11 @@ public class MainMenu extends Scene {
         ImageView logo = new ImageView(new Image("/logo.png"));
 
         Button btnNewGame = new Button("New Game");
-        btnNewGame.setFont(Font.font(50));
+        btnNewGame.setFont(Font.font(40));
         btnNewGame.setOnAction(event -> primaryStage.setScene(settings));
 
         Button btnContinue = new Button("Continue");
-        btnContinue.setFont(Font.font(30));
+        btnContinue.setFont(Font.font(20));
 
         GameInfo savedGame;
         try {
@@ -44,14 +44,21 @@ public class MainMenu extends Scene {
         }
 
         Button btnMatchHistory = new Button("Match History");
-        btnMatchHistory.setFont(Font.font(30));
+        btnMatchHistory.setFont(Font.font(20));
         btnMatchHistory.setOnAction(event -> primaryStage.setScene(matchHistory));
 
+        Button btnHighScores = new Button("High Scores");
+        btnHighScores.setFont(Font.font(20));
+        btnHighScores.setOnAction(event -> {
+            highScores.refresh();
+            primaryStage.setScene(highScores);
+        });
+
         Button btnExit = new Button("Exit");
-        btnExit.setFont(Font.font(30));
+        btnExit.setFont(Font.font(20));
         btnExit.setOnAction(event -> System.exit(0));
 
-        buttonsBox.getChildren().addAll(btnNewGame, btnContinue, btnMatchHistory, btnExit);
+        buttonsBox.getChildren().addAll(btnNewGame, btnContinue, btnMatchHistory, btnHighScores, btnExit);
         buttonsBox.setAlignment(Pos.CENTER);
         rootBox.getChildren().addAll(logo, buttonsBox);
         rootBox.setAlignment(Pos.CENTER);

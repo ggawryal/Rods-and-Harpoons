@@ -6,10 +6,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import scenes.GameScene;
-import scenes.MainMenu;
-import scenes.MatchHistory;
-import scenes.Settings;
+import scenes.*;
 
 public class Program {
     public static void main(String[] args) {
@@ -24,6 +21,7 @@ public class Program {
         public static Settings settings;
         public static GameScene gameScene;
         public static MatchHistory matchHistory;
+        public static HighScores highScores;
         public static MongoDB mongoDB;
         public static JsonSavefile jsonSavefile;
 
@@ -47,6 +45,8 @@ public class Program {
             gameScene = new GameScene(WIDTH,HEIGHT);
             matchHistory = new MatchHistory(WIDTH, HEIGHT);
             matchHistory.load();
+            highScores = new HighScores(WIDTH, HEIGHT);
+            highScores.load();
 
             primaryStage.setScene(mainMenu);
             primaryStage.show();

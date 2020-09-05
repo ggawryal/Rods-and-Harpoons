@@ -65,15 +65,23 @@ public class MongoDB implements Database {
         return result;
     }
 
-    public void updatePlayersHighscores(Collection<Player> players, String gameId) {
+    public ArrayList<Document> getPlayersHighScores(int limit) {
+        ArrayList<Document> result = new ArrayList<>();
+        FindIterable<Document> cursor = database.getCollection("players").find().sort(new BasicDBObject("highscore", -1)).limit(limit);
+        for(Document player : cursor) {
+            result.add(player);
+        }
+        return result;
+
+    }
+
+    public void updatePlayersHighScore(Collection<Player> players) {
         FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().upsert(true);
 
         for (var player : players) {
             BasicDBObject query = new BasicDBObject("nickname", player.getNickname());
-            BasicDBObject matchesUpdate = new BasicDBObject("matches", new ObjectId(gameId));
             BasicDBObject highScoreUpdate = new BasicDBObject("highscore", player.getPoints());
-            BasicDBObject update = new BasicDBObject("$addToSet", matchesUpdate)
-                    .append("$max", highScoreUpdate);
+            BasicDBObject update = new BasicDBObject("$max", highScoreUpdate);
             database.getCollection("players").findOneAndUpdate(query, update, options);
         }
     }
