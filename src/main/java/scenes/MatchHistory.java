@@ -34,23 +34,23 @@ public class MatchHistory extends Scene {
     private final static StackPane root = new StackPane();
     private final static VBox rootBox = new VBox(50);
     private final static VBox gamesBox = new VBox(20);
-    private static final char fullBlockSymbol = 0x2588;
+    private static final char fullBlockSymbol = 0x2B22;
     private final static ListView<String> gamesList = new ListView<>();
     private ArrayList<Document> games;
-    ArrayList<TextFlow> playerPoints;
+    private VBox playersBox;
 
     public void load() {
         ImageView logo = new ImageView(new Image("/logo.png"));
         TextField textField = new TextField("nickname");
+        textField.setPromptText("nickname");
         textField.setMaxWidth(500);
         textField.setFont(Font.font(30));
         textField.setAlignment(Pos.CENTER);
 
         gamesBox.setVisible(false);
 
-        Button btnSearch = new Button();
+        Button btnSearch = new Button("Search");
         btnSearch.setFont(Font.font(50));
-        btnSearch.setText("Search");
         btnSearch.setOnAction(event -> {
             rootBox.setVisible(false);
             games = mongoDB.getPlayerMatches(textField.getText());
@@ -70,14 +70,12 @@ public class MatchHistory extends Scene {
             gamesBox.setVisible(true);
         });
 
-        Button btnBack = new Button();
+        Button btnBack = new Button("Back");
         btnBack.setFont(Font.font(30));
-        btnBack.setText("Back");
         btnBack.setOnAction(event -> primaryStage.setScene(mainMenu));
 
-        Button btnShow = new Button();
+        Button btnShow = new Button("Show");
         btnShow.setFont(Font.font(50));
-        btnShow.setText("Show");
         btnShow.setOnAction(event -> {
             GameInfo game = new GameInfo(games.get(gamesList.getSelectionModel().getSelectedIndex()));
             game.getPlayers().sort(Comparator.comparingInt(Player::getId));
@@ -100,20 +98,23 @@ public class MatchHistory extends Scene {
             }
 
             VBox gameStateBox = new VBox(10);
-            playerPoints = new ArrayList<>();
+            playersBox = new VBox(10);
+            playersBox.setMinHeight(200);
 
             ImageView logoSmall = new ImageView(new Image("/logo_small.png"));
-            logoSmall.setFitWidth(100);
-            logoSmall.setFitHeight(100);
+            logoSmall.setFitWidth(150);
+            logoSmall.setFitHeight(150);
 
 
             for(Player p : game.getPlayers()) {
                 Text coloredMark = new Text(fullBlockSymbol + " ");
                 coloredMark.setFill(p.getColor());
-                Text playerText = new Text(p.getNickname() + ": " + p.getPoints());
+                coloredMark.setFont(Font.font(20));
+                Text playerText = new Text(p.getNickname() + ": 0");
+                playerText.setFont(Font.font(20));
                 TextFlow textFlow = new TextFlow(coloredMark, playerText);
                 textFlow.setTextAlignment(TextAlignment.CENTER);
-                playerPoints.add(textFlow);
+                playersBox.getChildren().add(textFlow);
             }
 
             var it = game.getPlayersMoves().listIterator();
@@ -129,7 +130,7 @@ public class MatchHistory extends Scene {
                 }
             });
 
-            HBox hbox = new HBox(5);
+            HBox hBox = new HBox(5);
 
             Button btnPrevMove = new Button("<");
             btnPrevMove.setOnAction(event4 -> {
@@ -138,13 +139,13 @@ public class MatchHistory extends Scene {
                 }
             });
 
-            hbox.getChildren().addAll(btnPrevMove, btnNextMove);
-            hbox.setAlignment(Pos.CENTER);
+            hBox.getChildren().addAll(btnPrevMove, btnNextMove);
+            hBox.setAlignment(Pos.CENTER);
 
             gameStateBox.getChildren().add(logoSmall);
-            gameStateBox.getChildren().addAll(playerPoints);
+            gameStateBox.getChildren().add(playersBox);
+            gameStateBox.getChildren().addAll(hBox);
             gameStateBox.setAlignment(Pos.CENTER);
-            gameStateBox.getChildren().addAll(hbox);
 
             root.setCenter(scrollPane);
             root.setLeft(gameStateBox);
@@ -163,9 +164,8 @@ public class MatchHistory extends Scene {
             else btnShow.setDisable(true);
         });
 
-        Button btnGamesBack = new Button();
+        Button btnGamesBack = new Button("Back");
         btnGamesBack.setFont(Font.font(30));
-        btnGamesBack.setText("Back");
         btnGamesBack.setOnAction(event -> {
             gamesBox.setVisible(false);
             gamesList.getItems().clear();
@@ -182,7 +182,8 @@ public class MatchHistory extends Scene {
     }
 
     public void onPlayerPointsUpdated(Player player) {
-        ((Text)playerPoints.get(player.getId()).getChildren().get(1)).setText(player.getNickname() + ": " + player.getPoints());
+        ((Text)((TextFlow)playersBox.getChildren().get(player.getId())).getChildren().get(1))
+                .setText(player.getNickname() + ": " + player.getPoints());
     }
 
     public void doMove(Board board, GameInfo game, PlayerMove move) {

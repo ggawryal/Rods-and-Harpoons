@@ -35,9 +35,8 @@ public class Settings extends Scene {
     public void load() {
         ImageView logo = new ImageView(new Image("/logo.png"));
 
-        Button btnPlay = new Button();
+        Button btnPlay = new Button("Play");
         btnPlay.setFont(Font.font(50));
-        btnPlay.setText("Play");
         btnPlay.setOnAction(event -> {
             ArrayList<String> nicknames = new ArrayList<>();
             ArrayList<ControllerFactory> controllers = new ArrayList<>();

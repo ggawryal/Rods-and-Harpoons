@@ -23,14 +23,12 @@ public class MainMenu extends Scene {
         buttonsBox.getChildren().clear();
         ImageView logo = new ImageView(new Image("/logo.png"));
 
-        Button btnNewGame = new Button();
+        Button btnNewGame = new Button("New Game");
         btnNewGame.setFont(Font.font(50));
-        btnNewGame.setText("New Game");
         btnNewGame.setOnAction(event -> primaryStage.setScene(settings));
 
-        Button btnContinue = new Button();
+        Button btnContinue = new Button("Continue");
         btnContinue.setFont(Font.font(30));
-        btnContinue.setText("Continue");
 
         GameInfo savedGame;
         try {
@@ -45,14 +43,12 @@ public class MainMenu extends Scene {
             btnContinue.setDisable(true);
         }
 
-        Button btnMatchHistory = new Button();
+        Button btnMatchHistory = new Button("Match History");
         btnMatchHistory.setFont(Font.font(30));
-        btnMatchHistory.setText("Match History");
         btnMatchHistory.setOnAction(event -> primaryStage.setScene(matchHistory));
 
-        Button btnExit = new Button();
+        Button btnExit = new Button("Exit");
         btnExit.setFont(Font.font(30));
-        btnExit.setText("Exit");
         btnExit.setOnAction(event -> System.exit(0));
 
         buttonsBox.getChildren().addAll(btnNewGame, btnContinue, btnMatchHistory, btnExit);

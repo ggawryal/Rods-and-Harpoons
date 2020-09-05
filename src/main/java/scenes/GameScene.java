@@ -40,13 +40,13 @@ import static application.Program.MainApp.*;
 
 public class GameScene extends Scene implements GameObserver{
     private final static BorderPane root = new BorderPane();
-    private static final char fullBlockSymbol = 0x2588; //unicode
+    private static final char fullBlockSymbol = 0x2B22; //unicode
 
     private static Pane hexes;
     private static ScrollPane scrollPane;
 
     private static VBox gameStateBox;
-    private static ArrayList<TextFlow> playerPoints;
+    private static VBox playersBox;
     private static GameManager gameManager;
 
     public void load(List<String> nicknames, List<ControllerFactory> controllers) {
@@ -104,31 +104,32 @@ public class GameScene extends Scene implements GameObserver{
 
     public void loadUI(List<Player> players, List<ControllerFactory> controllers) {
         ImageView logo = new ImageView(new Image("/logo_small.png"));
-        logo.setFitWidth(100);
-        logo.setFitHeight(100);
+        logo.setFitWidth(150);
+        logo.setFitHeight(150);
 
-        playerPoints = new ArrayList<>();
+        playersBox = new VBox(10);
+        playersBox.setMinHeight(200);
 
         for(Player p : players) {
             Text coloredMark = new Text(fullBlockSymbol + " ");
             coloredMark.setFill(p.getColor());
+            coloredMark.setFont(Font.font(20));
             Text playerText = new Text(p.getNickname() + ": 0");
+            playerText.setFont(Font.font(20));
             TextFlow textFlow = new TextFlow(coloredMark, playerText);
             textFlow.setTextAlignment(TextAlignment.CENTER);
-            playerPoints.add(textFlow);
+            playersBox.getChildren().add(textFlow);
         }
 
-        Button btnBack = new Button();
-        btnBack.setText("Go back to main menu");
-        btnBack.setOnAction(event -> {
+        Button btnExit = new Button("Exit");
+        btnExit.setOnAction(event -> {
             gameManager.endGame(false);
             mainMenu.load();
             primaryStage.setScene(mainMenu);
         });
 
-        Button btnRearrange = new Button();
-        btnRearrange.setText("Reset tiles");
-        btnRearrange.setOnAction(event -> {
+        Button btnReset = new Button("Reset");
+        btnReset.setOnAction(event -> {
             gameManager.endGame(false);
             ArrayList<String> nickNames = new ArrayList<>();
             for(Player player : players) {
@@ -137,9 +138,9 @@ public class GameScene extends Scene implements GameObserver{
             gameScene.load(nickNames, controllers);
         });
 
-        gameStateBox.getChildren().addAll(btnRearrange, btnBack);
         gameStateBox.getChildren().add(logo);
-        gameStateBox.getChildren().addAll(playerPoints);
+        gameStateBox.getChildren().addAll(playersBox);
+        gameStateBox.getChildren().addAll(btnReset, btnExit);
         gameStateBox.setAlignment(Pos.CENTER);
         root.setCenter(scrollPane);
         root.setLeft(gameStateBox);
@@ -149,7 +150,8 @@ public class GameScene extends Scene implements GameObserver{
 
     @Override
     public void onPlayerPointsUpdated(Player player) {
-        ((Text)playerPoints.get(player.getId()).getChildren().get(1)).setText(player.getNickname() + ": " + player.getPoints());
+        ((Text)((TextFlow)playersBox.getChildren().get(player.getId())).getChildren().get(1))
+                .setText(player.getNickname() + ": " + player.getPoints());
     }
 
     @Override
@@ -185,8 +187,7 @@ public class GameScene extends Scene implements GameObserver{
             otherPlayersText.add(new Text(players.get(i).getNickname() + ": " + players.get(i).getPoints() + " points."));
         }
 
-        Button btnHide = new Button();
-        btnHide.setText("Hide");
+        Button btnHide = new Button("Hide");
         btnHide.setOnAction(event -> root.setCenter(scrollPane));
 
         gameOverBox.getChildren().addAll(gameOverText,winnerText);
