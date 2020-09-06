@@ -43,11 +43,16 @@ public class MatchHistory extends Scene {
         ImageView logo = new ImageView(new Image("/logo.png"));
         TextField textField = new TextField("nickname");
         textField.setPromptText("nickname");
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() > settings.MAX_NICKNAME_LENGTH)
+                textField.setText(newValue.substring(0, settings.MAX_NICKNAME_LENGTH));
+        });
         textField.setMaxWidth(500);
         textField.setFont(Font.font(30));
         textField.setAlignment(Pos.CENTER);
 
         gamesBox.setVisible(false);
+        gamesList.setMaxWidth(500);
 
         Button btnSearch = new Button("Search");
         btnSearch.setFont(Font.font(50));

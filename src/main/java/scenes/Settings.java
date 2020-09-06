@@ -32,6 +32,7 @@ public class Settings extends Scene {
 
     private final int MIN_PLAYERS = 2;
     private final int MAX_PLAYERS = 4;
+    final int MAX_NICKNAME_LENGTH = 20;
 
     public void load() {
         ImageView logo = new ImageView(new Image("/logo.png"));
@@ -89,6 +90,9 @@ public class Settings extends Scene {
     private void addPlayerBox() {
         HBox hBox = new HBox(20);
         TextField textField = new TextField("Player " + playerBoxes.getChildren().size());
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.length() > MAX_NICKNAME_LENGTH) textField.setText(newValue.substring(0,MAX_NICKNAME_LENGTH));
+        });
         ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList("Human", "Easy Bot", "Medium Bot","Hard Bot"));
         choiceBox.setValue("Human");
         Button btnRemove = new Button("-");

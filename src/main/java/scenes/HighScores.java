@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -18,11 +20,15 @@ import static application.Program.MainApp.*;
 
 public class HighScores extends Scene {
     private final static StackPane root = new StackPane();
-    private final static VBox rootBox = new VBox(50);
+    private final static VBox rootBox = new VBox(30);
     TableView<Document> highScores = new TableView<>();
 
     public void load() {
+        ImageView logo = new ImageView(new Image("/logo.png"));
 
+        highScores.setMaxWidth(510);
+        highScores.setFixedCellSize(25);
+        highScores.setMaxHeight(280);
         highScores.setEditable(false);
 
         TableColumn<Document, Integer> column1  = new TableColumn<>("#");
@@ -32,7 +38,7 @@ public class HighScores extends Scene {
         column1.setMaxWidth(50);
         column1.setReorderable(false);
 
-        TableColumn<Document, String> column2 = new TableColumn<>("NickName");
+        TableColumn<Document, String> column2 = new TableColumn<>("Nickname");
         column2.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getString("nickname")));
         column2.setSortable(false);
         column2.setMinWidth(300);
@@ -52,7 +58,7 @@ public class HighScores extends Scene {
         btnBack.setFont(Font.font(30));
         btnBack.setOnAction(event -> primaryStage.setScene(mainMenu));
 
-        rootBox.getChildren().addAll(highScores, btnBack);
+        rootBox.getChildren().addAll(logo, highScores, btnBack);
         rootBox.setAlignment(Pos.CENTER);
 
         root.getChildren().addAll(rootBox);

@@ -124,7 +124,7 @@ public class GameScene extends Scene implements GameObserver{
         Button btnExit = new Button("Exit");
         btnExit.setOnAction(event -> {
             gameManager.endGame(false);
-            mainMenu.load();
+            mainMenu.refresh();
             primaryStage.setScene(mainMenu);
         });
 
@@ -163,6 +163,7 @@ public class GameScene extends Scene implements GameObserver{
     public void onGameOver(GameInfo gameInfo, boolean saveGame) {
         if(saveGame) {
             jsonSavefile.saveGame(gameInfo);
+            mongoDB.saveGame(gameInfo);
             mongoDB.updatePlayersHighScore(gameInfo.getPlayers());
         }
 

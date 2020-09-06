@@ -16,23 +16,19 @@ public class MainMenu extends Scene {
     private final static StackPane root = new StackPane();
     private final static VBox rootBox = new VBox(50);
     private final static VBox buttonsBox = new VBox(20);
+    private Button btnContinue;
 
     public void load() {
-        root.getChildren().clear();
-        rootBox.getChildren().clear();
-        buttonsBox.getChildren().clear();
         ImageView logo = new ImageView(new Image("/logo.png"));
 
         Button btnNewGame = new Button("New Game");
         btnNewGame.setFont(Font.font(40));
         btnNewGame.setOnAction(event -> primaryStage.setScene(settings));
 
-        Button btnContinue = new Button("Continue");
+        btnContinue = new Button("Continue");
         btnContinue.setFont(Font.font(20));
-
-        GameInfo savedGame;
         try {
-            savedGame = jsonSavefile.loadGame();
+            GameInfo savedGame = jsonSavefile.loadGame();
             btnContinue.setDisable(savedGame.isGameFinished());
             btnContinue.setOnAction(event -> {
                 gameScene.load(savedGame);
@@ -65,6 +61,19 @@ public class MainMenu extends Scene {
         root.getChildren().add(rootBox);
     }
 
+    public void refresh() {
+        try {
+            GameInfo savedGame = jsonSavefile.loadGame();
+            btnContinue.setDisable(savedGame.isGameFinished());
+            btnContinue.setOnAction(event -> {
+                gameScene.load(savedGame);
+                primaryStage.setScene(gameScene);
+            });
+
+        } catch (Exception e) {
+            btnContinue.setDisable(true);
+        }
+    }
 
     public MainMenu(int width, int height) {
         super(root,width,height);
