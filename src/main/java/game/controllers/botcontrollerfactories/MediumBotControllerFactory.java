@@ -1,4 +1,4 @@
-package game.controllers.bot_factories;
+package game.controllers.botcontrollerfactories;
 
 import game.controllers.BotControllerFactory;
 import game.controllers.strategies.BotStrategy;
@@ -6,19 +6,19 @@ import game.controllers.strategies.GreedyStrategy;
 import game.threads.ThreadRunner;
 import util.sleeper.Sleeper;
 
-public class EasyBotControllerFactory extends BotControllerFactory {
-    public EasyBotControllerFactory(Sleeper sleeper, ThreadRunner threadRunner) {
+public class MediumBotControllerFactory extends BotControllerFactory {
+    public MediumBotControllerFactory(Sleeper sleeper, ThreadRunner threadRunner) {
         super(sleeper, threadRunner);
     }
 
     @SuppressWarnings("unused")
-    public EasyBotControllerFactory() {
+    public MediumBotControllerFactory() {
         super();
     }
 
     @Override
     public String getName() {
-        return "Easy Bot";
+        return "Medium Bot";
     }
 
     @Override

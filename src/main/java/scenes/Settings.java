@@ -2,9 +2,7 @@ package scenes;
 
 import game.controllers.ControllerFactory;
 import game.controllers.HumanControllerFactory;
-import game.controllers.bot_factories.EasyBotControllerFactory;
-import game.controllers.bot_factories.HardBotControllerFactory;
-import game.controllers.bot_factories.MediumBotControllerFactory;
+import game.controllers.botcontrollerfactories.*;
 import game.threads.JavaFXThreadRunner;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;

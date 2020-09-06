@@ -5,7 +5,7 @@ import board.arranger.*;
 import board.drawable.pawn.Pawn;
 import board.views.BoardView;
 import game.controllers.*;
-import game.controllers.bot_factories.EasyBotControllerFactory;
+import game.controllers.botcontrollerfactories.EasyBotControllerFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
