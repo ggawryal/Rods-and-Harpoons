@@ -10,4 +10,9 @@ public class OnlyMainThreadRunner implements ThreadRunner {
     public void runLaterInMainThread(Runnable runnable) {
         runnable.run();
     }
+
+    @Override
+    public void shutdown() {
+
+    }
 }

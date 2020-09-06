@@ -1,19 +1,19 @@
-package game.controllers.bot_factories;
+package game.controllers.botcontrollerfactories;
 
-import game.controllers.BotFactory;
+import game.controllers.BotControllerFactory;
 import game.controllers.strategies.BotStrategy;
 import game.controllers.strategies.MixedStrategy;
 import game.threads.ThreadRunner;
 import util.sleeper.Sleeper;
 
 
-public class HardBotFactory extends BotFactory{
-    public HardBotFactory(Sleeper sleeper, ThreadRunner threadRunner) {
+public class HardBotControllerFactory extends BotControllerFactory {
+    public HardBotControllerFactory(Sleeper sleeper, ThreadRunner threadRunner) {
         super(sleeper, threadRunner);
     }
 
     @SuppressWarnings("unused")
-    public HardBotFactory() {
+    public HardBotControllerFactory() {
         super();
     }
 

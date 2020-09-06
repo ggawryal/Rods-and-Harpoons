@@ -1,18 +1,18 @@
-package game.controllers.bot_factories;
+package game.controllers.botcontrollerfactories;
 
-import game.controllers.BotFactory;
+import game.controllers.BotControllerFactory;
 import game.controllers.strategies.BotStrategy;
 import game.controllers.strategies.GreedyStrategy;
 import game.threads.ThreadRunner;
 import util.sleeper.Sleeper;
 
-public class EasyBotFactory extends BotFactory {
-    public EasyBotFactory(Sleeper sleeper, ThreadRunner threadRunner) {
+public class EasyBotControllerFactory extends BotControllerFactory {
+    public EasyBotControllerFactory(Sleeper sleeper, ThreadRunner threadRunner) {
         super(sleeper, threadRunner);
     }
 
     @SuppressWarnings("unused")
-    public EasyBotFactory() {
+    public EasyBotControllerFactory() {
         super();
     }
 

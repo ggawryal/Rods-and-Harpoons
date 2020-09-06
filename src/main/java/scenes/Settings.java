@@ -2,9 +2,7 @@ package scenes;
 
 import game.controllers.ControllerFactory;
 import game.controllers.HumanControllerFactory;
-import game.controllers.bot_factories.EasyBotFactory;
-import game.controllers.bot_factories.HardBotFactory;
-import game.controllers.bot_factories.MediumBotFactory;
+import game.controllers.botcontrollerfactories.*;
 import game.threads.JavaFXThreadRunner;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -50,13 +48,13 @@ public class Settings extends Scene {
                         controllers.add(new HumanControllerFactory());
                         break;
                     case "Easy Bot":
-                        controllers.add(new EasyBotFactory(new RealTimeSleeper(), new JavaFXThreadRunner("bot easy")));
+                        controllers.add(new EasyBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
                         break;
                     case "Medium Bot":
-                        controllers.add(new MediumBotFactory(new RealTimeSleeper(), new JavaFXThreadRunner("bot medium")));
+                        controllers.add(new MediumBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
                         break;
                     case "Hard Bot":
-                        controllers.add(new HardBotFactory(new RealTimeSleeper(), new JavaFXThreadRunner("bot hard")));
+                        controllers.add(new HardBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
                         break;
                 }
             }
