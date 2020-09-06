@@ -110,6 +110,11 @@ public class GameManagerTest {
             public String getName() {
                 return "";
             }
+
+            @Override
+            public void shutdown() {
+
+            }
         };
     }
 }
