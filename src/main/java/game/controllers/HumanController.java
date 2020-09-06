@@ -77,4 +77,9 @@ public class HumanController implements PlayerController {
         myTurn = true;
     }
 
+    @Override
+    public void shutdown() {
+
+    }
+
 }

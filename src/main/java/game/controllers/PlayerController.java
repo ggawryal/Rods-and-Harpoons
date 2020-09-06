@@ -15,4 +15,5 @@ public interface PlayerController {
     Player getPlayer();
     void setActionOnMove(Function<Move,Boolean> action);
     void nextTurn();
+    void shutdown();
 }

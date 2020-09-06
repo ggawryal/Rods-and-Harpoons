@@ -63,6 +63,11 @@ public class BotController implements PlayerController {
     }
 
     @Override
+    public void shutdown() {
+        threadRunner.shutdown();
+    }
+
+    @Override
     public void set(Player player, Board board, MoveChecker moveChecker) {
         this.player = player;
         this.board = board;

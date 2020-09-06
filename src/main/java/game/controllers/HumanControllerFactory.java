@@ -5,6 +5,14 @@ public class HumanControllerFactory implements ControllerFactory{
     public PlayerController newController() {
         return new HumanController();
     }
+
     @Override
-    public String getName() {return "Human";}
+    public String getName() {
+        return "Human";
+    }
+
+    @Override
+    public void shutdown() {
+
+    }
 }

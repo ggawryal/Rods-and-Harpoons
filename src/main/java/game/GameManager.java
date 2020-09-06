@@ -116,11 +116,8 @@ public class GameManager {
 
     public void endGame(boolean saveResult) {
         gameEnded = true;
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        for(Thread thread : threadSet) {
-            if(thread.getName().startsWith("bot")) {
-                thread.interrupt();
-            }
+        for(PlayerController playerController : controllers) {
+            playerController.shutdown();
         }
         if(saveResult) {
             gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(), turn, true);

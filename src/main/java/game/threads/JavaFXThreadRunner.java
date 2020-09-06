@@ -8,8 +8,8 @@ import java.util.concurrent.Executors;
 public class JavaFXThreadRunner implements ThreadRunner {
     private ExecutorService executorService;
 
-    public JavaFXThreadRunner(String threadName) {
-        executorService = Executors.newSingleThreadExecutor(runnable -> new Thread(runnable, threadName));
+    public JavaFXThreadRunner() {
+        executorService = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -20,5 +20,11 @@ public class JavaFXThreadRunner implements ThreadRunner {
     @Override
     public void runLaterInMainThread(Runnable runnable) {
         Platform.runLater(runnable);
+    }
+
+    @Override
+    public void shutdown() {
+        executorService.shutdownNow();
+        executorService = Executors.newSingleThreadExecutor();
     }
 }

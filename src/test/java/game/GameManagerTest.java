@@ -5,8 +5,7 @@ import board.arranger.*;
 import board.drawable.pawn.Pawn;
 import board.views.BoardView;
 import game.controllers.*;
-import game.controllers.bot_factories.EasyBotFactory;
-import game.controllers.strategies.BotStrategy;
+import game.controllers.bot_factories.EasyBotControllerFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class GameManagerTest {
         ArrayList<ControllerFactory> controllers = new ArrayList<>();
         for(int i=0; i<3; i++) {
             nicknames.add("player"+i);
-            controllers.add(i%2==0 ? new HumanControllerFactory() : new EasyBotFactory());
+            controllers.add(i%2==0 ? new HumanControllerFactory() : new EasyBotControllerFactory());
         }
 
         GameManager gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);

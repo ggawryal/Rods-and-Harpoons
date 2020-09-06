@@ -1,29 +1,28 @@
 package game.controllers.bot_factories;
 
-import game.controllers.BotFactory;
+import game.controllers.BotControllerFactory;
 import game.controllers.strategies.BotStrategy;
-import game.controllers.strategies.MixedStrategy;
+import game.controllers.strategies.GreedyStrategy;
 import game.threads.ThreadRunner;
 import util.sleeper.Sleeper;
 
-
-public class HardBotFactory extends BotFactory{
-    public HardBotFactory(Sleeper sleeper, ThreadRunner threadRunner) {
+public class EasyBotControllerFactory extends BotControllerFactory {
+    public EasyBotControllerFactory(Sleeper sleeper, ThreadRunner threadRunner) {
         super(sleeper, threadRunner);
     }
 
     @SuppressWarnings("unused")
-    public HardBotFactory() {
+    public EasyBotControllerFactory() {
         super();
     }
 
     @Override
     public String getName() {
-        return "Hard Bot";
+        return "Easy Bot";
     }
 
     @Override
     public BotStrategy getStrategy() {
-        return new MixedStrategy();
+        return new GreedyStrategy();
     }
 }
