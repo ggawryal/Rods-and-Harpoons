@@ -1,5 +1,6 @@
 package scenes;
 
+import game.controllers.BotController;
 import game.controllers.ControllerFactory;
 import game.controllers.HumanControllerFactory;
 import game.controllers.botcontrollerfactories.*;
@@ -19,6 +20,8 @@ import javafx.scene.text.Font;
 import util.sleeper.RealTimeSleeper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static application.Program.MainApp.*;
 
@@ -43,20 +46,7 @@ public class Settings extends Scene {
 
             for(int i=0; i<playerBoxes.getChildren().size()-1; i++) {
                 nicknames.add(((TextField)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(0)).getText());
-                switch(((ChoiceBox<String>)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(1)).getValue()) {
-                    case "Human":
-                        controllers.add(new HumanControllerFactory());
-                        break;
-                    case "Easy Bot":
-                        controllers.add(new EasyBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
-                        break;
-                    case "Medium Bot":
-                        controllers.add(new MediumBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
-                        break;
-                    case "Hard Bot":
-                        controllers.add(new HardBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()));
-                        break;
-                }
+                controllers.add((((ChoiceBox<ControllerFactory>)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(1)).getValue()));
             }
 
             gameScene.load(nicknames, controllers);
@@ -91,8 +81,15 @@ public class Settings extends Scene {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue.length() > MAX_NICKNAME_LENGTH) textField.setText(newValue.substring(0,MAX_NICKNAME_LENGTH));
         });
-        ChoiceBox<String> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList("Human", "Easy Bot", "Medium Bot","Hard Bot"));
-        choiceBox.setValue("Human");
+        List<ControllerFactory> controllerFactories = Arrays.asList(
+                new HumanControllerFactory(),
+                new EasyBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()),
+                new MediumBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner()),
+                new HardBotControllerFactory(new RealTimeSleeper(), new JavaFXThreadRunner())
+        );
+
+        ChoiceBox<ControllerFactory> choiceBox = new ChoiceBox<>(FXCollections.observableArrayList(controllerFactories));
+        choiceBox.setValue(controllerFactories.get(0));
         Button btnRemove = new Button("-");
         btnRemove.setOnAction(event -> removePlayerBox(hBox));
         hBox.getChildren().addAll(textField, choiceBox, btnRemove);

@@ -18,7 +18,7 @@ public class HardBotControllerFactory extends BotControllerFactory {
     }
 
     @Override
-    public String getName() {
+    public String toString() {
         return "Hard Bot";
     }
 

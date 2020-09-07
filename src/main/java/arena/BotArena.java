@@ -74,7 +74,7 @@ public class BotArena {
 
     public void addPlayer(BotControllerFactory botControllerFactory) {
         botFactories.add(botControllerFactory);
-        nicknames.add(botControllerFactory.getName());
+        nicknames.add(botControllerFactory.toString());
     }
 
     public void newRound() {

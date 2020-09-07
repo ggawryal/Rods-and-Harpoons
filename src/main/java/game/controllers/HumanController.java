@@ -11,11 +11,8 @@ import java.util.function.Function;
 /**
  * Player controlled by human (at local computer)
  */
-public class HumanController implements PlayerController {
-    private Player player;
-    private Board board;
+public class HumanController extends PlayerController {
     private HexVector activePawnPosition;
-    private Function<Move,Boolean> actionOnMove;
 
     private boolean myTurn = false;
 
@@ -23,7 +20,7 @@ public class HumanController implements PlayerController {
         if(!myTurn)
             return;
         if(activePawnPosition != null) {
-            board.switchPawnSelection(activePawnPosition, true);
+            getBoard().switchPawnSelection(activePawnPosition, true);
         }
         activePawnPosition = null;
     }
@@ -32,13 +29,13 @@ public class HumanController implements PlayerController {
         if(!myTurn)
             return;
         activePawnPosition = position;
-        board.switchPawnSelection(position, true);
+        getBoard().switchPawnSelection(position, true);
     }
 
     public void onClickResponse(HexVector position) {
         if(!myTurn)
             return;
-        if(player.hasPawnAt(position)) {
+        if(getPlayer().hasPawnAt(position)) {
             if(position == activePawnPosition) {
                 deactivatePawn();
             } else {
@@ -49,7 +46,7 @@ public class HumanController implements PlayerController {
             HexVector prevPawnPosition = activePawnPosition;
             deactivatePawn();
             myTurn = false;
-            if(!actionOnMove.apply(new Move(prevPawnPosition, position))) {
+            if(!getActionOnMove().apply(new Move(prevPawnPosition, position))) {
                 myTurn = true;
                 activatePawnAt(prevPawnPosition);
             }
@@ -57,29 +54,8 @@ public class HumanController implements PlayerController {
     }
 
     @Override
-    public void set(Player player, Board board, MoveChecker moveChecker) {
-        this.player = player;
-        this.board = board;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
-    }
-
-    @Override
-    public void setActionOnMove(Function<Move,Boolean> action) {
-        this.actionOnMove = action;
-    }
-
-    @Override
     public void nextTurn(){
         myTurn = true;
-    }
-
-    @Override
-    public void shutdown() {
-
     }
 
 }

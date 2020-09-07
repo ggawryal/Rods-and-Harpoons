@@ -107,7 +107,7 @@ public class GameManagerTest {
             }
 
             @Override
-            public String getName() {
+            public String toString() {
                 return "";
             }
 

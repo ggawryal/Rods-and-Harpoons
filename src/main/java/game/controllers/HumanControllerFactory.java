@@ -7,7 +7,7 @@ public class HumanControllerFactory implements ControllerFactory{
     }
 
     @Override
-    public String getName() {
+    public String toString() {
         return "Human";
     }
 

@@ -14,12 +14,7 @@ import java.util.function.Function;
 /**
  * Player controlled by AI
  */
-public class BotController implements PlayerController {
-    private Player player;
-    private Board board;
-    private MoveChecker moveChecker;
-    private Function<Move,Boolean> actionOnMove;
-
+public class BotController extends PlayerController {
     private ThreadRunner threadRunner;
     private Sleeper sleeper;
     private Random random = new Random();
@@ -49,40 +44,28 @@ public class BotController implements PlayerController {
             sleeper.sleep(random.nextInt(250)+500); // from 500 to 750 ms
             ArrayList<Move> moves = new ArrayList<>();
 
-            for(int i=0;i<player.getPawnsCount();i++)
-                moves.addAll(moveChecker.getPossibleMoves(player.getPawnPosition(i)));
+            for(int i=0;i<getPlayer().getPawnsCount();i++)
+                moves.addAll(getMoveChecker().getPossibleMoves(getPlayer().getPawnPosition(i)));
 
             Move bestValueMove = Collections.max(moves, Comparator.comparingLong(move -> strategy.getMoveValue(move)));
             moves.removeIf(move -> strategy.getMoveValue(move) < strategy.getMoveValue(bestValueMove));
 
             Move selectedMove = moves.get(random.nextInt(moves.size()));
-            board.switchPawnSelection(selectedMove.getFrom(), false);
+            getBoard().switchPawnSelection(selectedMove.getFrom(), false);
             sleeper.sleep(random.nextInt(random.nextInt(250)+250)); // from 250 to 500 ms
-            threadRunner.runLaterInMainThread(()-> actionOnMove.apply(selectedMove));
+            threadRunner.runLaterInMainThread(()-> getActionOnMove().apply(selectedMove));
         });
+    }
+
+    @Override
+    public void set(Player player, Board board, MoveChecker moveChecker) {
+        super.set(player,board,moveChecker);
+        strategy.set(board,moveChecker);
     }
 
     @Override
     public void shutdown() {
         threadRunner.shutdown();
-    }
-
-    @Override
-    public void set(Player player, Board board, MoveChecker moveChecker) {
-        this.player = player;
-        this.board = board;
-        this.moveChecker = moveChecker;
-        strategy.set(board,moveChecker);
-    }
-
-    @Override
-    public Player getPlayer() {
-        return player;
-    }
-
-    @Override
-    public void setActionOnMove(Function<Move, Boolean> action) {
-        this.actionOnMove = action;
     }
 
     @Override

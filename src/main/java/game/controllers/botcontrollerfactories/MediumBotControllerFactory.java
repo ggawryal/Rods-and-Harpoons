@@ -17,7 +17,7 @@ public class MediumBotControllerFactory extends BotControllerFactory {
     }
 
     @Override
-    public String getName() {
+    public String toString() {
         return "Medium Bot";
     }
 
