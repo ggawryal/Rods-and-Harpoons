@@ -29,7 +29,7 @@ public class GameInfo implements DBDocument {
     private final int turn;
 
     public GameInfo(HashMap<HexVector, Tile> tiles, HashMap<HexVector, Pawn> pawns, List<ControllerFactory> controllerFactories,
-                    ArrayList<Player> players, ArrayList<PlayerMove> playersMoves, int turn, boolean gameFinished) {
+                    List<Player> players, List<PlayerMove> playersMoves, int turn, boolean gameFinished) {
         this.tiles = new HashMap<>(tiles);
         this.pawns = new HashMap<>(pawns);
         this.controllerFactories = new ArrayList<>(controllerFactories);

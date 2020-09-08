@@ -1,9 +1,9 @@
 package board.drawable.pawn;
 
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PawnTest {
     @Test
@@ -22,6 +22,14 @@ class PawnTest {
 
         Throwable exceptionTooLow = assertThrows(RuntimeException.class, () -> new Pawn(0));
         assertEquals("Pawn with wrong id chosen", exceptionTooLow.getMessage());
+    }
+
+    @Test
+    public void testFromAndToDocument() {
+        Pawn pawn = new Pawn(1);
+        Document document = pawn.toDocument();
+
+        assertEquals(pawn.getId(), new Pawn(document).getId());
     }
 
 }

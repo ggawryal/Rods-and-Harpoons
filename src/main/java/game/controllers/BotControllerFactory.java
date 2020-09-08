@@ -15,6 +15,7 @@ public abstract class BotControllerFactory implements ControllerFactory {
         this.threadRunner = threadRunner;
     }
 
+    //it is actually used via reflection in GameInfo(Document) constructor
     @SuppressWarnings("unused")
     public BotControllerFactory() {
         this(new RealTimeSleeper(), new JavaFXThreadRunner());

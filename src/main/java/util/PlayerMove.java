@@ -3,6 +3,7 @@ package util;
 import board.HexVector;
 import board.Move;
 import database.DBDocument;
+import game.Player;
 import org.bson.Document;
 
 public class PlayerMove implements DBDocument {
@@ -37,5 +38,16 @@ public class PlayerMove implements DBDocument {
     public PlayerMove(Document document) {
         this(document.getInteger("playerid"), document.getInteger("points"),
                 new Move(new HexVector(document.get("from",Document.class)), new HexVector(document.get("to",Document.class))));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerMove playerMove = (PlayerMove) o;
+        return playerId == playerMove.getPlayerId()
+                && points == playerMove.getPoints()
+                && move.getFrom().equals(playerMove.getMove().getFrom())
+                && move.getTo().equals(playerMove.getMove().getTo());
     }
 }

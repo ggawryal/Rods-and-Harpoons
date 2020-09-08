@@ -30,13 +30,13 @@ public class RectangleTileArranger implements TileArranger {
 
             for(int col=0; col<rowWidth; col++) {
                 b.addTile(tileScoreChooser.chooseTile(),colVector.copy());
-                colVector.add(new HexVector(1,0));
+                colVector = colVector.add(new HexVector(1,0));
             }
 
             if(row % 2 == 0)
-                rowVector.add(new HexVector(Direction.SE,1));
+                rowVector = rowVector.add(new HexVector(Direction.SE,1));
             else
-                rowVector.add(new HexVector(Direction.NE,-1));
+                rowVector = rowVector.add(new HexVector(Direction.NE,-1));
         }
     }
 

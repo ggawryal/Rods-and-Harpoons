@@ -14,7 +14,7 @@ public class Move {
     }
 
     public int getDistance() {
-        HexVector diff = to.copy().sub(from);
+        HexVector diff = to.sub(from);
         if(diff.getEast() != 0) return Math.abs(diff.getEast());
         else return Math.abs(diff.getSoutheast());
     }

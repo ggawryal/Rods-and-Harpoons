@@ -80,4 +80,12 @@ public class Player implements DBDocument {
         this(document.getInteger("id"),document.getString("nickname"));
         this.points = document.getInteger("points");
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return id == player.getId() && nickname.equals(player.getNickname());
+    }
 }

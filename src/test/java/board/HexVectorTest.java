@@ -1,5 +1,6 @@
 package board;
 
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,9 +16,9 @@ class HexVectorTest {
     @Test
     void testAdd() {
         HexVector v = new HexVector(0,0);
-        v.add(new HexVector(1,0));
-        v.add(new HexVector(Direction.SE,-2));
-        v.add(new HexVector(Direction.NE,-1));
+        v = v.add(new HexVector(1,0));
+        v = v.add(new HexVector(Direction.SE,-2));
+        v = v.add(new HexVector(Direction.NE,-1));
 
         assertEquals(new HexVector(Direction.SE,-1),v);
     }
@@ -26,11 +27,10 @@ class HexVectorTest {
         HexVector v = new HexVector(4,0);
         HexVector w = new HexVector(1,2);
 
-        v.sub(w);
+        v = v.sub(w);
 
         assertEquals(new HexVector(1,2),w);
         assertEquals(new HexVector(3,-2),v);
-
     }
 
     @Test
@@ -45,5 +45,11 @@ class HexVectorTest {
         assertEquals(new HexVector(-3,4),v);
     }
 
+    @Test
+    void testFromAndToDocument() {
+        HexVector v = new HexVector(3,4);
+        Document document = v.toDocument();
+        assertEquals(v, new HexVector(document));
+    }
 
 }

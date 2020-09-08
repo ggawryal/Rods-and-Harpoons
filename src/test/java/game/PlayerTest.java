@@ -2,6 +2,7 @@ package game;
 
 import board.HexVector;
 import board.Move;
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,4 +78,25 @@ class PlayerTest {
         assertEquals(7,player.getPoints());
     }
 
+    @Test
+    void testEquals() {
+        Player player = new Player(1,"Bob");
+
+        assertEquals(player, player);
+        assertEquals(player, new Player(1,"Bob"));
+        assertNotEquals(null, player);
+        assertNotEquals(player, new Player(2, "Bob"));
+        assertNotEquals(player, new Player(1, "bob"));
+    }
+
+    @Test
+    void testFromAndToDocument() {
+        Player player = new Player(1,"Bob");
+        player.addPoints(4);
+        Document document = player.toDocument();
+
+        Player playerFromDocument = new Player(document);
+        assertEquals(player, playerFromDocument);
+        assertEquals(player.getPoints(), playerFromDocument.getPoints());
+    }
 }

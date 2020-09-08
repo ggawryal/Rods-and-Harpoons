@@ -1,9 +1,9 @@
 package board.drawable.tile;
 
+import org.bson.Document;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ScoreTileTest {
     @Test
@@ -21,6 +21,14 @@ class ScoreTileTest {
 
         Throwable exceptionTooLow = assertThrows(RuntimeException.class, () -> new ScoreTile(0));
         assertEquals("Tile with wrong score chosen", exceptionTooLow.getMessage());
+    }
+
+    @Test
+    public void testFromAndToDocument() {
+        ScoreTile scoreTile = new ScoreTile(3);
+        Document document = scoreTile.toDocument();
+
+        assertEquals(scoreTile.getScore(), new ScoreTile(document).getScore());
     }
 
 }
