@@ -12,14 +12,14 @@ import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.UpdateOptions;
 import game.Player;
+import game.controllers.ControllerFactory;
+import game.controllers.HumanController;
+import game.controllers.HumanControllerFactory;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import util.GameInfo;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 
 public class MongoDB implements Database {
@@ -75,14 +75,22 @@ public class MongoDB implements Database {
 
     }
 
-    public void updatePlayersHighScore(Collection<Player> players) {
+    public void updatePlayersHighScore(Collection<Player> players, Collection<ControllerFactory> controllerFactories) {
         FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().upsert(true);
 
-        for (Player player : players) {
-            BasicDBObject query = new BasicDBObject("nickname", player.getNickname());
-            BasicDBObject highScoreUpdate = new BasicDBObject("highscore", player.getPoints());
-            BasicDBObject update = new BasicDBObject("$max", highScoreUpdate);
-            database.getCollection("players").findOneAndUpdate(query, update, options);
+        Iterator<Player> playerIt = players.iterator();
+        Iterator<ControllerFactory> controllerFactoryIt = controllerFactories.iterator();
+        while(playerIt.hasNext()) {
+            Player player = playerIt.next();
+            ControllerFactory controllerFactory = controllerFactoryIt.next();
+
+            //don't save AI players
+            if(controllerFactory instanceof HumanControllerFactory) {
+                BasicDBObject query = new BasicDBObject("nickname", player.getNickname());
+                BasicDBObject highScoreUpdate = new BasicDBObject("highscore", player.getPoints());
+                BasicDBObject update = new BasicDBObject("$max", highScoreUpdate);
+                database.getCollection("players").findOneAndUpdate(query, update, options);
+            }
         }
     }
 

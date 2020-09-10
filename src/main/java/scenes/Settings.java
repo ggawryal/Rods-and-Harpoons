@@ -60,6 +60,8 @@ public class Settings extends Scene {
         boardSlider.setShowTickMarks(true);
         boardSlider.setShowTickLabels(true);
         boardSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue.intValue() == 5 && pawnsSlider.getValue() > 2)
+                pawnsSlider.setValue(2);
             boardSlider.setValue(newValue.intValue());
             if(newValue.intValue() != DEFAULT_BOARD_SIZE) highscoreText.setVisible(true);
             else if(pawnsSlider.getValue() == DEFAULT_PAWNS_PER_PLAYER) highscoreText.setVisible(false);
@@ -75,6 +77,10 @@ public class Settings extends Scene {
         pawnsSlider.setShowTickLabels(true);
         pawnsSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             pawnsSlider.setValue(newValue.intValue());
+            //disallow 3 or 4 pawns on board of size 5
+            if(newValue.intValue() > 2 && boardSlider.getValue() < 6)
+                boardSlider.setValue(DEFAULT_BOARD_SIZE);
+
             if(newValue.intValue() != DEFAULT_PAWNS_PER_PLAYER) highscoreText.setVisible(true);
             else if(boardSlider.getValue() == DEFAULT_BOARD_SIZE) highscoreText.setVisible(false);
         });
@@ -100,7 +106,10 @@ public class Settings extends Scene {
             ArrayList<ControllerFactory> controllers = new ArrayList<>();
 
             for(int i=0; i<playerBoxes.getChildren().size()-1; i++) {
-                nicknames.add(((TextField)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(0)).getText());
+                String name = ((TextField)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(0)).getText();
+                if(name.length() == 0)
+                    name = "Player "+(i+1);
+                nicknames.add(name);
                 controllers.add((((ChoiceBox<ControllerFactory>)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(1)).getValue()));
             }
 

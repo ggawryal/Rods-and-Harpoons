@@ -8,6 +8,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import scenes.*;
 
+import java.util.logging.Level;
+
 public class Program {
     public static void main(String[] args) {
         Application.launch(MainApp.class, args);
@@ -27,6 +29,7 @@ public class Program {
 
         @Override
         public void start(Stage stage) {
+            java.util.logging.Logger.getLogger("org.mongodb.driver").setLevel(Level.SEVERE);
             mongoDB = new MongoDB();
             jsonSavefile = new JsonSavefile("game.sav");
 

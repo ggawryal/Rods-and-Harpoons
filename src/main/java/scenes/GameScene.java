@@ -165,7 +165,7 @@ public class GameScene extends Scene implements GameObserver{
         jsonSavefile.saveGame(gameInfo);
         mongoDB.saveGame(gameInfo);
         if(updateHighScore) {
-            mongoDB.updatePlayersHighScore(gameInfo.getPlayers());
+            mongoDB.updatePlayersHighScore(gameInfo.getPlayers(), gameInfo.getControllerFactories());
         }
 
         ArrayList<Player> players = gameManager.getPlayers();
