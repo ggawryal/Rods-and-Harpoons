@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class JavaFXBoardView implements BoardView {
@@ -46,7 +47,7 @@ public class JavaFXBoardView implements BoardView {
 
     @Override
     public void setActionOnClickForExistingTiles(Consumer<HexVector> onMouseClick) {
-        for(var entry : hexagons.entrySet()) {
+        for(Map.Entry<HexVector, ImageView> entry : hexagons.entrySet()) {
             entry.getValue().setOnMouseClicked(mouseEvent -> {
                 if (!mouseEvent.getButton().equals(MouseButton.MIDDLE))
                     onMouseClick.accept(entry.getKey());

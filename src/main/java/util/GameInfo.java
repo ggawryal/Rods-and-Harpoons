@@ -13,6 +13,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 public class GameInfo implements DBDocument {
     private final HashMap<HexVector, Tile> tiles;
@@ -72,7 +73,7 @@ public class GameInfo implements DBDocument {
 
     private ArrayList<Document> getPlayersMovesAsDocuments() {
         ArrayList<Document> result = new ArrayList<>();
-        for(var playerMove : playersMoves) {
+        for(PlayerMove playerMove : playersMoves) {
             result.add(playerMove.toDocument());
         }
         return result;
@@ -80,7 +81,7 @@ public class GameInfo implements DBDocument {
 
     private ArrayList<Document> getPlayersAsDocuments() {
         ArrayList<Document> result = new ArrayList<>();
-        for(var player : players) {
+        for(Player player : players) {
             result.add(player.toDocument());
         }
         return result;
@@ -88,7 +89,7 @@ public class GameInfo implements DBDocument {
 
     private ArrayList<Document> getTilesAsDocuments() {
         ArrayList<Document> result = new ArrayList<>();
-        for(var entry : tiles.entrySet()) {
+        for(Map.Entry<HexVector, Tile> entry : tiles.entrySet()) {
             result.add(new Document("position", entry.getKey().toDocument())
             .append("tile", entry.getValue().toDocument()));
         }
@@ -97,7 +98,7 @@ public class GameInfo implements DBDocument {
 
     private ArrayList<Document> getPawnsAsDocumentS() {
         ArrayList<Document> result = new ArrayList<>();
-        for(var entry : pawns.entrySet()) {
+        for(Map.Entry<HexVector, Pawn> entry : pawns.entrySet()) {
             result.add(new Document("position", entry.getKey().toDocument())
                     .append("pawn", entry.getValue().toDocument()));
         }

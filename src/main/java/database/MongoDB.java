@@ -78,7 +78,7 @@ public class MongoDB implements Database {
     public void updatePlayersHighScore(Collection<Player> players) {
         FindOneAndUpdateOptions options = new FindOneAndUpdateOptions().upsert(true);
 
-        for (var player : players) {
+        for (Player player : players) {
             BasicDBObject query = new BasicDBObject("nickname", player.getNickname());
             BasicDBObject highScoreUpdate = new BasicDBObject("highscore", player.getPoints());
             BasicDBObject update = new BasicDBObject("$max", highScoreUpdate);

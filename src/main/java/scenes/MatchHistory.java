@@ -1,8 +1,11 @@
 package scenes;
 
 import board.Board;
+import board.HexVector;
 import board.Move;
+import board.drawable.pawn.Pawn;
 import board.drawable.tile.ScoreTile;
+import board.drawable.tile.Tile;
 import board.views.BoardView;
 import board.views.JavaFXBoardView;
 import game.Player;
@@ -27,6 +30,8 @@ import util.PlayerMove;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.ListIterator;
+import java.util.Map;
 
 import static application.Program.MainApp.*;
 import static application.Properties.MAX_NICKNAME_LENGTH;
@@ -101,10 +106,10 @@ public class MatchHistory extends Scene {
             BoardView view = new JavaFXBoardView(hexes);
             Board board = new Board(view, game.getBoardSize());
 
-            for(var entry : game.getTiles().entrySet()) {
+            for(Map.Entry<HexVector, Tile> entry : game.getTiles().entrySet()) {
                 board.addTile(entry.getValue(), entry.getKey());
             }
-            for(var entry : game.getPawns().entrySet()) {
+            for(Map.Entry<HexVector, Pawn> entry : game.getPawns().entrySet()) {
                 board.addPawn(entry.getValue(), entry.getKey());
             }
 
@@ -128,7 +133,7 @@ public class MatchHistory extends Scene {
                 playersBox.getChildren().add(textFlow);
             }
 
-            var it = game.getPlayersMoves().listIterator();
+            ListIterator<PlayerMove> it = game.getPlayersMoves().listIterator();
             while(it.hasNext()) it.next();
             while(it.hasPrevious()) {
                 undoMove(board, game, it.previous());

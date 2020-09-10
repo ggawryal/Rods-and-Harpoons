@@ -4,6 +4,7 @@ import board.Board;
 import board.HexVector;
 import board.Move;
 import board.MoveChecker;
+import board.drawable.pawn.Pawn;
 import board.drawable.tile.Tile;
 import game.controllers.ControllerFactory;
 import game.controllers.PlayerController;
@@ -12,6 +13,7 @@ import util.PlayerMove;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static application.Properties.DEFAULT_BOARD_SIZE;
 import static application.Properties.DEFAULT_PAWNS_PER_PLAYER;
@@ -51,7 +53,7 @@ public class GameManager {
         this.moveChecker = moveChecker;
         this.board = board;
         board.clear();
-        for(var entry : gameInfo.getTiles().entrySet())
+        for(Map.Entry<HexVector, Tile> entry : gameInfo.getTiles().entrySet())
             board.addTile(entry.getValue(),entry.getKey());
 
         for(int i=0; i<gameInfo.getPlayers().size(); i++) {
@@ -60,7 +62,7 @@ public class GameManager {
 
         }
 
-        for(var entry : gameInfo.getPawns().entrySet()) {
+        for(Map.Entry<HexVector, Pawn> entry : gameInfo.getPawns().entrySet()) {
             boolean foundOwner = false;
             for(Player player : players) {
                 if(player.getId()+1 == entry.getValue().getId()) {
