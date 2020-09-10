@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import static application.Program.MainApp.*;
+import static application.Properties.MAX_NICKNAME_LENGTH;
 
 public class MatchHistory extends Scene {
     private final static StackPane root = new StackPane();
@@ -44,8 +45,8 @@ public class MatchHistory extends Scene {
         TextField textField = new TextField("nickname");
         textField.setPromptText("nickname");
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.length() > settings.MAX_NICKNAME_LENGTH)
-                textField.setText(newValue.substring(0, settings.MAX_NICKNAME_LENGTH));
+            if (newValue.length() > MAX_NICKNAME_LENGTH)
+                textField.setText(newValue.substring(0, MAX_NICKNAME_LENGTH));
         });
         textField.setMaxWidth(500);
         textField.setFont(Font.font(30));
@@ -61,16 +62,21 @@ public class MatchHistory extends Scene {
             games = mongoDB.getPlayerMatches(textField.getText());
             for (Document gameDocument : games) {
                 StringBuilder stringBuilder = new StringBuilder();
-                GameInfo game = new GameInfo(gameDocument);
-                for (Player player : game.getPlayers()) {
-                    if (player.getNickname().equals(textField.getText())) {
-                        stringBuilder.append(" Points: ").append(player.getPoints());
-                        break;
+                GameInfo game;
+                try {
+                    game = new GameInfo(gameDocument);
+                    for (Player player : game.getPlayers()) {
+                        if (player.getNickname().equals(textField.getText())) {
+                            stringBuilder.append(" Points: ").append(player.getPoints());
+                            break;
+                        }
                     }
+                    stringBuilder.append(", ")
+                            .append(gameDocument.getObjectId("_id").getDate().toString());
+                    gamesList.getItems().add(stringBuilder.toString());
+                } catch(Exception e) {
+                    System.err.println("Failed to load game: " + e.getMessage());
                 }
-                stringBuilder.append(", ")
-                        .append(gameDocument.getObjectId("_id").getDate().toString());
-                gamesList.getItems().add(stringBuilder.toString());
             }
             gamesBox.setVisible(true);
         });
@@ -93,7 +99,7 @@ public class MatchHistory extends Scene {
             scrollPane.setPannable(true);
 
             BoardView view = new JavaFXBoardView(hexes);
-            Board board = new Board(view);
+            Board board = new Board(view, game.getBoardSize());
 
             for(var entry : game.getTiles().entrySet()) {
                 board.addTile(entry.getValue(), entry.getKey());

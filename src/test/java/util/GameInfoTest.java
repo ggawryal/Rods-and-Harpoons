@@ -32,9 +32,9 @@ class GameInfoTest {
                 new PlayerMove(0, 1, new Move(new HexVector(0, 0), new HexVector(0, 1)))
         );
 
-        GameInfo gameInfo = new GameInfo(tiles, pawns, controllerFactories, players, playersMoves, 1, true);
+        GameInfo gameInfo = new GameInfo(tiles, pawns, controllerFactories, players, playersMoves, 7, 3, 1, true);
 
-        assertGameInfoEquals(gameInfo, tiles, pawns, controllerFactories, players, playersMoves, 1, true);
+        assertGameInfoEquals(gameInfo, tiles, pawns, controllerFactories, players, playersMoves, 7, 3, 1, true);
     }
 
     @Test
@@ -52,11 +52,11 @@ class GameInfoTest {
                 new PlayerMove(0, 1, new Move(new HexVector(0, 0), new HexVector(0, 1)))
         );
 
-        GameInfo gameInfo = new GameInfo(tiles, pawns, controllerFactories, players, playersMoves, 1, false);
+        GameInfo gameInfo = new GameInfo(tiles, pawns, controllerFactories, players, playersMoves, 15, 4, 1, false);
         Document document = gameInfo.toDocument();
 
         GameInfo gameInfoFromDocument = new GameInfo(document);
-        assertGameInfoEquals(gameInfoFromDocument, tiles, pawns, controllerFactories, players, playersMoves, 1, false);
+        assertGameInfoEquals(gameInfoFromDocument, tiles, pawns, controllerFactories, players, playersMoves, 15, 4, 1, false);
     }
 
     private void assertGameInfoEquals(
@@ -66,6 +66,8 @@ class GameInfoTest {
             List<ControllerFactory> controllerFactories,
             List<Player> players,
             List<PlayerMove> playersMoves,
+            int boardSize,
+            int pawnsPerPlayer,
             int turn,
             boolean hasGameEnded
     ) {
@@ -92,7 +94,9 @@ class GameInfoTest {
         }
 
         assertEquals(playersMoves, gameInfo.getPlayersMoves());
-        assertEquals(turn , gameInfo.getTurn());
+        assertEquals(boardSize, gameInfo.getBoardSize());
+        assertEquals(pawnsPerPlayer, gameInfo.getPawnsPerPlayer());
+        assertEquals(turn, gameInfo.getTurn());
         assertEquals(hasGameEnded, gameInfo.isGameFinished());
     }
 }

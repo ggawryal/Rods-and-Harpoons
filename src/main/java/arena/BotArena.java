@@ -24,6 +24,8 @@ This class is for AI developers to test and compare their strategies, optimize h
 It also demonstrates that game model is independent from view (JavaFX)
 */
 public class BotArena {
+    final int boardSize = 8;
+    final int pawnsPerPlayer = 2;
 
     public static void main(String[] args) {
         final int totalRounds = 1000;
@@ -54,7 +56,7 @@ public class BotArena {
     private ArrayList<BotControllerFactory> botFactories = new ArrayList<>();
     private ArrayList<String> nicknames = new ArrayList<>();
     private BoardView boardView = new NoneBoardView();
-    private Board board = new Board(boardView);
+    private Board board = new Board(boardView, boardSize);
     private MoveChecker moveChecker = new StandardMoveChecker(board);
     private Statistics statistics;
 
@@ -68,7 +70,7 @@ public class BotArena {
 
     public void resetBoard() {
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        TileArranger tileArranger = new RectangleTileArranger(boardSize,boardSize);
         tileArranger.arrange(board,tileScoreChooser);
     }
 
@@ -79,7 +81,7 @@ public class BotArena {
 
     public void newRound() {
         resetBoard();
-        gameManager = new GameManager(moveChecker, board, nicknames, new ArrayList<>(botFactories), 2);
+        gameManager = new GameManager(moveChecker, board, nicknames, new ArrayList<>(botFactories), pawnsPerPlayer);
         gameManager.setObserver(new GameObserver() {
             @Override public void onGameOver(GameInfo gameInfo, boolean saveGame) {}
             @Override public void onPlayerPointsUpdated(Player player) {}

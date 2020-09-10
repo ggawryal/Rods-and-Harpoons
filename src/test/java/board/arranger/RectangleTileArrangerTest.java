@@ -20,7 +20,7 @@ class RectangleTileArrangerTest {
     @Test
     void testArrange() {
         BoardView boardView = mock(BoardView.class);
-        Board board = new Board(boardView);
+        Board board = new Board(boardView, 3);
         RectangleTileArranger tileArranger = new RectangleTileArranger(2,3);
         TileScoreChooser tileScoreChooser = new SameScoreTileChooser();
         tileArranger.arrange(board, tileScoreChooser);

@@ -9,11 +9,12 @@ import game.controllers.*;
 import game.controllers.botcontrollerfactories.EasyBotControllerFactory;
 import game.threads.OnlyMainThreadRunner;
 import org.junit.jupiter.api.Test;
-import util.GameInfo;
 import util.sleeper.FakeSleeper;
 
 import java.util.ArrayList;
 
+import static application.Properties.DEFAULT_BOARD_SIZE;
+import static application.Properties.DEFAULT_PAWNS_PER_PLAYER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -21,9 +22,9 @@ public class GameManagerTest {
     @Test
     void testInit() {
         MoveChecker moveChecker = mock(MoveChecker.class);
-        Board board = new Board(mock(BoardView.class));
+        Board board = new Board(mock(BoardView.class), 8);
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        TileArranger tileArranger = new RectangleTileArranger(board.getSize(),board.getSize());
         tileArranger.arrange(board,tileScoreChooser);
         ArrayList<String> nicknames = new ArrayList<>();
         ArrayList<ControllerFactory> controllers = new ArrayList<>();
@@ -42,9 +43,9 @@ public class GameManagerTest {
     @Test
     void testGetAndAddPlayersAndControllers() {
         MoveChecker moveChecker = mock(MoveChecker.class);
-        Board board = new Board(mock(BoardView.class));
+        Board board = new Board(mock(BoardView.class), 8);
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        TileArranger tileArranger = new RectangleTileArranger(board.getSize(),board.getSize());
         tileArranger.arrange(board,tileScoreChooser);
         ArrayList<String> nicknames = new ArrayList<>();
         ArrayList<ControllerFactory> controllers = new ArrayList<>();
@@ -65,10 +66,10 @@ public class GameManagerTest {
 
     @Test
     void testTryToMove() {
-        Board board = new Board(mock(BoardView.class));
+        Board board = new Board(mock(BoardView.class), 8);
         MoveChecker moveChecker = new StandardMoveChecker(board);
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        TileArranger tileArranger = new RectangleTileArranger(board.getSize(),board.getSize());
         tileArranger.arrange(board,tileScoreChooser);
         ArrayList<String> nicknames = new ArrayList<>();
         ArrayList<ControllerFactory> controllers = new ArrayList<>();
@@ -105,10 +106,10 @@ public class GameManagerTest {
 
     @Test
     void testPointUpdating() {
-        Board board = new Board(mock(BoardView.class));
+        Board board = new Board(mock(BoardView.class), 8);
         MoveChecker moveChecker = new StandardMoveChecker(board);
         TileScoreChooser tileScoreChooser = new SameScoreTileChooser();
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        TileArranger tileArranger = new RectangleTileArranger(board.getSize(),board.getSize());
         tileArranger.arrange(board,tileScoreChooser);
         ArrayList<String> nicknames = new ArrayList<>();
         ArrayList<ControllerFactory> controllers = new ArrayList<>();
@@ -150,11 +151,10 @@ public class GameManagerTest {
 
     @Test
     void testGameEndsWhenNoValidMoves() {
-        Board board = new Board(mock(BoardView.class));
+        Board board = new Board(mock(BoardView.class), 8);
         board.addTile(new ScoreTile(1), new HexVector(0,1));
         board.addTile(new ScoreTile(1), new HexVector(0,0));
         board.addTile(new ScoreTile(1), new HexVector(1,1));
-
 
         MoveChecker moveChecker = new StandardMoveChecker(board);
         ArrayList<String> nicknames = new ArrayList<>();
@@ -176,8 +176,22 @@ public class GameManagerTest {
 
         gameManager.tryToMove(gameManager.getPlayers().get(0), new Move(new HexVector(0,1), new HexVector(0,0)));
 
-        verify(gameObserver, times(1)).onGameOver(any(), eq(true));
+        verify(gameObserver, times(1)).onGameOver(any(), eq(false));
+    }
 
+    @Test
+    void testGameSavesWithDefaultSettings() {
+        Board board = new Board(mock(BoardView.class), DEFAULT_BOARD_SIZE);
+        MoveChecker moveChecker = new StandardMoveChecker(board);
+        ArrayList<String> nicknames = new ArrayList<>();
+        ArrayList<ControllerFactory> controllers = new ArrayList<>();
+        GameManager gameManager = new GameManager(moveChecker, board, nicknames, controllers, DEFAULT_PAWNS_PER_PLAYER);
+        GameObserver gameObserver = mock(GameObserver.class);
+        gameManager.setObserver(gameObserver);
+
+        gameManager.endGame(true);
+
+        verify(gameObserver, times(1)).onGameOver(any(), eq(true));
     }
 
     private ControllerFactory getFactoryOfMockedController() {

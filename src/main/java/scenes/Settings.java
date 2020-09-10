@@ -1,22 +1,22 @@
 package scenes;
 
-import game.controllers.BotController;
 import game.controllers.ControllerFactory;
 import game.controllers.HumanControllerFactory;
 import game.controllers.botcontrollerfactories.*;
 import game.threads.JavaFXThreadRunner;
 import javafx.collections.FXCollections;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import util.sleeper.RealTimeSleeper;
 
 import java.util.ArrayList;
@@ -24,19 +24,74 @@ import java.util.Arrays;
 import java.util.List;
 
 import static application.Program.MainApp.*;
+import static application.Properties.*;
 
 public class Settings extends Scene {
     private final static StackPane root = new StackPane();
     private final static VBox rootBox = new VBox(50);
+    private final static HBox settingsBox = new HBox(20);
     private final static VBox playerBoxes = new VBox(20);
+    private final static VBox otherSettingsBox = new VBox(20);
     private Button btnNewPlayer;
-
-    private final int MIN_PLAYERS = 2;
-    private final int MAX_PLAYERS = 4;
-    final int MAX_NICKNAME_LENGTH = 20;
 
     public void load() {
         ImageView logo = new ImageView(new Image("/logo.png"));
+
+        // adding 3 and removing 1 to trigger disabling buttons
+        for(int i=0; i<3; i++) addPlayerBox();
+        removePlayerBox((HBox)playerBoxes.getChildren().get(2));
+        btnNewPlayer = new Button("+");
+        btnNewPlayer.setOnAction(event -> addPlayerBox());
+        playerBoxes.getChildren().add(btnNewPlayer);
+        playerBoxes.setAlignment(Pos.TOP_CENTER);
+        playerBoxes.setMinHeight(205);
+
+        Separator separator = new Separator();
+        separator.setOrientation(Orientation.VERTICAL);
+
+        Slider boardSlider = new Slider(5,20,DEFAULT_BOARD_SIZE);
+        Slider pawnsSlider = new Slider(1,4,DEFAULT_PAWNS_PER_PLAYER);
+        Text highscoreText = new Text("High Scores will not be updated with these settings.");
+
+        HBox boardSizeBox = new HBox(20);
+        boardSizeBox.getChildren().add(new Text("Board size: "));
+        boardSlider.setMajorTickUnit(5);
+        boardSlider.setMinorTickCount(4);
+        boardSlider.setShowTickMarks(true);
+        boardSlider.setShowTickLabels(true);
+        boardSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            boardSlider.setValue(newValue.intValue());
+            if(newValue.intValue() != DEFAULT_BOARD_SIZE) highscoreText.setVisible(true);
+            else if(pawnsSlider.getValue() == DEFAULT_PAWNS_PER_PLAYER) highscoreText.setVisible(false);
+        });
+        boardSlider.setMinWidth(180);
+        boardSizeBox.getChildren().add(boardSlider);
+
+        HBox pawnsPerPlayerBox = new HBox(20);
+        pawnsPerPlayerBox.getChildren().add(new Text("Pawns per player: "));
+        pawnsSlider.setMajorTickUnit(1);
+        pawnsSlider.setMinorTickCount(0);
+        pawnsSlider.setShowTickMarks(true);
+        pawnsSlider.setShowTickLabels(true);
+        pawnsSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            pawnsSlider.setValue(newValue.intValue());
+            if(newValue.intValue() != DEFAULT_PAWNS_PER_PLAYER) highscoreText.setVisible(true);
+            else if(boardSlider.getValue() == DEFAULT_BOARD_SIZE) highscoreText.setVisible(false);
+        });
+        pawnsPerPlayerBox.getChildren().add(pawnsSlider);
+
+        Button btnRestore = new Button("Restore defaults");
+        btnRestore.setOnAction(event -> {
+            boardSlider.setValue(DEFAULT_BOARD_SIZE);
+            pawnsSlider.setValue(DEFAULT_PAWNS_PER_PLAYER);
+        });
+        btnRestore.setAlignment(Pos.CENTER);
+        highscoreText.setVisible(false);
+        highscoreText.setTextAlignment(TextAlignment.CENTER);
+
+        otherSettingsBox.getChildren().addAll(boardSizeBox, pawnsPerPlayerBox, btnRestore, highscoreText);
+        settingsBox.getChildren().addAll(playerBoxes, separator, otherSettingsBox);
+        settingsBox.setAlignment(Pos.CENTER);
 
         Button btnPlay = new Button("Play");
         btnPlay.setFont(Font.font(50));
@@ -49,27 +104,19 @@ public class Settings extends Scene {
                 controllers.add((((ChoiceBox<ControllerFactory>)((HBox)playerBoxes.getChildren().get(i)).getChildren().get(1)).getValue()));
             }
 
-            gameScene.load(nicknames, controllers);
+            gameScene.load(nicknames, controllers, (int)boardSlider.getValue(), (int)pawnsSlider.getValue());
             primaryStage.setScene(gameScene);
         });
-
-        btnNewPlayer = new Button("+");
-        btnNewPlayer.setOnAction(event -> addPlayerBox());
-        playerBoxes.getChildren().add(btnNewPlayer);
-        playerBoxes.setAlignment(Pos.CENTER);
-        // adding 3 and removing 1 to trigger disabling buttons
-        for(int i=0; i<3; i++) addPlayerBox();
-        removePlayerBox((HBox)playerBoxes.getChildren().get(2));
-
         Button btnBack = new Button("Back");
         btnBack.setFont(Font.font(30));
         btnBack.setOnAction(event -> primaryStage.setScene(mainMenu));
+
         HBox buttonsBox = new HBox(20);
         buttonsBox.getChildren().addAll(btnPlay, btnBack);
         buttonsBox.setAlignment(Pos.CENTER);
 
         rootBox.getChildren().add(logo);
-        rootBox.getChildren().addAll(playerBoxes);
+        rootBox.getChildren().add(settingsBox);
         rootBox.getChildren().add(buttonsBox);
         rootBox.setAlignment(Pos.CENTER);
         root.getChildren().add(rootBox);

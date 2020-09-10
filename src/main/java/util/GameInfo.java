@@ -20,21 +20,24 @@ public class GameInfo implements DBDocument {
     private final ArrayList<ControllerFactory> controllerFactories;
     private final ArrayList<Player> players;
     private final ArrayList<PlayerMove> playersMoves;
+    private final int boardSize;
+    private final int pawnsPerPlayer;
+    private final int turn;
     private final boolean gameFinished;
 
     public int getTurn() {
         return turn;
     }
 
-    private final int turn;
-
     public GameInfo(HashMap<HexVector, Tile> tiles, HashMap<HexVector, Pawn> pawns, List<ControllerFactory> controllerFactories,
-                    List<Player> players, List<PlayerMove> playersMoves, int turn, boolean gameFinished) {
+                    List<Player> players, List<PlayerMove> playersMoves, int boardSize, int pawnsPerPlayer, int turn, boolean gameFinished) {
         this.tiles = new HashMap<>(tiles);
         this.pawns = new HashMap<>(pawns);
         this.controllerFactories = new ArrayList<>(controllerFactories);
         this.players = new ArrayList<>(players);
         this.playersMoves = new ArrayList<>(playersMoves);
+        this.boardSize = boardSize;
+        this.pawnsPerPlayer = pawnsPerPlayer;
         this.turn = turn;
         this.gameFinished = gameFinished;
     }
@@ -55,6 +58,14 @@ public class GameInfo implements DBDocument {
 
     public ArrayList<PlayerMove> getPlayersMoves() {
         return playersMoves;
+    }
+
+    public int getBoardSize() {
+        return boardSize;
+    }
+
+    public int getPawnsPerPlayer() {
+        return pawnsPerPlayer;
     }
 
     public boolean isGameFinished() { return gameFinished; }
@@ -108,6 +119,8 @@ public class GameInfo implements DBDocument {
                 .append("controllers", getControllersAsDocument())
                 .append("players", getPlayersAsDocuments())
                 .append("playersMoves", getPlayersMovesAsDocuments())
+                .append("boardSize", getBoardSize())
+                .append("pawnsPerPlayer", getPawnsPerPlayer())
                 .append("turn", turn)
                 .append("gameFinished", gameFinished);
 
@@ -140,6 +153,8 @@ public class GameInfo implements DBDocument {
         for(Document doc : document.getList("playersMoves",Document.class))
             playersMoves.add(new PlayerMove(doc));
 
+        boardSize = document.getInteger("boardSize");
+        pawnsPerPlayer = document.getInteger("pawnsPerPlayer");
         turn = document.getInteger("turn");
         gameFinished = document.getBoolean("gameFinished");
     }

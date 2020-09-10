@@ -10,9 +10,15 @@ public class Board {
     private HashMap<HexVector, Tile> tiles = new HashMap<>();
     private HashMap<HexVector, Pawn> pawns = new HashMap<>();
     private BoardView view;
+    private int size;
 
-    public Board(BoardView view) {
+    public Board(BoardView view, int size) {
         this.view = view;
+        this.size = size;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public HashMap<HexVector, Tile> getTilesCopy() {

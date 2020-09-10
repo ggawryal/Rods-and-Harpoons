@@ -12,7 +12,7 @@ class BoardTest {
     @Test
     public void testAddTile() {
         BoardView view = mock(BoardView.class);
-        Board board = new Board(view);
+        Board board = new Board(view, 8);
 
         Tile tile = new EmptyTile();
         assertTrue(board.addTile(tile,new HexVector(1,3)));
@@ -30,7 +30,7 @@ class BoardTest {
     @Test
     public void testHasTile() {
         BoardView view = mock(BoardView.class);
-        Board board = new Board(view);
+        Board board = new Board(view, 8);
 
         assertFalse(board.hasTileAt(new HexVector(1,3)));
 
@@ -44,7 +44,7 @@ class BoardTest {
     @Test
     public void testGetTileAt() {
         BoardView view = mock(BoardView.class);
-        Board board = new Board(view);
+        Board board = new Board(view, 8);
         Tile tile1 = new EmptyTile(), tile2 = new EmptyTile();
 
         board.addTile(tile1,new HexVector(0,0));
@@ -57,7 +57,7 @@ class BoardTest {
     @Test
     public void testClear() {
         BoardView view = mock(BoardView.class);
-        Board board = new Board(view);
+        Board board = new Board(view, 8);
 
         board.addTile(new EmptyTile(),new HexVector(0,1));
         board.addTile(new EmptyTile(),new HexVector(5,3));

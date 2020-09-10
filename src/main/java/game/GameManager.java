@@ -12,7 +12,9 @@ import util.PlayerMove;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import static application.Properties.DEFAULT_BOARD_SIZE;
+import static application.Properties.DEFAULT_PAWNS_PER_PLAYER;
 
 public class GameManager {
     private final MoveChecker moveChecker;
@@ -36,12 +38,13 @@ public class GameManager {
         if(nicknames.size() != controllerFactories.size()) throw new RuntimeException();
         for(int i=0; i<nicknames.size(); i++) {
             Player player = new Player(getPlayers().size(), nicknames.get(i));
-            bindPlayerWithController(player,controllerFactories.get(i));
+            bindPlayerWithController(player, controllerFactories.get(i));
             players.add(player);
         }
 
-        pawnSetUpper.setUpPawns(board,players,pawnsPerPlayer);
-        gameInfo = new GameInfo(board.getTilesCopy(),board.getPawnsCopy(), controllerFactories, players, new ArrayList<>(),turn, false);
+        pawnSetUpper.setUpPawns(board, players, pawnsPerPlayer);
+        gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), controllerFactories, players, new ArrayList<>(),
+                board.getSize(), pawnsPerPlayer, turn, false);
     }
 
     public GameManager(MoveChecker moveChecker, Board board, GameInfo gameInfo) {
@@ -120,8 +123,12 @@ public class GameManager {
             playerController.shutdown();
         }
         if(saveResult) {
-            gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(), turn, true);
-            gameObserver.onGameOver(gameInfo, true);
+            gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(),
+                    gameInfo.getControllerFactories(), gameInfo.getPlayers(), gameInfo.getPlayersMoves(),
+                    gameInfo.getBoardSize(), gameInfo.getPawnsPerPlayer(), turn, true);
+            boolean updateHighscore = (gameInfo.getBoardSize() == DEFAULT_BOARD_SIZE &&
+                    gameInfo.getPawnsPerPlayer() == DEFAULT_PAWNS_PER_PLAYER);
+            gameObserver.onGameOver(gameInfo, updateHighscore);
         }
     }
 
@@ -157,7 +164,8 @@ public class GameManager {
 
             ArrayList<PlayerMove> updatedPlayerMoves = new ArrayList<>(gameInfo.getPlayersMoves());
             updatedPlayerMoves.add(new PlayerMove(player.getId(), tileScore, move));
-            gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(), gameInfo.getPlayers(), updatedPlayerMoves, turn, false);
+            gameInfo = new GameInfo(board.getTilesCopy(), board.getPawnsCopy(), gameInfo.getControllerFactories(),
+                    gameInfo.getPlayers(), updatedPlayerMoves, gameInfo.getBoardSize(), gameInfo.getPawnsPerPlayer(), turn, false);
             gameObserver.onGameInfoUpdated(gameInfo);
             if(!gameEnded)
                 gameObserver.onPlayerPointsUpdated(player);

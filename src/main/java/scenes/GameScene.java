@@ -49,17 +49,17 @@ public class GameScene extends Scene implements GameObserver{
     private static VBox playersBox;
     private static GameManager gameManager;
 
-    public void load(List<String> nicknames, List<ControllerFactory> controllers) {
+    public void load(List<String> nicknames, List<ControllerFactory> controllers, int boardSize, int pawnsPerPlayer) {
         loadPanes();
         BoardView view = new JavaFXBoardView(hexes);
-        Board board = new Board(view);
+        Board board = new Board(view, boardSize);
         MoveChecker moveChecker = new StandardMoveChecker(board);
 
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        TileArranger tileArranger = new RectangleTileArranger(boardSize,boardSize);
         tileArranger.arrange(board,tileScoreChooser);
 
-        gameManager = new GameManager(moveChecker, board, nicknames, controllers, 2);
+        gameManager = new GameManager(moveChecker, board, nicknames, controllers, pawnsPerPlayer);
         view.setActionOnClickForExistingTiles(position -> {
             if(gameManager.getCurrentController() instanceof HumanController) {
                 ((HumanController) gameManager.getCurrentController()).onClickResponse(position);
@@ -67,13 +67,13 @@ public class GameScene extends Scene implements GameObserver{
         });
 
         gameManager.setObserver(this);
-        loadUI(gameManager.getPlayers(), controllers);
+        loadUI(gameManager.getPlayers(), controllers, boardSize, pawnsPerPlayer);
     }
 
     public void load(GameInfo gameInfo) {
         loadPanes();
         BoardView view = new JavaFXBoardView(hexes);
-        Board board = new Board(view);
+        Board board = new Board(view, gameInfo.getBoardSize());
         MoveChecker moveChecker = new StandardMoveChecker(board);
 
         gameManager = new GameManager(moveChecker, board, gameInfo);
@@ -83,7 +83,7 @@ public class GameScene extends Scene implements GameObserver{
             }
         });
         gameManager.setObserver(this);
-        loadUI(gameManager.getPlayers(), gameInfo.getControllerFactories());
+        loadUI(gameManager.getPlayers(), gameInfo.getControllerFactories(), gameInfo.getBoardSize(), gameInfo.getPawnsPerPlayer());
     }
 
     public void loadPanes() {
@@ -102,10 +102,10 @@ public class GameScene extends Scene implements GameObserver{
         });
     }
 
-    public void loadUI(List<Player> players, List<ControllerFactory> controllers) {
+    public void loadUI(List<Player> players, List<ControllerFactory> controllers, int boardSize, int pawnsPerPlayer) {
         ImageView logo = new ImageView(new Image("/logo_small.png"));
-        logo.setFitWidth(150);
-        logo.setFitHeight(150);
+        logo.setFitWidth(200);
+        logo.setFitHeight(200);
 
         playersBox = new VBox(10);
         playersBox.setMinHeight(200);
@@ -131,17 +131,18 @@ public class GameScene extends Scene implements GameObserver{
         Button btnReset = new Button("Reset");
         btnReset.setOnAction(event -> {
             gameManager.endGame(false);
-            ArrayList<String> nickNames = new ArrayList<>();
+            ArrayList<String> nicknames = new ArrayList<>();
             for(Player player : players) {
-                nickNames.add(player.getNickname());
+                nicknames.add(player.getNickname());
             }
-            gameScene.load(nickNames, controllers);
+            gameScene.load(nicknames, controllers, boardSize, pawnsPerPlayer);
         });
 
         gameStateBox.getChildren().add(logo);
         gameStateBox.getChildren().addAll(playersBox);
         gameStateBox.getChildren().addAll(btnReset, btnExit);
         gameStateBox.setAlignment(Pos.CENTER);
+        gameStateBox.setMaxWidth(200);
         root.setCenter(scrollPane);
         root.setLeft(gameStateBox);
 
@@ -160,10 +161,10 @@ public class GameScene extends Scene implements GameObserver{
     }
 
     @Override
-    public void onGameOver(GameInfo gameInfo, boolean saveGame) {
-        if(saveGame) {
-            jsonSavefile.saveGame(gameInfo);
-            mongoDB.saveGame(gameInfo);
+    public void onGameOver(GameInfo gameInfo, boolean updateHighScore) {
+        jsonSavefile.saveGame(gameInfo);
+        mongoDB.saveGame(gameInfo);
+        if(updateHighScore) {
             mongoDB.updatePlayersHighScore(gameInfo.getPlayers());
         }
 

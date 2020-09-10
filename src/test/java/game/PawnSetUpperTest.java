@@ -21,9 +21,9 @@ class PawnSetUpperTest {
     void testOnly1Score() {
         PawnSetUpper pawnSetUpper = new PawnSetUpper();
         BoardView boardView = mock(BoardView.class);
-        Board board = new Board(boardView);
+        Board board = new Board(boardView, 8);
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(8,8);
+        TileArranger tileArranger = new RectangleTileArranger(board.getSize(),board.getSize());
         tileArranger.arrange(board,tileScoreChooser);
 
         ArrayList<Player> players = new ArrayList<>();
@@ -44,9 +44,9 @@ class PawnSetUpperTest {
     void testNotEnoughTiles() {
         PawnSetUpper pawnSetUpper = new PawnSetUpper();
         BoardView boardView = mock(BoardView.class);
-        Board board = new Board(boardView);
+        Board board = new Board(boardView, 4);
         TileScoreChooser tileScoreChooser = new RatioTileChooser(3,2,1);
-        TileArranger tileArranger = new RectangleTileArranger(4,4);
+        TileArranger tileArranger = new RectangleTileArranger(board.getSize(),board.getSize());
         tileArranger.arrange(board,tileScoreChooser);
 
         ArrayList<Player> players = new ArrayList<>();
