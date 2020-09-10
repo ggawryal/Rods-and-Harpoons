@@ -37,14 +37,14 @@ public class Settings extends Scene {
     public void load() {
         ImageView logo = new ImageView(new Image("/logo.png"));
 
-        // adding 3 and removing 1 to trigger disabling buttons
-        for(int i=0; i<3; i++) addPlayerBox();
-        removePlayerBox((HBox)playerBoxes.getChildren().get(2));
         btnNewPlayer = new Button("+");
         btnNewPlayer.setOnAction(event -> addPlayerBox());
         playerBoxes.getChildren().add(btnNewPlayer);
         playerBoxes.setAlignment(Pos.TOP_CENTER);
         playerBoxes.setMinHeight(205);
+        // adding 3 and removing 1 to trigger disabling buttons
+        for(int i=0; i<3; i++) addPlayerBox();
+        removePlayerBox((HBox)playerBoxes.getChildren().get(2));
 
         Separator separator = new Separator();
         separator.setOrientation(Orientation.VERTICAL);

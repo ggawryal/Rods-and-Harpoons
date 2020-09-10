@@ -180,7 +180,7 @@ public class GameManagerTest {
     }
 
     @Test
-    void testGameSavesWithDefaultSettings() {
+    void testHighScoresUpdateWithDefaultSettings() {
         Board board = new Board(mock(BoardView.class), DEFAULT_BOARD_SIZE);
         MoveChecker moveChecker = new StandardMoveChecker(board);
         ArrayList<String> nicknames = new ArrayList<>();
