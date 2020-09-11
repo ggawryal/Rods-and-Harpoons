@@ -178,6 +178,7 @@ public class GameInfo implements DBDocument {
             Constructor<?> constructor = c.getConstructor();
             return (ControllerFactory) constructor.newInstance();
         }catch(Exception ignored) {
+            ignored.printStackTrace();
             throw new RuntimeException("Unknown type of controller found");
         }
     }

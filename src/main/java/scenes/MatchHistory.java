@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static application.Program.MainApp.*;
 import static application.Properties.MAX_NICKNAME_LENGTH;
@@ -44,6 +45,8 @@ public class MatchHistory extends Scene {
     private final static ListView<String> gamesList = new ListView<>();
     private ArrayList<Document> games;
     private VBox playersBox;
+
+    private ReentrantLock searchLock = new ReentrantLock();
 
     public void load() {
         ImageView logo = new ImageView(new Image("/logo.png"));
@@ -63,8 +66,15 @@ public class MatchHistory extends Scene {
         Button btnSearch = new Button("Search");
         btnSearch.setFont(Font.font(50));
         btnSearch.setOnAction(event -> {
+            games = new DatabaseOperationWithAlertOnFail<ArrayList<Document>>() {
+                @Override public ArrayList<Document> operationOnDatabase() {
+                    return mongoDB.getPlayerMatches(textField.getText());
+                }
+            }.tryOperation();
+            if(games == null)
+                return;
+
             rootBox.setVisible(false);
-            games = mongoDB.getPlayerMatches(textField.getText());
             for (Document gameDocument : games) {
                 StringBuilder stringBuilder = new StringBuilder();
                 GameInfo game;

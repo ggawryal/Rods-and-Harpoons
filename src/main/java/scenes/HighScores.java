@@ -1,5 +1,6 @@
 package scenes;
 
+import game.threads.JavaFXThreadRunner;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
@@ -66,7 +67,13 @@ public class HighScores extends Scene {
 
     public void refresh() {
         highScores.getItems().clear();
-        ArrayList<Document> players = mongoDB.getPlayersHighScores(10);
+        ArrayList<Document> players = new DatabaseOperationWithAlertOnFail<ArrayList<Document>>() {
+            @Override public ArrayList<Document> operationOnDatabase() {
+                return mongoDB.getPlayersHighScores(10);
+            }
+        }.tryOperation();
+        if (players == null)
+            return;
         for(Document player : players) {
             highScores.getItems().add(player);
         }

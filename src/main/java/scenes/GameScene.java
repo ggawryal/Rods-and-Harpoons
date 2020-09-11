@@ -163,9 +163,19 @@ public class GameScene extends Scene implements GameObserver{
     @Override
     public void onGameOver(GameInfo gameInfo, boolean updateHighScore) {
         jsonSavefile.saveGame(gameInfo);
-        mongoDB.saveGame(gameInfo);
+        new DatabaseOperationWithAlertOnFail<String>() {
+            @Override public String operationOnDatabase() {
+                return mongoDB.saveGame(gameInfo);
+            }
+        }.tryOperation();
+
         if(updateHighScore) {
-            mongoDB.updatePlayersHighScore(gameInfo.getPlayers(), gameInfo.getControllerFactories());
+            new DatabaseOperationWithAlertOnFail<Void>() {
+                @Override public Void operationOnDatabase() {
+                    mongoDB.updatePlayersHighScore(gameInfo.getPlayers(), gameInfo.getControllerFactories());
+                    return null;
+                }
+            }.tryOperation();
         }
 
         ArrayList<Player> players = gameManager.getPlayers();
